@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "user-fi-management"
+name = "regtech-user-fi-management"
 version = "0.1.0"
 description = ""
 authors = ["lchen-2101 <73617864+lchen-2101@users.noreply.github.com>"]
 readme = "README.md"
-packages = [{include = "user_fi_management"}]
+packages = [{include = "regtech-user-fi-management"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
