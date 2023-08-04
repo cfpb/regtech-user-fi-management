@@ -107,7 +107,7 @@ There are 2 major functionalities provided by this app, one serves as the integr
     -H 'Content-Type: application/json' \
     -d '{"lei": "TESTBANK123", "name": "Test Bank 123"}' | jq -r '.'
     ```
-For both these routers, the needed roles to access each endpoint is decorated with the `@requires` decorator, i.e. `@requires(["query-groups", "manage-users"])` refer to [institutions router](./src/routers/institutions.py) for the decorator example; these roles corresponds to Keycloak's roles.
+For both these routers, the needed roles to access each endpoint is decorated with the `@requires` decorator, i.e. `@requires(["query-groups", "manage-users"])`. Refer to [institutions router](./src/routers/institutions.py) for the decorator example; these roles corresponds to Keycloak's roles.
 
 ---
 ## API Documentation
