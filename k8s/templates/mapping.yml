@@ -1,0 +1,12 @@
+{{- if .Values.mapping.enabled -}}
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: {{ include "regtech-user-fi-management.fullname" . }}
+spec:
+  ambassador_id:
+    {{- toYaml .Values.mapping.ambassador_id | nindent 4 }}
+  host: {{ .Values.mapping.host }}
+  prefix: {{ .Values.mapping.prefix }}
+  service: {{ include "regtech-user-fi-management.fullname" . }}
+{{- end }}
