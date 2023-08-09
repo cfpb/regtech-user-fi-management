@@ -44,8 +44,7 @@ service:
 mapping:
   enabled: false
   host: ""
-  ambassador_id:
-    - --apiVersion-v3alpha1-only--default
+  ambassador_id: []
   prefix: /
 
 ingress:
