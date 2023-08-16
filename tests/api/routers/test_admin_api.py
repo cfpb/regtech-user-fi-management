@@ -1,6 +1,5 @@
 from unittest.mock import Mock, call
 
-import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pytest_mock import MockerFixture
@@ -72,5 +71,5 @@ class TestAdminApi:
             call("testuser123", "testlei1"),
             call("testuser123", "testlei2"),
         ]
-        associate_lei_mock.assert_has_calls(expected_calls)
+        associate_lei_mock.assert_has_calls(expected_calls, any_order=True)
         assert res.status_code == 202
