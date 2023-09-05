@@ -27,3 +27,8 @@ class FinancialInstitutionDomainDao(AuditMixin, Base):
         ForeignKey("financial_institutions.lei"), index=True, primary_key=True
     )
     fi = relationship("FinancialInstitutionDao", back_populates="domains")
+
+
+class DeniedDomainDao(AuditMixin, Base):
+    __tablename__ = "denied_domains"
+    domain: Mapped[str] = mapped_column(index=True, primary_key=True)

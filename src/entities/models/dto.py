@@ -30,3 +30,10 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
 
 class FinancialInstitutionWithDomainsDto(FinancialInstitutionDto):
     domains: List[FinancialInsitutionDomainDto] = []
+
+
+class DeniedDomainDto(BaseModel):
+    domain: str
+
+    class Config:
+        orm_mode = True

@@ -6,6 +6,7 @@ from entities.models import (
     FinancialInstitutionDomainDao,
     FinancialInsitutionDomainCreate,
 )
+from entities.models import DeniedDomainDao
 from entities.repos import institutions_repo as repo
 
 
@@ -60,3 +61,10 @@ class TestInstitutionsRepo:
         )
         fi = await repo.get_institution(session, "TESTBANK123")
         assert len(fi.domains) == 2
+
+    async def test_domain_allowed(self, session: AsyncSession):
+        denied_domain = DeniedDomainDao(domain="yahoo.com")
+        session.add(denied_domain)
+        await session.commit()
+        assert await repo.is_email_domain_allowed(session, "test@yahoo.com") is False
+        assert await repo.is_email_domain_allowed(session, "test@gmail.com") is True

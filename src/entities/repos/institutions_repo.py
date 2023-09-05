@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,6 +9,7 @@ from entities.models import (
     FinancialInstitutionDomainDao,
     FinancialInstitutionDto,
     FinancialInsitutionDomainCreate,
+    DeniedDomainDao,
 )
 
 
@@ -73,3 +74,19 @@ async def add_domains(
         session.add_all(daos)
         await session.commit()
         return daos
+
+
+async def is_email_domain_allowed(session: AsyncSession, email: str) -> bool:
+    domain = get_email_domain(email)
+    if domain is not None:
+        async with session:
+            stmt = select(func.count()).filter(DeniedDomainDao.domain == domain)
+            res = await session.scalar(stmt)
+            return res == 0
+    return False
+
+
+def get_email_domain(email: str) -> str:
+    if email is not None:
+        return email.split("@")[-1]
+    return None
