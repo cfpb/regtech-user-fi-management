@@ -26,7 +26,10 @@ def request_needs_domain_check(request: Request) -> bool:
     open_methods = os.getenv("OPEN_ENDPOINT_METHODS", "GET")
     endpoints = open_endpoints.split(",")
     methods = open_methods.split(",")
-    return not (request.scope["path"].rstrip("/") in endpoints and request.scope["method"] in methods)
+    return not (
+        request.scope["path"].rstrip("/") in endpoints
+        and request.scope["method"] in methods
+    )
 
 
 async def email_domain_denied(session: AsyncSession, email: str) -> bool:
