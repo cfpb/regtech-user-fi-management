@@ -1,7 +1,6 @@
 import os
 from http import HTTPStatus
 from typing import Annotated
-from pprint import pprint
 from fastapi import Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 

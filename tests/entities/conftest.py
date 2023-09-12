@@ -49,10 +49,12 @@ async def transaction_session(session_generator: async_scoped_session):
     async with session_generator() as session:
         yield session
 
+
 @pytest.fixture(scope="function")
 async def query_session(session_generator: async_scoped_session):
     async with session_generator() as session:
         yield session
+
 
 @pytest.fixture(scope="function")
 def session_generator(engine: AsyncEngine):

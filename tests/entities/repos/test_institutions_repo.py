@@ -34,26 +34,32 @@ class TestInstitutionsRepo:
         res = await repo.get_institutions(query_session, domain="test.bank")
         assert len(res) == 1
 
-    async def test_get_institutions_by_domain_not_existing(self, query_session: AsyncSession):
+    async def test_get_institutions_by_domain_not_existing(
+        self, query_session: AsyncSession
+    ):
         res = await repo.get_institutions(query_session, domain="testing.bank")
         assert len(res) == 0
 
     async def test_add_institution(self, transaction_session: AsyncSession):
         await repo.upsert_institution(
-            transaction_session, FinancialInstitutionDao(name="New Bank 123", lei="NEWBANK123")
+            transaction_session,
+            FinancialInstitutionDao(name="New Bank 123", lei="NEWBANK123"),
         )
         res = await repo.get_institutions(transaction_session)
         assert len(res) == 2
 
     async def test_update_institution(self, transaction_session: AsyncSession):
         await repo.upsert_institution(
-            transaction_session, FinancialInstitutionDao(name="Test Bank 234", lei="TESTBANK123")
+            transaction_session,
+            FinancialInstitutionDao(name="Test Bank 234", lei="TESTBANK123"),
         )
         res = await repo.get_institutions(transaction_session)
         assert len(res) == 1
         assert res[0].name == "Test Bank 234"
 
-    async def test_add_domains(self, transaction_session: AsyncSession, query_session: AsyncSession):
+    async def test_add_domains(
+        self, transaction_session: AsyncSession, query_session: AsyncSession
+    ):
         await repo.add_domains(
             transaction_session,
             "TESTBANK123",
@@ -66,5 +72,11 @@ class TestInstitutionsRepo:
         denied_domain = DeniedDomainDao(domain="yahoo.com")
         transaction_session.add(denied_domain)
         await transaction_session.commit()
-        assert await repo.is_email_domain_allowed(transaction_session, "test@yahoo.com") is False
-        assert await repo.is_email_domain_allowed(transaction_session, "test@gmail.com") is True
+        assert (
+            await repo.is_email_domain_allowed(transaction_session, "test@yahoo.com")
+            is False
+        )
+        assert (
+            await repo.is_email_domain_allowed(transaction_session, "test@gmail.com")
+            is True
+        )
