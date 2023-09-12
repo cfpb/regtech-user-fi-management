@@ -23,10 +23,8 @@ async def get_institutions(
             .offset(page * count)
         )
         if leis:
-            stmt = stmt.join(FinancialInstitutionDomainDao,
-                FinancialInstitutionDao.lei == FinancialInstitutionDomainDao.lei,
-            ).filter(FinancialInstitutionDao.lei.in_(leis))
-        if d := domain.strip():
+            stmt = stmt.filter(FinancialInstitutionDao.lei.in_(leis))
+        elif d := domain.strip():
             search = "%{}%".format(d)
             stmt = stmt.join(
                 FinancialInstitutionDomainDao,

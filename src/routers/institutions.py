@@ -22,10 +22,10 @@ router = Router()
 @requires("authenticated")
 async def get_institutions(
     request: Request,
+    leis: List[str] = Depends(parse_leis),
     domain: str = "",
     page: int = 0,
     count: int = 100,
-    leis: List[str] = Depends(parse_leis),
     session: AsyncSession = Depends(get_session),
 ):
     return await repo.get_institutions(session, domain, page, count, leis)
