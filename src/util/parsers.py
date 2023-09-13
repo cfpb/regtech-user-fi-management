@@ -4,6 +4,13 @@ from itertools import chain
 from fastapi import Query
 
 
+def flat_map(f, x):
+    lst = []
+    for y in x:
+        lst.extend(f(y))
+    return lst
+
+
 def parse_leis(leis: List[str] = Query(None)) -> Optional[List]:
     """
     Parses leis from list of one or multiple strings to a list of multiple distinct lei strings
