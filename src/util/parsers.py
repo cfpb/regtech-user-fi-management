@@ -1,13 +1,7 @@
 from typing import List, Optional
+from itertools import chain
 
 from fastapi import Query
-
-
-def flat_map(f, x):
-    lst = []
-    for y in x:
-        lst.extend(f(y))
-    return lst
 
 
 def parse_leis(leis: List[str] = Query(None)) -> Optional[List]:
@@ -18,10 +12,7 @@ def parse_leis(leis: List[str] = Query(None)) -> Optional[List]:
     Ex2: ['lei1,lei2', 'lei3,lei4'] -> ['lei1','lei2','lei3','lei4']
     """
 
-    if leis is None or len(leis) == 0:
-        return []
+    if leis:
+        return list(chain.from_iterable([x.split(',') for x in leis]))
     else:
-        lei_list = []
-        for i in leis:
-            lei_list.append(i.split(','))
-        return flat_map(lambda x: x, lei_list)
+        return None
