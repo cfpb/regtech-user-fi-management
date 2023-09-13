@@ -90,8 +90,8 @@ class TestInstitutionsApi:
         self, app_fixture: FastAPI, unauthed_user_mock: Mock
     ):
         client = TestClient(app_fixture)
-        leiPath = "testLeiPath"
-        res = client.get(f"/v1/institutions/{leiPath}")
+        lei_path = "testLeiPath"
+        res = client.get(f"/v1/institutions/{lei_path}")
         assert res.status_code == 403
 
     def test_get_institution_authed(
@@ -108,16 +108,16 @@ class TestInstitutionsApi:
             ],
         )
         client = TestClient(app_fixture)
-        leiPath = "testLeiPath"
-        res = client.get(f"/v1/institutions/{leiPath}")
+        lei_path = "testLeiPath"
+        res = client.get(f"/v1/institutions/{lei_path}")
         assert res.status_code == 200
         assert res.json().get("name") == "Test Bank 123"
 
     def test_add_domains_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)
-        leiPath = "testLeiPath"
+        lei_path = "testLeiPath"
         res = client.post(
-            f"/v1/institutions/{leiPath}/domains/", json=[{"domain": "testDomain"}]
+            f"/v1/institutions/{lei_path}/domains/", json=[{"domain": "testDomain"}]
         )
         assert res.status_code == 403
 
@@ -129,9 +129,9 @@ class TestInstitutionsApi:
             FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")
         ]
         client = TestClient(app_fixture)
-        leiPath = "testLeiPath"
+        lei_path = "testLeiPath"
         res = client.post(
-            f"/v1/institutions/{leiPath}/domains/", json=[{"domain": "testDomain"}]
+            f"/v1/institutions/{lei_path}/domains/", json=[{"domain": "testDomain"}]
         )
         assert res.status_code == 200
         assert res.json()[0].get("domain") == "test.bank"
@@ -150,9 +150,9 @@ class TestInstitutionsApi:
             AuthenticatedUser.from_claim(claims),
         )
         client = TestClient(app_fixture)
-        leiPath = "testLeiPath"
+        lei_path = "testLeiPath"
         res = client.post(
-            f"/v1/institutions/{leiPath}/domains/", json=[{"domain": "testDomain"}]
+            f"/v1/institutions/{lei_path}/domains/", json=[{"domain": "testDomain"}]
         )
         assert res.status_code == 403
 
@@ -162,9 +162,9 @@ class TestInstitutionsApi:
         domain_denied_mock = mocker.patch("dependencies.email_domain_denied")
         domain_denied_mock.return_value = True
         client = TestClient(app_fixture)
-        leiPath = "testLeiPath"
+        lei_path = "testLeiPath"
         res = client.post(
-            f"/v1/institutions/{leiPath}/domains/", json=[{"domain": "testDomain"}]
+            f"/v1/institutions/{lei_path}/domains/", json=[{"domain": "testDomain"}]
         )
         assert res.status_code == 403
         assert "domain denied" in res.json()["detail"]
