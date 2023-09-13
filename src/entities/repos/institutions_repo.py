@@ -78,7 +78,7 @@ async def add_domains(
 
 async def is_email_domain_allowed(session: AsyncSession, email: str) -> bool:
     domain = get_email_domain(email)
-    if domain is not None:
+    if domain:
         async with session:
             stmt = select(func.count()).filter(DeniedDomainDao.domain == domain)
             res = await session.scalar(stmt)
