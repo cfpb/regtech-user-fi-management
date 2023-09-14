@@ -30,7 +30,11 @@ class OAuth2Admin:
                 key=self._get_keys(),
                 issuer=os.getenv("KC_REALM_URL"),
                 audience=os.getenv("AUTH_CLIENT"),
-                options={"verify_at_hash": False, "verify_aud": False, "verify_iss": False},
+                options={
+                    "verify_at_hash": False,
+                    "verify_aud": False,
+                    "verify_iss": False,
+                },
             )
         except jose.ExpiredSignatureError:
             pass
