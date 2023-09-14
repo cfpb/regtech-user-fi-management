@@ -22,7 +22,7 @@ poetry run uvicorn main:app --reload --port 8888
 ```
 ### Local development notes
 - [.env.template](.env.template) is added to allow VS Code to search the correct path for imports when writing tests, just copy the [.env.template](.env.template) file into `.env` file locally
-- [src/.env.tempalte](./src/.env.template) is added as the template for the app's environment variables, appropriate values are already provided in [.env.local](./src/.env.local) for local development. If `ENV` variable with default of `LOCAL` is changed, copy this template into `src/.env`, and provide appropriate values, and set all listed empty variables in the environment.
+- [src/.env.template](./src/.env.template) is added as the template for the app's environment variables, appropriate values are already provided in [.env.local](./src/.env.local) for local development. If `ENV` variable with default of `LOCAL` is changed, copy this template into `src/.env`, and provide appropriate values, and set all listed empty variables in the environment.
 
 ---
 ## Retrieve credentials

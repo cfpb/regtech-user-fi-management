@@ -1,4 +1,3 @@
-import os
 from http import HTTPStatus
 from typing import Annotated
 from fastapi import Depends, HTTPException, Request
@@ -6,6 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from entities.engine import get_session
 from entities.repos import institutions_repo as repo
+
+OPEN_DOMAIN_REQUESTS = {
+    "/v1/admin/me": {"GET"},
+    "/v1/institutions": {"GET"},
+    "/v1/institutions/domains/allowed": {"GET"},
+}
 
 
 async def check_domain(
@@ -21,16 +26,10 @@ async def check_domain(
 
 
 def request_needs_domain_check(request: Request) -> bool:
-    open_endpoints = os.getenv(
-        "OPEN_ENDPOINT_PATHS",
-        "/v1/admin/me,/v1/institutions,/v1/institutions/domains/allowed",
-    )
-    open_methods = os.getenv("OPEN_ENDPOINT_METHODS", "GET")
-    endpoints = open_endpoints.split(",")
-    methods = open_methods.split(",")
+    path = request.scope["path"].rstrip("/")
     return not (
-        request.scope["path"].rstrip("/") in endpoints
-        and request.scope["method"] in methods
+        path in OPEN_DOMAIN_REQUESTS
+        and request.scope["method"] in OPEN_DOMAIN_REQUESTS[path]
     )
 
 
