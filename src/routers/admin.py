@@ -4,7 +4,8 @@ from fastapi import Request
 from starlette.authentication import requires
 from util import Router
 
-from oauth2 import AuthenticatedUser, oauth2_admin
+from entities.models import AuthenticatedUser
+from oauth2 import oauth2_admin
 
 router = Router()
 

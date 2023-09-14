@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials, UnauthenticatedUser
 
-from oauth2.oauth2_backend import AuthenticatedUser
+from entities.models import AuthenticatedUser
 
 
 @pytest.fixture
