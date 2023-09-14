@@ -33,7 +33,26 @@ asyncio_mode = "auto"
 pythonpath = [
   "src"
 ]
+addopts = [
+    "--cov-report=term-missing",
+    "--cov-branch",
+    "--cov-report=xml",
+    "--cov-report=term",
+    "--cov=src",
+    "-vv",
+    "--strict-markers",
+    "-rfE",
+]
+testpaths = [
+    "tests",
+]
 
+[tool.coverage.run]
+relative_files = true
+source = ["src"]
+
+[tool.coverage.report]
+skip_empty = true
 
 [build-system]
 requires = ["poetry-core"]

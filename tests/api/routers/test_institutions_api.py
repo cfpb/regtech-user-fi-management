@@ -115,6 +115,7 @@ class TestInstitutionsApi:
 
     def test_add_domains_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)
+
         lei_path = "testLeiPath"
         res = client.post(
             f"/v1/institutions/{lei_path}/domains/", json=[{"domain": "testDomain"}]
@@ -129,6 +130,7 @@ class TestInstitutionsApi:
             FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")
         ]
         client = TestClient(app_fixture)
+
         lei_path = "testLeiPath"
         res = client.post(
             f"/v1/institutions/{lei_path}/domains/", json=[{"domain": "testDomain"}]
