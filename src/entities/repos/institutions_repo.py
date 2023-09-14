@@ -87,6 +87,6 @@ async def is_email_domain_allowed(session: AsyncSession, email: str) -> bool:
 
 
 def get_email_domain(email: str) -> str:
-    if email is not None:
+    if email:
         return email.split("@")[-1]
     return None

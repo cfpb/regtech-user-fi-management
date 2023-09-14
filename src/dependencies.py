@@ -1,19 +1,16 @@
-import os
 from http import HTTPStatus
 from typing import Annotated
-from pprint import pprint
 from fastapi import Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from entities.engine import get_session
 from entities.repos import institutions_repo as repo
 
-
-OPEN_ENDPOINTS = os.getenv(
-    "OPEN_ENDPOINT_PATHS",
-    "/v1/admin/me,/v1/institutions,/v1/institutions/domains/allowed",
-).split(",")
-OPEN_METHODS = os.getenv("OPEN_ENDPOINT_METHODS", "GET").split(",")
+OPEN_DOMAIN_REQUESTS = {
+    "/v1/admin/me": {"GET"},
+    "/v1/institutions": {"GET"},
+    "/v1/institutions/domains/allowed": {"GET"},
+}
 
 
 async def check_domain(
@@ -29,9 +26,10 @@ async def check_domain(
 
 
 def request_needs_domain_check(request: Request) -> bool:
+    path = request.scope["path"].rstrip("/")
     return not (
-        request.scope["path"].rstrip("/") in OPEN_ENDPOINTS
-        and request.scope["method"] in OPEN_METHODS
+        path in OPEN_DOMAIN_REQUESTS
+        and request.scope["method"] in OPEN_DOMAIN_REQUESTS[path]
     )
 
 
