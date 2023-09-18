@@ -141,4 +141,4 @@ class TestInstitutionsApi:
         client = TestClient(app_fixture)
         res = client.get(f"/v1/institutions/domains/allowed?domain={domain_to_check}")
         domain_allowed_mock.assert_called_once_with(ANY, domain_to_check)
-        assert res.json() == True
+        assert res.json() is True
