@@ -23,9 +23,7 @@ class FinancialInstitutionDao(AuditMixin, Base):
 class FinancialInstitutionDomainDao(AuditMixin, Base):
     __tablename__ = "financial_institution_domains"
     domain: Mapped[str] = mapped_column(index=True, primary_key=True)
-    lei: Mapped[str] = mapped_column(
-        ForeignKey("financial_institutions.lei"), index=True, primary_key=True
-    )
+    lei: Mapped[str] = mapped_column(ForeignKey("financial_institutions.lei"), index=True, primary_key=True)
     fi = relationship("FinancialInstitutionDao", back_populates="domains")
 
 

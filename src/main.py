@@ -19,19 +19,13 @@ app = FastAPI(dependencies=[Depends(check_domain)])
 
 
 @app.exception_handler(HTTPException)
-async def http_exception_handler(
-    request: Request, exception: HTTPException
-) -> JSONResponse:
+async def http_exception_handler(request: Request, exception: HTTPException) -> JSONResponse:
     log.error(exception, exc_info=True, stack_info=True)
-    return JSONResponse(
-        status_code=exception.status_code, content={"detail": exception.detail}
-    )
+    return JSONResponse(status_code=exception.status_code, content={"detail": exception.detail})
 
 
 @app.exception_handler(Exception)
-async def general_exception_handler(
-    request: Request, exception: Exception
-) -> JSONResponse:
+async def general_exception_handler(request: Request, exception: Exception) -> JSONResponse:
     log.error(exception, exc_info=True, stack_info=True)
     return JSONResponse(
         status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -39,13 +33,9 @@ async def general_exception_handler(
     )
 
 
-oauth2_scheme = OAuth2AuthorizationCodeBearer(
-    authorizationUrl=os.getenv("AUTH_URL"), tokenUrl=os.getenv("TOKEN_URL")
-)
+oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl=os.getenv("AUTH_URL"), tokenUrl=os.getenv("TOKEN_URL"))
 
-app.add_middleware(
-    AuthenticationMiddleware, backend=BearerTokenAuthBackend(oauth2_scheme)
-)
+app.add_middleware(AuthenticationMiddleware, backend=BearerTokenAuthBackend(oauth2_scheme))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

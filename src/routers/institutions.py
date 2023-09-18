@@ -16,9 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.authentication import requires
 
 
-async def set_db(
-    request: Request, session: Annotated[AsyncSession, Depends(get_session)]
-):
+async def set_db(request: Request, session: Annotated[AsyncSession, Depends(get_session)]):
     request.state.db_session = session
 
 
@@ -34,9 +32,7 @@ async def get_institutions(
     page: int = 0,
     count: int = 100,
 ):
-    return await repo.get_institutions(
-        request.state.db_session, leis, domain, page, count
-    )
+    return await repo.get_institutions(request.state.db_session, leis, domain, page, count)
 
 
 @router.post("/", response_model=Tuple[str, FinancialInstitutionDto])

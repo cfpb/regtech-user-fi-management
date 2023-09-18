@@ -42,17 +42,13 @@ class BearerTokenAuthBackend(AuthenticationBackend):
     def __init__(self, token_bearer: OAuth2AuthorizationCodeBearer) -> None:
         self.token_bearer = token_bearer
 
-    async def authenticate(
-        self, conn: HTTPConnection
-    ) -> Coroutine[Any, Any, Tuple[AuthCredentials, BaseUser] | None]:
+    async def authenticate(self, conn: HTTPConnection) -> Coroutine[Any, Any, Tuple[AuthCredentials, BaseUser] | None]:
         try:
             token = await self.token_bearer(conn)
             claims = oauth2_admin.get_claims(token)
             if claims is not None:
                 auths = (
-                    self.extract_nested(
-                        claims, "resource_access", "realm-management", "roles"
-                    )
+                    self.extract_nested(claims, "resource_access", "realm-management", "roles")
                     + self.extract_nested(claims, "resource_access", "account", "roles")
                     + ["authenticated"]
                 )
