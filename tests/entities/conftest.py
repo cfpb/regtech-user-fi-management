@@ -58,6 +58,4 @@ async def query_session(session_generator: async_scoped_session):
 
 @pytest.fixture(scope="function")
 def session_generator(engine: AsyncEngine):
-    return async_scoped_session(
-        async_sessionmaker(engine, expire_on_commit=False), current_task
-    )
+    return async_scoped_session(async_sessionmaker(engine, expire_on_commit=False), current_task)

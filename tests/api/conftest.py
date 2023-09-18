@@ -35,9 +35,7 @@ def authed_user_mock(auth_mock: Mock) -> Mock:
         "sub": "testuser123",
     }
     auth_mock.return_value = (
-        AuthCredentials(
-            ["manage-account", "query-groups", "manage-users", "authenticated"]
-        ),
+        AuthCredentials(["manage-account", "query-groups", "manage-users", "authenticated"]),
         AuthenticatedUser.from_claim(claims),
     )
     return auth_mock

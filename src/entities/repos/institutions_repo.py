@@ -14,7 +14,11 @@ from entities.models import (
 
 
 async def get_institutions(
-    session: AsyncSession, domain: str = "", page: int = 0, count: int = 100
+    session: AsyncSession,
+    leis: List[str] = None,
+    domain: str = "",
+    page: int = 0,
+    count: int = 100,
 ) -> List[FinancialInstitutionDao]:
     async with session.begin():
         stmt = (
@@ -23,7 +27,9 @@ async def get_institutions(
             .limit(count)
             .offset(page * count)
         )
-        if d := domain.strip():
+        if leis:
+            stmt = stmt.filter(FinancialInstitutionDao.lei.in_(leis))
+        elif d := domain.strip():
             search = "%{}%".format(d)
             stmt = stmt.join(
                 FinancialInstitutionDomainDao,
@@ -43,13 +49,9 @@ async def get_institution(session: AsyncSession, lei: str) -> FinancialInstituti
         return await session.scalar(stmt)
 
 
-async def upsert_institution(
-    session: AsyncSession, fi: FinancialInstitutionDto
-) -> FinancialInstitutionDao:
+async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto) -> FinancialInstitutionDao:
     async with session.begin():
-        stmt = select(FinancialInstitutionDao).filter(
-            FinancialInstitutionDao.lei == fi.lei
-        )
+        stmt = select(FinancialInstitutionDao).filter(FinancialInstitutionDao.lei == fi.lei)
         res = await session.execute(stmt)
         db_fi = res.scalar_one_or_none()
         if db_fi is None:
