@@ -63,7 +63,7 @@ class AuthenticatedUser(BaseUser, BaseModel):
     @classmethod
     def parse_institutions(cls, institutions: List[str] | None) -> List[str]:
         if institutions:
-            return list(map(lambda institution: institution.lstrip("/"), institutions))
+            return list(map(lambda institution: institution.split("/")[-1], institutions))
         else:
             return []
 
