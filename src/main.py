@@ -15,7 +15,7 @@ from oauth2 import BearerTokenAuthBackend
 
 log = logging.getLogger()
 
-app = FastAPI(dependencies=[Depends(check_domain)])
+app = FastAPI()
 
 
 @app.exception_handler(HTTPException)
