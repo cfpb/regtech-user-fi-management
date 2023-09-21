@@ -1,3 +1,4 @@
+import ast
 from http import HTTPStatus
 import logging
 import os
@@ -10,6 +11,28 @@ from fastapi import HTTPException
 from keycloak import KeycloakAdmin, KeycloakOpenIDConnection, exceptions as kce
 
 log = logging.getLogger(__name__)
+
+
+def get_jwt_opts(opts_string: str) -> Dict[str, bool | int]:
+    """
+    Parses out the opts_string into JWT options dictionary.
+
+    Args:
+        opts_string (str): comma separated key value pairs in the form of "key1:value1,key2:value2", valid options can be found here:
+        https://github.com/mpdavis/python-jose/blob/4b0701b46a8d00988afcc5168c2b3a1fd60d15d8/jose/jwt.py#L81
+
+    Returns:
+        dict: dictionary of options supported by jwt, mentioned in link above
+    """
+    jwt_opts = {}
+    pairs = opts_string.split(",")
+    for pair in pairs:
+        [key, value] = pair.split(":", 1)
+        jwt_opts[key] = ast.literal_eval(value)
+    return jwt_opts
+
+
+JWT_OPTS = get_jwt_opts(os.getenv("JWT_OPTS", ""))
 
 
 class OAuth2Admin:
@@ -30,11 +53,7 @@ class OAuth2Admin:
                 key=self._get_keys(),
                 issuer=os.getenv("KC_REALM_URL"),
                 audience=os.getenv("AUTH_CLIENT"),
-                options={
-                    "verify_at_hash": False,
-                    "verify_aud": False,
-                    "verify_iss": False,
-                },
+                options=JWT_OPTS,
             )
         except jose.ExpiredSignatureError:
             pass
