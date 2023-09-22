@@ -18,9 +18,10 @@ def get_jwt_opts(opts_string: str) -> Dict[str, bool | int]:
     Parses out the opts_string into JWT options dictionary.
 
     Args:
-        opts_string (str): comma separated key value pairs in the form of "key1:value1,key2:value2"
-        valid options can be found here:
-        https://github.com/mpdavis/python-jose/blob/4b0701b46a8d00988afcc5168c2b3a1fd60d15d8/jose/jwt.py#L81
+        opts_string (str): comma separated key value pairs in the form of "key1:True,key2:False"
+            all options are boolean, with exception of 'leeway' being int
+            valid options can be found here:
+            https://github.com/mpdavis/python-jose/blob/4b0701b46a8d00988afcc5168c2b3a1fd60d15d8/jose/jwt.py#L81
 
     Returns:
         dict: dictionary of options supported by jwt, mentioned in link above
