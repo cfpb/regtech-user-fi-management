@@ -26,10 +26,11 @@ def get_jwt_opts(opts_string: str) -> Dict[str, bool | int]:
         dict: dictionary of options supported by jwt, mentioned in link above
     """
     jwt_opts = {}
-    pairs = opts_string.split(",")
-    for pair in pairs:
-        [key, value] = pair.split(":", 1)
-        jwt_opts[key] = ast.literal_eval(value)
+    if opts_string:
+        pairs = opts_string.split(",")
+        for pair in pairs:
+            [key, value] = pair.split(":", 1)
+            jwt_opts[key] = ast.literal_eval(value)
     return jwt_opts
 
 
