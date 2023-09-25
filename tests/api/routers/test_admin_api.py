@@ -27,7 +27,7 @@ class TestAdminApi:
             "preferred_username": "test_user",
             "email": "test@local.host",
             "sub": "testuser123",
-            "institutions": ["/TEST1LEI", "/TEST2LEI"],
+            "institutions": ["/TEST1LEI", "/TEST2LEI/TEST2CHILDLEI"],
         }
         auth_mock.return_value = (
             AuthCredentials(["authenticated"]),
@@ -36,7 +36,7 @@ class TestAdminApi:
         client = TestClient(app_fixture)
         res = client.get("/v1/admin/me")
         assert res.status_code == 200
-        assert res.json().get("institutions") == ["TEST1LEI", "TEST2LEI"]
+        assert res.json().get("institutions") == ["TEST1LEI", "TEST2CHILDLEI"]
 
     def test_update_me_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)

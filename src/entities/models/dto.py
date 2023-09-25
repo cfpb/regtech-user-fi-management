@@ -62,8 +62,20 @@ class AuthenticatedUser(BaseUser, BaseModel):
 
     @classmethod
     def parse_institutions(cls, institutions: List[str] | None) -> List[str]:
+        """
+        Parse out the list of institutions returned by Keycloak
+
+        Args:
+            institutions(List[str]): list of full institution paths provided by keycloak,
+            it is possible to have nested paths, though we may not use the feature.
+            e.g. ["/ROOT_INSTITUTION/CHILD_INSTITUTION/GRAND_CHILD_INSTITUTION"]
+
+        Returns:
+            List[str]: List of cleaned up institutions.
+            e.g. ["GRAND_CHILD_INSTITUTION"]
+        """
         if institutions:
-            return list(map(lambda institution: institution.split("/")[-1], institutions))
+            return [institution.split("/")[-1] for institution in institutions]
         else:
             return []
 
