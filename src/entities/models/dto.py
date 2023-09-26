@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any, Set
 from pydantic import BaseModel
 
 
@@ -37,3 +37,12 @@ class DeniedDomainDto(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserProfile(BaseModel):
+    firstName: str
+    lastName: str
+    leis: Set[str] = None
+
+    def get_user(self) -> Dict[str, Any]:
+        return {"firstName": self.firstName, "lastName": self.lastName}
