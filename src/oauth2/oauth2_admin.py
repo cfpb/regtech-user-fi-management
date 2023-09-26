@@ -50,9 +50,7 @@ class OAuth2Admin:
             self._admin.update_user(user_id, payload)
         except kce.KeycloakError as e:
             log.exception("Failed to update user: %s", user_id, extra=payload)
-            raise HTTPException(
-                status_code=e.response_code, detail="Failed to update user"
-            )
+            raise HTTPException(status_code=e.response_code, detail="Failed to update user")
 
     def upsert_group(self, lei: str, name: str) -> str:
         try:
@@ -65,9 +63,7 @@ class OAuth2Admin:
                 return group["id"]
         except kce.KeycloakError as e:
             log.exception("Failed to upsert group, lei: %s, name: %s", lei, name)
-            raise HTTPException(
-                status_code=e.response_code, detail="Failed to upsert group"
-            )
+            raise HTTPException(status_code=e.response_code, detail="Failed to upsert group")
 
     def get_group(self, lei: str) -> Dict[str, Any] | None:
         try:
@@ -80,9 +76,7 @@ class OAuth2Admin:
             self._admin.group_user_add(user_id, group_id)
         except kce.KeycloakError as e:
             log.exception("Failed to associate user %s to group %s", user_id, group_id)
-            raise HTTPException(
-                status_code=e.response_code, detail="Failed to associate user to group"
-            )
+            raise HTTPException(status_code=e.response_code, detail="Failed to associate user to group")
 
     def associate_to_lei(self, user_id: str, lei: str) -> None:
         group = self.get_group(lei)

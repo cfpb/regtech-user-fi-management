@@ -11,9 +11,7 @@ class Router(APIRouter):
         if path.endswith("/"):
             path = path[:-1]
 
-        add_path = super().api_route(
-            path, include_in_schema=include_in_schema, **kwargs
-        )
+        add_path = super().api_route(path, include_in_schema=include_in_schema, **kwargs)
 
         add_alt_path = super().api_route(f"{path}/", include_in_schema=False, **kwargs)
 

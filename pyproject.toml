@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["lchen-2101 <73617864+lchen-2101@users.noreply.github.com>"]
 readme = "README.md"
-packages = [{include = "regtech-user-fi-management"}]
+packages = [{ include = "regtech-user-fi-management" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -30,22 +30,24 @@ pytest-mock = "^3.11.1"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-pythonpath = [
-  "src"
-]
+pythonpath = ["src"]
 addopts = [
-    "--cov-report=term-missing",
-    "--cov-branch",
-    "--cov-report=xml",
-    "--cov-report=term",
-    "--cov=src",
-    "-vv",
-    "--strict-markers",
-    "-rfE",
+  "--cov-report=term-missing",
+  "--cov-branch",
+  "--cov-report=xml",
+  "--cov-report=term",
+  "--cov=src",
+  "-vv",
+  "--strict-markers",
+  "-rfE",
 ]
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+line-length = 120
 
 [tool.coverage.run]
 relative_files = true

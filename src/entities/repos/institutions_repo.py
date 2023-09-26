@@ -49,13 +49,9 @@ async def get_institution(session: AsyncSession, lei: str) -> FinancialInstituti
         return await session.scalar(stmt)
 
 
-async def upsert_institution(
-    session: AsyncSession, fi: FinancialInstitutionDto
-) -> FinancialInstitutionDao:
+async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto) -> FinancialInstitutionDao:
     async with session.begin():
-        stmt = select(FinancialInstitutionDao).filter(
-            FinancialInstitutionDao.lei == fi.lei
-        )
+        stmt = select(FinancialInstitutionDao).filter(FinancialInstitutionDao.lei == fi.lei)
         res = await session.execute(stmt)
         db_fi = res.scalar_one_or_none()
         if db_fi is None:
