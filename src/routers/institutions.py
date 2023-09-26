@@ -2,7 +2,7 @@ from fastapi import Depends, Request, HTTPException
 from http import HTTPStatus
 from oauth2 import oauth2_admin
 from util import Router
-from dependencies import parse_leis
+from dependencies import check_domain, parse_leis
 from typing import Annotated, List, Tuple
 from entities.engine import get_session
 from entities.repos import institutions_repo as repo
@@ -35,7 +35,7 @@ async def get_institutions(
     return await repo.get_institutions(request.state.db_session, leis, domain, page, count)
 
 
-@router.post("/", response_model=Tuple[str, FinancialInstitutionDto])
+@router.post("/", response_model=Tuple[str, FinancialInstitutionDto], dependencies=[Depends(check_domain)])
 @requires(["query-groups", "manage-users"])
 async def create_institution(
     request: Request,
@@ -58,7 +58,7 @@ async def get_institution(
     return res
 
 
-@router.post("/{lei}/domains/", response_model=List[FinancialInsitutionDomainDto])
+@router.post("/{lei}/domains/", response_model=List[FinancialInsitutionDomainDto], dependencies=[Depends(check_domain)])
 @requires(["query-groups", "manage-users"])
 async def add_domains(
     request: Request,

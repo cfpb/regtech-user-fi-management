@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, ANY
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -81,6 +81,15 @@ class TestInstitutionsApi:
         assert res.status_code == 200
         assert res.json().get("name") == "Test Bank 123"
 
+    def test_get_institution_not_exists(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
+        get_institution_mock = mocker.patch("entities.repos.institutions_repo.get_institution")
+        get_institution_mock.return_value = None
+        client = TestClient(app_fixture)
+        lei_path = "testLeiPath"
+        res = client.get(f"/v1/institutions/{lei_path}")
+        get_institution_mock.assert_called_once_with(ANY, lei_path)
+        assert res.status_code == 404
+
     def test_add_domains_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)
 
@@ -124,3 +133,12 @@ class TestInstitutionsApi:
         res = client.post(f"/v1/institutions/{lei_path}/domains/", json=[{"domain": "testDomain"}])
         assert res.status_code == 403
         assert "domain denied" in res.json()["detail"]
+
+    def test_check_domain_allowed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
+        domain_allowed_mock = mocker.patch("entities.repos.institutions_repo.is_email_domain_allowed")
+        domain_allowed_mock.return_value = True
+        domain_to_check = "local.host"
+        client = TestClient(app_fixture)
+        res = client.get(f"/v1/institutions/domains/allowed?domain={domain_to_check}")
+        domain_allowed_mock.assert_called_once_with(ANY, domain_to_check)
+        assert res.json() is True

@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials
 
-from oauth2.oauth2_backend import AuthenticatedUser
+from entities.models import AuthenticatedUser
 
 
 class TestAdminApi:
@@ -19,6 +19,24 @@ class TestAdminApi:
         res = client.get("/v1/admin/me")
         assert res.status_code == 200
         assert res.json().get("name") == "test"
+        assert res.json().get("institutions") == []
+
+    def test_get_me_authed_with_institutions(self, app_fixture: FastAPI, auth_mock: Mock):
+        claims = {
+            "name": "test",
+            "preferred_username": "test_user",
+            "email": "test@local.host",
+            "sub": "testuser123",
+            "institutions": ["/TEST1LEI", "/TEST2LEI/TEST2CHILDLEI"],
+        }
+        auth_mock.return_value = (
+            AuthCredentials(["authenticated"]),
+            AuthenticatedUser.from_claim(claims),
+        )
+        client = TestClient(app_fixture)
+        res = client.get("/v1/admin/me")
+        assert res.status_code == 200
+        assert res.json().get("institutions") == ["TEST1LEI", "TEST2CHILDLEI"]
 
     def test_update_me_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)

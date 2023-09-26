@@ -2,12 +2,11 @@ import os
 import logging
 import env  # noqa: F401
 from http import HTTPStatus
-from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.authentication import AuthenticationMiddleware
-from dependencies import check_domain
 
 from routers import admin_router, institutions_router
 
@@ -15,7 +14,7 @@ from oauth2 import BearerTokenAuthBackend
 
 log = logging.getLogger()
 
-app = FastAPI(dependencies=[Depends(check_domain)])
+app = FastAPI()
 
 
 @app.exception_handler(HTTPException)
