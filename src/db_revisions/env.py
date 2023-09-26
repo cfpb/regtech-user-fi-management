@@ -38,14 +38,15 @@ if ENV == "LOCAL":
 else:
     load_dotenv()
 
-INST_DB_USER = os.environ.get('INST_DB_USER')
-INST_DB_PWD = os.environ.get('INST_DB_PWD')
-INST_DB_HOST = os.environ.get('INST_DB_HOST')
-INST_DB_NAME = os.environ.get('INST_DB_NAME')
-INST_CONN = f'postgresql://{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}'
-config.set_main_option('sqlalchemy.url', INST_CONN)
+INST_DB_USER = os.environ.get("INST_DB_USER")
+INST_DB_PWD = os.environ.get("INST_DB_PWD")
+INST_DB_HOST = os.environ.get("INST_DB_HOST")
+INST_DB_NAME = os.environ.get("INST_DB_NAME")
+INST_CONN = f"postgresql://{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
+config.set_main_option("sqlalchemy.url", INST_CONN)
 
 # end specific SBL configuration
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -85,9 +86,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
