@@ -1,4 +1,4 @@
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
