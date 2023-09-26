@@ -22,7 +22,7 @@ class TestAdminApi:
 
     def test_update_me_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)
-        res = client.put("/v1/admin/me", json={"firstName": "testFirst", "lastName": "testLast"})
+        res = client.put("/v1/admin/me", json={"firstName": "testFirst", "lastName": "testLast", "leis": ["testLei"]})
         assert res.status_code == 403
 
     def test_update_me_no_permission(self, app_fixture: FastAPI, auth_mock: Mock):
@@ -37,10 +37,22 @@ class TestAdminApi:
             AuthenticatedUser.from_claim(claims),
         )
         client = TestClient(app_fixture)
-        res = client.put("/v1/admin/me", json={"firstName": "testFirst", "lastName": "testLast"})
+        res = client.put("/v1/admin/me", json={"firstName": "testFirst", "lastName": "testLast", "leis": ["testLei"]})
         assert res.status_code == 403
 
     def test_update_me(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
+        update_user_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.update_user")
+        associate_lei_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.associate_to_lei_set")
+        update_user_mock.return_value = None
+        associate_lei_mock.return_value = None
+        client = TestClient(app_fixture)
+        data = {"firstName": "testFirst", "lastName": "testLast", "leis": ["testLei1", "testLei2"]}
+        res = client.put("/v1/admin/me", json=data)
+        update_user_mock.assert_called_once_with("testuser123", {"firstName": "testFirst", "lastName": "testLast"})
+        associate_lei_mock.assert_called_once_with("testuser123", {"testLei1", "testLei2"})
+        assert res.status_code == 202
+
+    def test_update_me_no_lei(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         update_user_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.update_user")
         update_user_mock.return_value = None
         client = TestClient(app_fixture)
@@ -50,14 +62,10 @@ class TestAdminApi:
         assert res.status_code == 202
 
     def test_associate_institutions(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
-        associate_lei_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.associate_to_lei")
+        associate_lei_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.associate_to_lei_set")
         associate_lei_mock.return_value = None
         client = TestClient(app_fixture)
         data = ["testlei1", "testlei2"]
         res = client.put("/v1/admin/me/institutions", json=data)
-        expected_calls = [
-            call("testuser123", "testlei1"),
-            call("testuser123", "testlei2"),
-        ]
-        associate_lei_mock.assert_has_calls(expected_calls, any_order=True)
+        associate_lei_mock.assert_called_once_with("testuser123", {"testlei1", "testlei2"})
         assert res.status_code == 202
