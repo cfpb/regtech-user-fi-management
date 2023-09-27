@@ -14,15 +14,9 @@ class TestInstitutionsApi:
         res = client.get("/v1/institutions/")
         assert res.status_code == 403
 
-    def test_get_institutions_authed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
-        get_institutions_mock = mocker.patch("entities.repos.institutions_repo.get_institutions")
-        get_institutions_mock.return_value = [
-            FinancialInstitutionDao(
-                name="Test Bank 123",
-                lei="TESTBANK123",
-                domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
-            )
-        ]
+    def test_get_institutions_authed(
+        self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock, get_institutions_mock: Mock
+    ):
         client = TestClient(app_fixture)
         res = client.get("/v1/institutions/")
         assert res.status_code == 200
@@ -135,10 +129,46 @@ class TestInstitutionsApi:
         assert "domain denied" in res.json()["detail"]
 
     def test_check_domain_allowed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
-        domain_allowed_mock = mocker.patch("entities.repos.institutions_repo.is_email_domain_allowed")
+        domain_allowed_mock = mocker.patch("entities.repos.institutions_repo.is_domain_allowed")
         domain_allowed_mock.return_value = True
         domain_to_check = "local.host"
         client = TestClient(app_fixture)
         res = client.get(f"/v1/institutions/domains/allowed?domain={domain_to_check}")
         domain_allowed_mock.assert_called_once_with(ANY, domain_to_check)
         assert res.json() is True
+
+    def test_get_associated_institutions(
+        self, mocker: MockerFixture, app_fixture: FastAPI, auth_mock: Mock, get_institutions_mock: Mock
+    ):
+        get_institutions_mock.return_value = [
+            FinancialInstitutionDao(
+                name="Test Bank 123",
+                lei="TESTBANK123",
+                domains=[FinancialInstitutionDomainDao(domain="test123.bank", lei="TESTBANK123")],
+            ),
+            FinancialInstitutionDao(
+                name="Test Bank 234",
+                lei="TESTBANK234",
+                domains=[FinancialInstitutionDomainDao(domain="test234.bank", lei="TESTBANK234")],
+            ),
+        ]
+        claims = {
+            "name": "test",
+            "preferred_username": "test_user",
+            "email": "test@test234.bank",
+            "sub": "testuser123",
+            "institutions": ["/TESTBANK123", "/TESTBANK234"],
+        }
+        auth_mock.return_value = (
+            AuthCredentials(["authenticated"]),
+            AuthenticatedUser.from_claim(claims),
+        )
+        client = TestClient(app_fixture)
+        res = client.get("/v1/institutions/associated")
+        assert res.status_code == 200
+        get_institutions_mock.assert_called_once_with(ANY, ["TESTBANK123", "TESTBANK234"])
+        data = res.json()
+        inst1 = next(filter(lambda inst: inst["lei"] == "TESTBANK123", data))
+        inst2 = next(filter(lambda inst: inst["lei"] == "TESTBANK234", data))
+        assert inst1["approved"] is False
+        assert inst2["approved"] is True

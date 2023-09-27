@@ -14,12 +14,12 @@ from entities.repos import institutions_repo as repo
 async def check_domain(request: Request, session: Annotated[AsyncSession, Depends(get_session)]) -> None:
     if not request.user.is_authenticated:
         raise HTTPException(status_code=HTTPStatus.FORBIDDEN)
-    if await email_domain_denied(session, request.user.email):
+    if await email_domain_denied(session, get_email_domain(request.user.email)):
         raise HTTPException(status_code=HTTPStatus.FORBIDDEN, detail="email domain denied")
 
 
 async def email_domain_denied(session: AsyncSession, email: str) -> bool:
-    return not await repo.is_email_domain_allowed(session, email)
+    return not await repo.is_domain_allowed(session, email)
 
 
 def parse_leis(leis: List[str] = Query(None)) -> Optional[List]:
@@ -35,3 +35,9 @@ def parse_leis(leis: List[str] = Query(None)) -> Optional[List]:
         return list(chain.from_iterable([x.split(",") for x in leis]))
     else:
         return None
+
+
+def get_email_domain(email: str) -> str:
+    if email:
+        return email.split("@")[-1]
+    return None

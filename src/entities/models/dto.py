@@ -41,6 +41,10 @@ class DeniedDomainDto(BaseModel):
         orm_mode = True
 
 
+class FinanicialInstitutionAssociationDto(FinancialInstitutionDto):
+    approved: bool
+
+
 class AuthenticatedUser(BaseUser, BaseModel):
     claims: Dict[str, Any]
     name: str
