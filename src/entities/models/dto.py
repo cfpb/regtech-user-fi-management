@@ -42,9 +42,9 @@ class DeniedDomainDto(BaseModel):
 
 
 class UserProfile(BaseModel):
-    first_name: str = Field(alias='firstName')
-    last_name: str = Field(alias='lastName')
-    leis: Optional[Set[str]] = Field(alias='leis')
+    first_name: str = Field(alias="firstName")
+    last_name: str = Field(alias="lastName")
+    leis: Optional[Set[str]] = Field(alias="leis")
 
     class Config:
         alias_generator = to_camel

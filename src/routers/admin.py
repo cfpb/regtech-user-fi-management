@@ -21,7 +21,7 @@ async def get_me(request: Request):
 @router.put("/me/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])
 @requires("manage-account")
 async def update_me(request: Request, user: UserProfile):
-    oauth2_admin.update_user(request.user.id, user.dict(by_alias=True, exclude={'leis'}))
+    oauth2_admin.update_user(request.user.id, user.dict(by_alias=True, exclude={"leis"}))
     if user.leis:
         oauth2_admin.associate_to_leis(request.user.id, user.leis)
 
