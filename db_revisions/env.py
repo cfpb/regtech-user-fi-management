@@ -49,7 +49,7 @@ config.set_main_option("sqlalchemy.url", INST_CONN)
 
 
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
+    """Run migrations in 'offline' mode. This generates the SQL script without executing on the database.
 
     This configures the context with just a URL
     and not an Engine, though an Engine is acceptable
