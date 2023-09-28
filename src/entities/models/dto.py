@@ -1,5 +1,6 @@
-from typing import List, Dict, Any, Set
-from pydantic import BaseModel
+from typing import List, Dict, Any, Set, Optional
+from pydantic import BaseModel, Field
+from pydantic.utils import to_camel
 from starlette.authentication import BaseUser
 
 
@@ -41,12 +42,13 @@ class DeniedDomainDto(BaseModel):
 
 
 class UserProfile(BaseModel):
-    firstName: str
-    lastName: str
-    leis: Set[str] = None
+    first_name: str = Field(alias='firstName')
+    last_name: str = Field(alias='lastName')
+    leis: Optional[Set[str]] = Field(alias='leis')
 
-    def get_user(self) -> Dict[str, Any]:
-        return {"firstName": self.firstName, "lastName": self.lastName}
+    class Config:
+        alias_generator = to_camel
+        # populate_by_name = True
 
 
 class AuthenticatedUser(BaseUser, BaseModel):

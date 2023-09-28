@@ -88,7 +88,7 @@ class OAuth2Admin:
                 detail="No institution found for given LEI",
             )
 
-    def associate_to_lei_set(self, user_id, leis: Set[str]):
+    def associate_to_leis(self, user_id, leis: Set[str]):
         for lei in leis:
             self.associate_to_lei(user_id, lei)
 

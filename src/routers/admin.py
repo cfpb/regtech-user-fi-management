@@ -21,12 +21,12 @@ async def get_me(request: Request):
 @router.put("/me/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])
 @requires("manage-account")
 async def update_me(request: Request, user: UserProfile):
-    oauth2_admin.update_user(request.user.id, user.get_user())
+    oauth2_admin.update_user(request.user.id, user.dict(by_alias=True, exclude={'leis'}))
     if user.leis:
-        oauth2_admin.associate_to_lei_set(request.user.id, user.leis)
+        oauth2_admin.associate_to_leis(request.user.id, user.leis)
 
 
 @router.put("/me/institutions/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])
 @requires("manage-account")
 async def associate_lei(request: Request, leis: Set[str]):
-    oauth2_admin.associate_to_lei_set(request.user.id, leis)
+    oauth2_admin.associate_to_leis(request.user.id, leis)
