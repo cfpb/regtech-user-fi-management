@@ -14,13 +14,13 @@ router = Router()
 
 @router.get("/me/", response_model=AuthenticatedUser)
 @requires("authenticated")
-async def get_me(request: Request):
+def get_me(request: Request):
     return request.user
 
 
 @router.put("/me/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])
 @requires("manage-account")
-async def update_me(request: Request, user: UserProfile):
+def update_me(request: Request, user: UserProfile):
     oauth2_admin.update_user(request.user.id, user.dict(by_alias=True, exclude={"leis"}))
     if user.leis:
         oauth2_admin.associate_to_leis(request.user.id, user.leis)
@@ -28,5 +28,5 @@ async def update_me(request: Request, user: UserProfile):
 
 @router.put("/me/institutions/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])
 @requires("manage-account")
-async def associate_lei(request: Request, leis: Set[str]):
+def associate_lei(request: Request, leis: Set[str]):
     oauth2_admin.associate_to_leis(request.user.id, leis)
