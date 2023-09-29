@@ -26,7 +26,7 @@ async def test_domain_allowed(mocker: MockerFixture, mock_session: AsyncSession)
     domain_allowed_mock.return_value = True
     from dependencies import email_domain_denied
 
-    denied_domain = "allowed.domain"
+    allowed_domain = "allowed.domain"
 
-    assert await email_domain_denied(mock_session, denied_domain) is False
-    domain_allowed_mock.assert_called_once_with(mock_session, denied_domain)
+    assert await email_domain_denied(mock_session, allowed_domain) is False
+    domain_allowed_mock.assert_called_once_with(mock_session, allowed_domain)
