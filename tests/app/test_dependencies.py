@@ -1,4 +1,3 @@
-from unittest.mock import Mock
 from pytest_mock import MockerFixture
 from sqlalchemy.ext.asyncio import AsyncSession
 
