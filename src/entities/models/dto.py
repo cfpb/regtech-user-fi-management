@@ -50,6 +50,10 @@ class UserProfile(BaseModel):
         alias_generator = to_camel
 
 
+class FinanicialInstitutionAssociationDto(FinancialInstitutionDto):
+    approved: bool
+
+
 class AuthenticatedUser(BaseUser, BaseModel):
     claims: Dict[str, Any]
     name: str

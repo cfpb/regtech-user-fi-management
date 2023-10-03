@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials, UnauthenticatedUser
 
-from entities.models import AuthenticatedUser
+from entities.models import AuthenticatedUser, FinancialInstitutionDao, FinancialInstitutionDomainDao
 
 
 @pytest.fixture
@@ -45,3 +45,16 @@ def authed_user_mock(auth_mock: Mock) -> Mock:
 def unauthed_user_mock(auth_mock: Mock) -> Mock:
     auth_mock.return_value = (AuthCredentials("unauthenticated"), UnauthenticatedUser())
     return auth_mock
+
+
+@pytest.fixture
+def get_institutions_mock(mocker: MockerFixture) -> Mock:
+    mock = mocker.patch("entities.repos.institutions_repo.get_institutions")
+    mock.return_value = [
+        FinancialInstitutionDao(
+            name="Test Bank 123",
+            lei="TESTBANK123",
+            domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
+        )
+    ]
+    return mock

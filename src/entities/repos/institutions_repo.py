@@ -78,17 +78,10 @@ async def add_domains(
         return daos
 
 
-async def is_email_domain_allowed(session: AsyncSession, email: str) -> bool:
-    domain = get_email_domain(email)
+async def is_domain_allowed(session: AsyncSession, domain: str) -> bool:
     if domain:
         async with session:
             stmt = select(func.count()).filter(DeniedDomainDao.domain == domain)
             res = await session.scalar(stmt)
             return res == 0
     return False
-
-
-def get_email_domain(email: str) -> str:
-    if email:
-        return email.split("@")[-1]
-    return None

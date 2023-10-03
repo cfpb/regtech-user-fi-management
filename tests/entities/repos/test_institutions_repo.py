@@ -79,5 +79,5 @@ class TestInstitutionsRepo:
         denied_domain = DeniedDomainDao(domain="yahoo.com")
         transaction_session.add(denied_domain)
         await transaction_session.commit()
-        assert await repo.is_email_domain_allowed(transaction_session, "test@yahoo.com") is False
-        assert await repo.is_email_domain_allowed(transaction_session, "test@gmail.com") is True
+        assert await repo.is_domain_allowed(transaction_session, "yahoo.com") is False
+        assert await repo.is_domain_allowed(transaction_session, "gmail.com") is True
