@@ -1,0 +1,15 @@
+Alembic [link](https://alembic.sqlalchemy.org/) is the tool to maintain SBL database upgrades and downgrades.
+Each of upgrade and downgrade instructions are grouped into different files that can be found under `versions` folder.
+Alembic is using table named `alembic_version` in database to keep track the latest executed alembic_version
+
+To create new database update:
+- change current directory to root.
+- run `poetry run alembic revision -m "<your new ascript name>"` to generate empty revision file.
+- update new revision file (under `versions` folder) with upgrade and downgrade instructions.
+
+To execute alembic: `poetry run alembic upgrade <version>` or `poetry run alembix downgrade <version>`
+For more details: [link] (https://alembic.sqlalchemy.org/en/latest/tutorial.html)
+
+
+
+

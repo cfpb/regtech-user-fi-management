@@ -1,10 +1,12 @@
 from http import HTTPStatus
 from typing import Dict, Any, Set
-from fastapi import Request
+from fastapi import Depends, Request
 from starlette.authentication import requires
+from dependencies import check_domain
 from util import Router
 
-from oauth2 import AuthenticatedUser, oauth2_admin
+from entities.models import AuthenticatedUser
+from oauth2 import oauth2_admin
 
 router = Router()
 
@@ -15,20 +17,13 @@ async def get_me(request: Request):
     return request.user
 
 
-@router.put("/me/", status_code=HTTPStatus.ACCEPTED)
+@router.put("/me/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])
 @requires("manage-account")
 async def update_me(request: Request, user: Dict[str, Any]):
     oauth2_admin.update_user(request.user.id, user)
 
 
-@router.put("/me/groups/", status_code=HTTPStatus.ACCEPTED)
-@requires("manage-account")
-async def associate_group(request: Request, groups: Set[str]):
-    for group in groups:
-        oauth2_admin.associate_to_group(request.user.id, group)
-
-
-@router.put("/me/institutions/", status_code=HTTPStatus.ACCEPTED)
+@router.put("/me/institutions/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])
 @requires("manage-account")
 async def associate_lei(request: Request, leis: Set[str]):
     for lei in leis:

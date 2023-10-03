@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import DeclarativeBase
@@ -17,14 +18,16 @@ class FinancialInstitutionDao(AuditMixin, Base):
     __tablename__ = "financial_institutions"
     lei: Mapped[str] = mapped_column(unique=True, index=True, primary_key=True)
     name: Mapped[str] = mapped_column(index=True)
-    domains = relationship("FinancialInstitutionDomainDao", back_populates="fi")
+    domains: Mapped[List["FinancialInstitutionDomainDao"]] = relationship(
+        "FinancialInstitutionDomainDao", back_populates="fi"
+    )
 
 
 class FinancialInstitutionDomainDao(AuditMixin, Base):
     __tablename__ = "financial_institution_domains"
     domain: Mapped[str] = mapped_column(index=True, primary_key=True)
     lei: Mapped[str] = mapped_column(ForeignKey("financial_institutions.lei"), index=True, primary_key=True)
-    fi = relationship("FinancialInstitutionDao", back_populates="domains")
+    fi: Mapped["FinancialInstitutionDao"] = relationship("FinancialInstitutionDao", back_populates="domains")
 
 
 class DeniedDomainDao(AuditMixin, Base):

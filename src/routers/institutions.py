@@ -2,7 +2,7 @@ from fastapi import Depends, Request, HTTPException
 from http import HTTPStatus
 from oauth2 import oauth2_admin
 from util import Router
-from dependencies import parse_leis
+from dependencies import check_domain, parse_leis, get_email_domain
 from typing import Annotated, List, Tuple
 from entities.engine import get_session
 from entities.repos import institutions_repo as repo
@@ -11,6 +11,8 @@ from entities.models import (
     FinancialInstitutionWithDomainsDto,
     FinancialInsitutionDomainDto,
     FinancialInsitutionDomainCreate,
+    FinanicialInstitutionAssociationDto,
+    AuthenticatedUser,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.authentication import requires
@@ -35,7 +37,7 @@ async def get_institutions(
     return await repo.get_institutions(request.state.db_session, leis, domain, page, count)
 
 
-@router.post("/", response_model=Tuple[str, FinancialInstitutionDto])
+@router.post("/", response_model=Tuple[str, FinancialInstitutionDto], dependencies=[Depends(check_domain)])
 @requires(["query-groups", "manage-users"])
 async def create_institution(
     request: Request,
@@ -44,6 +46,22 @@ async def create_institution(
     db_fi = await repo.upsert_institution(request.state.db_session, fi)
     kc_id = oauth2_admin.upsert_group(fi.lei, fi.name)
     return kc_id, db_fi
+
+
+@router.get("/associated", response_model=List[FinanicialInstitutionAssociationDto])
+@requires("authenticated")
+async def get_associated_institutions(request: Request):
+    user: AuthenticatedUser = request.user
+    email_domain = get_email_domain(user.email)
+    associated_institutions = await repo.get_institutions(request.state.db_session, user.institutions)
+    return [
+        FinanicialInstitutionAssociationDto(
+            name=institution.name,
+            lei=institution.lei,
+            approved=email_domain in [inst_domain.domain for inst_domain in institution.domains],
+        )
+        for institution in associated_institutions
+    ]
 
 
 @router.get("/{lei}", response_model=FinancialInstitutionWithDomainsDto)
@@ -58,7 +76,7 @@ async def get_institution(
     return res
 
 
-@router.post("/{lei}/domains/", response_model=List[FinancialInsitutionDomainDto])
+@router.post("/{lei}/domains/", response_model=List[FinancialInsitutionDomainDto], dependencies=[Depends(check_domain)])
 @requires(["query-groups", "manage-users"])
 async def add_domains(
     request: Request,
@@ -70,4 +88,4 @@ async def add_domains(
 
 @router.get("/domains/allowed", response_model=bool)
 async def is_domain_allowed(request: Request, domain: str):
-    return await repo.is_email_domain_allowed(request.state.db_session, domain)
+    return await repo.is_domain_allowed(request.state.db_session, domain)
