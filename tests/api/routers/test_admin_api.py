@@ -40,7 +40,7 @@ class TestAdminApi:
 
     def test_update_me_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)
-        res = client.put("/v1/admin/me", json={"firstName": "testFirst", "lastName": "testLast", "leis": ["testLei"]})
+        res = client.put("/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast", "leis": ["testLei"]})
         assert res.status_code == 403
 
     def test_update_me_no_permission(self, app_fixture: FastAPI, auth_mock: Mock):
@@ -55,7 +55,7 @@ class TestAdminApi:
             AuthenticatedUser.from_claim(claims),
         )
         client = TestClient(app_fixture)
-        res = client.put("/v1/admin/me", json={"firstName": "testFirst", "lastName": "testLast", "leis": ["testLei"]})
+        res = client.put("/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast", "leis": ["testLei"]})
         assert res.status_code == 403
 
     def test_update_me(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
@@ -64,7 +64,7 @@ class TestAdminApi:
         update_user_mock.return_value = None
         associate_lei_mock.return_value = None
         client = TestClient(app_fixture)
-        data = {"firstName": "testFirst", "lastName": "testLast", "leis": ["testLei1", "testLei2"]}
+        data = {"first_name": "testFirst", "last_name": "testLast", "leis": ["testLei1", "testLei2"]}
         res = client.put("/v1/admin/me", json=data)
         update_user_mock.assert_called_once_with("testuser123", {"firstName": "testFirst", "lastName": "testLast"})
         associate_lei_mock.assert_called_once_with("testuser123", {"testLei1", "testLei2"})
@@ -74,9 +74,8 @@ class TestAdminApi:
         update_user_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.update_user")
         update_user_mock.return_value = None
         client = TestClient(app_fixture)
-        data = {"firstName": "testFirst", "lastName": "testLast"}
-        res = client.put("/v1/admin/me", json=data)
-        update_user_mock.assert_called_once_with("testuser123", data)
+        res = client.put("/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast"})
+        update_user_mock.assert_called_once_with("testuser123", {"firstName": "testFirst", "lastName": "testLast"})
         assert res.status_code == 202
 
     def test_associate_institutions(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):

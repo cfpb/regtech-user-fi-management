@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Set, Optional
-from pydantic import BaseModel, Field
-from pydantic.utils import to_camel
+from pydantic import BaseModel
+from pydantic.utils import to_lower_camel
 from starlette.authentication import BaseUser
 
 
@@ -42,12 +42,13 @@ class DeniedDomainDto(BaseModel):
 
 
 class UserProfile(BaseModel):
-    first_name: str = Field(alias="firstName")
-    last_name: str = Field(alias="lastName")
-    leis: Optional[Set[str]] = Field(alias="leis")
+    first_name: str
+    last_name: str
+    leis: Optional[Set[str]]
 
     class Config:
-        alias_generator = to_camel
+        alias_generator = to_lower_camel
+        allow_population_by_field_name = True
 
 
 class FinanicialInstitutionAssociationDto(FinancialInstitutionDto):
