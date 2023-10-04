@@ -72,10 +72,12 @@ class TestAdminApi:
 
     def test_update_me_no_lei(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         update_user_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.update_user")
+        associate_lei_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.associate_to_leis")
         update_user_mock.return_value = None
         client = TestClient(app_fixture)
         res = client.put("/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast"})
         update_user_mock.assert_called_once_with("testuser123", {"firstName": "testFirst", "lastName": "testLast"})
+        associate_lei_mock.assert_not_called()
         assert res.status_code == 202
 
     def test_associate_institutions(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
