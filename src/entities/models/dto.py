@@ -1,6 +1,5 @@
 from typing import List, Dict, Any, Set, Optional
 from pydantic import BaseModel
-from pydantic.utils import to_lower_camel
 from starlette.authentication import BaseUser
 
 
