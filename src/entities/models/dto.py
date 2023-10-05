@@ -48,9 +48,6 @@ class UserProfile(BaseModel):
     def to_keycloak_user(self):
         return {"firstName": self.first_name, "lastName": self.last_name}
 
-    class Config:
-        allow_population_by_field_name = True
-
 
 class FinanicialInstitutionAssociationDto(FinancialInstitutionDto):
     approved: bool
