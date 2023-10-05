@@ -46,8 +46,10 @@ class UserProfile(BaseModel):
     last_name: str
     leis: Optional[Set[str]]
 
+    def to_keycloak_user(self):
+        return {"firstName": self.first_name, "lastName": self.last_name}
+
     class Config:
-        alias_generator = to_lower_camel
         allow_population_by_field_name = True
 
 
