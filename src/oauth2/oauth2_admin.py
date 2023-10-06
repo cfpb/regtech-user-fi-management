@@ -10,42 +10,19 @@ from fastapi import HTTPException
 
 from keycloak import KeycloakAdmin, KeycloakOpenIDConnection, exceptions as kce
 
+from config import settings
+
 log = logging.getLogger(__name__)
-
-
-def get_jwt_opts(opts_string: str) -> Dict[str, bool | int]:
-    """
-    Parses out the opts_string into JWT options dictionary.
-
-    Args:
-        opts_string (str): comma separated key value pairs in the form of "key1:True,key2:False"
-            all options are boolean, with exception of 'leeway' being int
-            valid options can be found here:
-            https://github.com/mpdavis/python-jose/blob/4b0701b46a8d00988afcc5168c2b3a1fd60d15d8/jose/jwt.py#L81
-
-    Returns:
-        dict: dictionary of options supported by jwt, mentioned in link above
-    """
-    jwt_opts = {}
-    if opts_string:
-        pairs = opts_string.split(",")
-        for pair in pairs:
-            [key, value] = pair.split(":", 1)
-            jwt_opts[key] = ast.literal_eval(value)
-    return jwt_opts
-
-
-JWT_OPTS = get_jwt_opts(os.getenv("JWT_OPTS", ""))
 
 
 class OAuth2Admin:
     def __init__(self) -> None:
         self._keys = None
         conn = KeycloakOpenIDConnection(
-            server_url=os.getenv("KC_URL"),
-            realm_name=os.getenv("KC_REALM"),
-            client_id=os.getenv("KC_ADMIN_CLIENT_ID"),
-            client_secret_key=os.getenv("KC_ADMIN_CLIENT_SECRET"),
+            server_url=settings.kc_url,
+            realm_name=settings.kc_realm,
+            client_id=settings.kc_admin_client_id,
+            client_secret_key=settings.kc_admin_client_secret,
         )
         self._admin = KeycloakAdmin(connection=conn)
 
@@ -54,16 +31,16 @@ class OAuth2Admin:
             return jose.jwt.decode(
                 token=token,
                 key=self._get_keys(),
-                issuer=os.getenv("KC_REALM_URL"),
-                audience=os.getenv("AUTH_CLIENT"),
-                options=JWT_OPTS,
+                issuer=settings.kc_realm_url,
+                audience=settings.auth_client,
+                options=settings.jwt_opts,
             )
         except jose.ExpiredSignatureError:
             pass
 
     def _get_keys(self) -> Dict[str, Any]:
         if self._keys is None:
-            response = requests.get(os.getenv("CERTS_URL"))
+            response = requests.get(settings.certs_url)
             self._keys = response.json()
         return self._keys
 
