@@ -1,5 +1,4 @@
-from typing import Any, Dict, List
-
+from typing import List, Dict, Any, Set, Optional
 from pydantic import BaseModel
 from starlette.authentication import BaseUser
 
@@ -39,6 +38,15 @@ class DeniedDomainDto(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserProfile(BaseModel):
+    first_name: str
+    last_name: str
+    leis: Optional[Set[str]]
+
+    def to_keycloak_user(self):
+        return {"firstName": self.first_name, "lastName": self.last_name}
 
 
 class FinanicialInstitutionAssociationDto(FinancialInstitutionDto):

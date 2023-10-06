@@ -9,6 +9,7 @@ __all__ = [
     "FinanicialInstitutionAssociationDto",
     "DeniedDomainDao",
     "DeniedDomainDto",
+    "UserProfile",
     "AuthenticatedUser",
 ]
 
@@ -25,5 +26,6 @@ from .dto import (
     FinancialInsitutionDomainCreate,
     FinanicialInstitutionAssociationDto,
     DeniedDomainDto,
+    UserProfile,
     AuthenticatedUser,
 )
