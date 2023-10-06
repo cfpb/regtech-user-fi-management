@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Set, Optional
+from typing import List, Dict, Any, Set
 from pydantic import BaseModel
 from starlette.authentication import BaseUser
 
