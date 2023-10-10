@@ -25,6 +25,15 @@ class Settings(BaseSettings):
 
     def __init__(self, **data):
         super().__init__(**data)
+        self.set_jw_opts()
+
+    def set_jw_opts(self) -> None:
+        """
+        Converts `jwt_opts_` prefixed settings into JWT options dictionary.
+        all options are boolean, with exception of 'leeway' being int
+        valid options can be found here:
+        https://github.com/mpdavis/python-jose/blob/4b0701b46a8d00988afcc5168c2b3a1fd60d15d8/jose/jwt.py#L81
+        """
         jwt_opts_adapter = TypeAdapter(int | bool)
         self.jwt_opts = {
             key.replace(JWT_OPTS_PREFIX, ""): jwt_opts_adapter.validate_python(value)
