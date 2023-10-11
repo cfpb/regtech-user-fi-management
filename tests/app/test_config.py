@@ -19,5 +19,5 @@ def test_jwt_opts_invalid_values():
         "jwt_opts_test3": "12",
     }
     with pytest.raises(Exception) as e:
-        settings = Settings(**mock_config)
+        Settings(**mock_config)
     assert "validation error" in str(e.value)
