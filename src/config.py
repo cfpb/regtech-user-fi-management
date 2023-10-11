@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 from pydantic import TypeAdapter
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -22,6 +23,7 @@ class Settings(BaseSettings):
     kc_admin_client_id: str = ""
     kc_admin_client_secret: str = ""
     kc_realm_url: str = ""
+    jwt_opts: Dict[str, bool | int] = {}
 
     def __init__(self, **data):
         super().__init__(**data)
