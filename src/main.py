@@ -1,5 +1,6 @@
 import os
 import logging
+from db.database import init_db
 import env  # noqa: F401
 from http import HTTPStatus
 from fastapi import FastAPI, HTTPException, Request
@@ -15,6 +16,10 @@ from oauth2 import BearerTokenAuthBackend
 log = logging.getLogger()
 
 app = FastAPI()
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 
 @app.exception_handler(HTTPException)
