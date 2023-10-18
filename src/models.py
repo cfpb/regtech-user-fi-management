@@ -1,7 +1,10 @@
-
-from sqlalchemy import Column, DateTime, ForeignKeyConstraint, Index, PrimaryKeyConstraint, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, PrimaryKeyConstraint, String
 from sqlalchemy.sql import func
-from db.database import Base
+
+Base = declarative_base()
+metadata = Base.metadata
+
 
 class Financial_Institutions(Base):
     __tablename__ = 'financial_institutions'
@@ -10,23 +13,25 @@ class Financial_Institutions(Base):
     event_time  = Column(DateTime(timezone=True), server_default=func.now())
     __table_args__ = (
        PrimaryKeyConstraint("lei", name="financial_institutions_pkey"),
-       Index('ix_financial_institutions_lei', "lei", postgresql_using='gin', unique=True),
-       Index('ix_financial_institutions_name', "name", postgresql_using='gin'),
-       {"schema": "fi"}
+       Index('ix_financial_institutions_lei', "lei", unique=True),
+       Index('ix_financial_institutions_name', "name"),
        )
+    def __repr__(self):
+        return f"lei: {self.lei}, name: {self.name}"
     
 class Financial_Institutions_Domains(Base):
     __tablename__ = 'financial_institutions_domains'
     domain = Column(String, nullable=False)
-    lei = Column(String, nullable=False)
+    lei = Column(String, ForeignKey("financial_institutions.lei"))
     event_time  = Column(DateTime(timezone=True), server_default=func.now())
     __table_args__ = (
        PrimaryKeyConstraint("domain", "lei", name="financial_institution_domains_pkey"),
-       Index('ix_financial_institution_domains_domain', "domain", postgresql_using='gin'),
-       Index('ix_financial_institution_domains_lei', "lei", postgresql_using='gin'),
-       ForeignKeyConstraint(["lei"], ["financial_institutions.lei"]),
-       {"schema": "fi"}
+       Index('ix_financial_institution_domains_domain', "domain"),
+       Index('ix_financial_institution_domains_lei', "lei"),
+   
        )
+    def __repr__(self):
+        return f"lei: {self.lei}, domain: {self.domain}"
     
 class Denied_Domains(Base):
     __tablename__ = 'denied_domains'
@@ -34,9 +39,8 @@ class Denied_Domains(Base):
     event_time  = Column(DateTime(timezone=True), server_default=func.now())
     __table_args__ = (
        PrimaryKeyConstraint("domain", name="denied_domains_pkey"),
-       Index('ix_denied_domains_domain', "domain", postgresql_using='gin', unique=True),
-       {"schema": "fi"}
+       Index('ix_denied_domains_domain', "domain", unique=True)
+     
        )
-
-    
-    
+    def __repr__(self):
+        return f"domain: {self.domain}"
