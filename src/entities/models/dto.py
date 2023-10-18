@@ -43,7 +43,7 @@ class DeniedDomainDto(BaseModel):
 class UserProfile(BaseModel):
     first_name: str
     last_name: str
-    leis: Set[str] = None
+    leis: Set[str] | None = None
 
     def to_keycloak_user(self):
         return {"firstName": self.first_name, "lastName": self.last_name}
