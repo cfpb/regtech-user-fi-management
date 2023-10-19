@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, PrimaryKeyConstraint, String
+from sqlalchemy import Column, DateTime, ForeignKey, Index, PrimaryKeyConstraint, String
 from sqlalchemy.sql import func
 
 Base = declarative_base()
