@@ -1,7 +1,9 @@
 import os
-from typing import Dict
-from pydantic import TypeAdapter
+from typing import Dict, Any
 
+from pydantic import TypeAdapter
+from pydantic.networks import HttpUrl, PostgresDsn
+from pydantic.types import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 JWT_OPTS_PREFIX = "jwt_opts_"
@@ -12,17 +14,17 @@ if os.getenv("ENV", "LOCAL") == "LOCAL":
 
 
 class Settings(BaseSettings):
-    inst_conn: str = ""
+    inst_conn: PostgresDsn
     inst_db_schema: str = "public"
-    auth_client: str = ""
-    auth_url: str = ""
-    token_url: str = ""
-    certs_url: str = ""
-    kc_url: str = ""
-    kc_realm: str = ""
-    kc_admin_client_id: str = ""
-    kc_admin_client_secret: str = ""
-    kc_realm_url: str = ""
+    auth_client: str
+    auth_url: HttpUrl
+    token_url: HttpUrl
+    certs_url: HttpUrl
+    kc_url: HttpUrl
+    kc_realm: str
+    kc_admin_client_id: str
+    kc_admin_client_secret: SecretStr
+    kc_realm_url: HttpUrl
     jwt_opts: Dict[str, bool | int] = {}
 
     def __init__(self, **data):
@@ -31,22 +33,29 @@ class Settings(BaseSettings):
 
     def set_jwt_opts(self) -> None:
         """
-        Converts `jwt_opts_` prefixed settings into JWT options dictionary.
+        Converts `jwt_opts_` prefixed settings, and env vars into JWT options dictionary.
         all options are boolean, with exception of 'leeway' being int
         valid options can be found here:
         https://github.com/mpdavis/python-jose/blob/4b0701b46a8d00988afcc5168c2b3a1fd60d15d8/jose/jwt.py#L81
+
+        Because we're using model_extra to load in jwt_opts as a dynamic dictionary,
+        normal env overrides does not take place on top of dotenv files,
+        so we're merging settings.model_extra with environment variables.
         """
         jwt_opts_adapter = TypeAdapter(int | bool)
         self.jwt_opts = {
-            key.replace(JWT_OPTS_PREFIX, ""): jwt_opts_adapter.validate_python(value)
-            for (key, value) in self.model_extra.items()
-            if key.startswith(JWT_OPTS_PREFIX)
+            **self.parse_jwt_vars(jwt_opts_adapter, self.model_extra.items()),
+            **self.parse_jwt_vars(jwt_opts_adapter, os.environ.items()),
+        }
+
+    def parse_jwt_vars(self, type_adapter: TypeAdapter, setting_variables: Dict[str, Any]) -> Dict[str, bool | int]:
+        return {
+            key.lower().replace(JWT_OPTS_PREFIX, ""): type_adapter.validate_python(value)
+            for (key, value) in setting_variables
+            if key.lower().startswith(JWT_OPTS_PREFIX)
         }
 
     model_config = SettingsConfigDict(env_file=env_files_to_load, extra="allow")
 
 
-try:
-    settings = Settings()
-except Exception as e:
-    raise SystemExit(f"failed to set up settings [{e}]")
+settings = Settings()

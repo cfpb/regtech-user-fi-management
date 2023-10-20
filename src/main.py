@@ -32,7 +32,9 @@ async def general_exception_handler(request: Request, exception: Exception) -> J
     )
 
 
-oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl=settings.auth_url, tokenUrl=settings.token_url)
+oauth2_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl=settings.auth_url.unicode_string(), tokenUrl=settings.token_url.unicode_string()
+)
 
 app.add_middleware(AuthenticationMiddleware, backend=BearerTokenAuthBackend(oauth2_scheme))
 app.add_middleware(

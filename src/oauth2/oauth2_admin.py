@@ -17,10 +17,10 @@ class OAuth2Admin:
     def __init__(self) -> None:
         self._keys = None
         conn = KeycloakOpenIDConnection(
-            server_url=settings.kc_url,
+            server_url=settings.kc_url.unicode_string(),
             realm_name=settings.kc_realm,
             client_id=settings.kc_admin_client_id,
-            client_secret_key=settings.kc_admin_client_secret,
+            client_secret_key=settings.kc_admin_client_secret.get_secret_value(),
         )
         self._admin = KeycloakAdmin(connection=conn)
 
@@ -29,7 +29,7 @@ class OAuth2Admin:
             return jose.jwt.decode(
                 token=token,
                 key=self._get_keys(),
-                issuer=settings.kc_realm_url,
+                issuer=settings.kc_realm_url.unicode_string(),
                 audience=settings.auth_client,
                 options=settings.jwt_opts,
             )
