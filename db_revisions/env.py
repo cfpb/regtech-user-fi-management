@@ -4,7 +4,6 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
-
 from src.entities.models import Base
 
 # this is the Alembic Config object, which provides
@@ -15,17 +14,6 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-
-target_metadata = Base.metadata
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
 
 # this specific to SBL configuration
 
@@ -40,10 +28,30 @@ INST_DB_USER = os.environ.get("INST_DB_USER")
 INST_DB_PWD = os.environ.get("INST_DB_PWD")
 INST_DB_HOST = os.environ.get("INST_DB_HOST")
 INST_DB_NAME = os.environ.get("INST_DB_NAME")
+INST_DB_SCHEMA = os.environ.get("INST_DB_SCHEMA")
 INST_CONN = f"postgresql://{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
 config.set_main_option("sqlalchemy.url", INST_CONN)
 
 # end specific SBL configuration
+
+# add your model's MetaData object here
+# for 'autogenerate' support
+# from myapp import mymodel
+
+target_metadata = Base.metadata
+target_metadata.schema = INST_DB_SCHEMA
+
+# other values from the config, defined by the needs of env.py,
+# can be acquired:
+# my_important_option = config.get_main_option("my_important_option")
+# ... etc.
+
+
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ == "table" and name == "alembic_version":
+        return False
+    else:
+        return True
 
 
 def run_migrations_offline() -> None:
@@ -84,7 +92,12 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            version_table_schema=target_metadata.schema,
+            include_object=include_object,
+        )
 
         with context.begin_transaction():
             context.run_migrations()
