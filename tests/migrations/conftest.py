@@ -13,4 +13,4 @@ def alembic_config():
 @pytest.fixture
 def alembic_engine():
     """Override this fixture to provide pytest-alembic powered tests with a database handle."""
-    return create_engine("sqlite:///")
+    return create_engine("sqlite+aiosqlite://")
