@@ -1,8 +1,8 @@
-"""Create a baseline migrations
+"""Create a baseline migration
 
-Revision ID: 26556a57a06f
+Revision ID: aa098560725b
 Revises: 
-Create Date: 2023-10-23 04:04:07.722956
+Create Date: 2023-10-25 10:07:38.214272
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "26556a57a06f"
+revision: str = "aa098560725b"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -42,7 +42,7 @@ def upgrade() -> None:
         sa.Column("event_time", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
         sa.ForeignKeyConstraint(
             ["lei"],
-            ["public.financial_institutions.lei"],
+            ["financial_institutions.lei"],
         ),
         sa.PrimaryKeyConstraint("domain", "lei"),
     )
