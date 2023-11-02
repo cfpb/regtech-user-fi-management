@@ -15,7 +15,6 @@ from db_revisions.utils import table_exists
 revision: str = "20e0d51d8be9"
 down_revision: Union[str, None] = "f76c5004993f"
 branch_labels: Union[str, Sequence[str], None] = None
-# depends_on: Union[str, Sequence[str], None] = None
 depends_on = ["f76c5004993f"]
 
 
