@@ -53,6 +53,8 @@ async def create_institution(
 async def get_associated_institutions(request: Request):
     user: AuthenticatedUser = request.user
     email_domain = get_email_domain(user.email)
+    if not user.institutions:
+        return []
     associated_institutions = await repo.get_institutions(request.state.db_session, user.institutions)
     return [
         FinanicialInstitutionAssociationDto(

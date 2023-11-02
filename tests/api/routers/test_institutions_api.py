@@ -172,3 +172,24 @@ class TestInstitutionsApi:
         inst2 = next(filter(lambda inst: inst["lei"] == "TESTBANK234", data))
         assert inst1["approved"] is False
         assert inst2["approved"] is True
+
+    def test_get_associated_institutions_with_no_institutions(
+        self, app_fixture: FastAPI, auth_mock: Mock, get_institutions_mock: Mock
+    ):
+        get_institutions_mock.return_value = None
+        claims = {
+            "name": "test",
+            "preferred_username": "test_user",
+            "email": "test@test234.bank",
+            "sub": "testuser123",
+            "institutions": [],
+        }
+        auth_mock.return_value = (
+            AuthCredentials(["authenticated"]),
+            AuthenticatedUser.from_claim(claims),
+        )
+        client = TestClient(app_fixture)
+        res = client.get("/v1/institutions/associated")
+        assert res.status_code == 200
+        get_institutions_mock.assert_not_called()
+        assert res.json() == []
