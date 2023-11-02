@@ -1,6 +1,5 @@
 from http import HTTPStatus
 import logging
-import os
 from typing import Dict, Any, Set
 
 import jose.jwt
@@ -9,6 +8,8 @@ from fastapi import HTTPException
 
 from keycloak import KeycloakAdmin, KeycloakOpenIDConnection, exceptions as kce
 
+from config import settings
+
 log = logging.getLogger(__name__)
 
 
@@ -16,10 +17,10 @@ class OAuth2Admin:
     def __init__(self) -> None:
         self._keys = None
         conn = KeycloakOpenIDConnection(
-            server_url=os.getenv("KC_URL"),
-            realm_name=os.getenv("KC_REALM"),
-            client_id=os.getenv("KC_ADMIN_CLIENT_ID"),
-            client_secret_key=os.getenv("KC_ADMIN_CLIENT_SECRET"),
+            server_url=settings.kc_url.unicode_string(),
+            realm_name=settings.kc_realm,
+            client_id=settings.kc_admin_client_id,
+            client_secret_key=settings.kc_admin_client_secret.get_secret_value(),
         )
         self._admin = KeycloakAdmin(connection=conn)
 
@@ -28,20 +29,16 @@ class OAuth2Admin:
             return jose.jwt.decode(
                 token=token,
                 key=self._get_keys(),
-                issuer=os.getenv("KC_REALM_URL"),
-                audience=os.getenv("AUTH_CLIENT"),
-                options={
-                    "verify_at_hash": False,
-                    "verify_aud": False,
-                    "verify_iss": False,
-                },
+                issuer=settings.kc_realm_url.unicode_string(),
+                audience=settings.auth_client,
+                options=settings.jwt_opts,
             )
         except jose.ExpiredSignatureError:
             pass
 
     def _get_keys(self) -> Dict[str, Any]:
         if self._keys is None:
-            response = requests.get(os.getenv("CERTS_URL"))
+            response = requests.get(settings.certs_url)
             self._keys = response.json()
         return self._keys
 

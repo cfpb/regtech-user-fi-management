@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Set, Optional
+from typing import List, Dict, Any, Set
 from pydantic import BaseModel
 from starlette.authentication import BaseUser
 
@@ -15,7 +15,7 @@ class FinancialInsitutionDomainDto(FinancialInsitutionDomainBase):
     lei: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class FinancialInstitutionBase(BaseModel):
@@ -26,7 +26,7 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
     lei: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class FinancialInstitutionWithDomainsDto(FinancialInstitutionDto):
@@ -37,13 +37,13 @@ class DeniedDomainDto(BaseModel):
     domain: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserProfile(BaseModel):
     first_name: str
     last_name: str
-    leis: Optional[Set[str]]
+    leis: Set[str] | None = None
 
     def to_keycloak_user(self):
         return {"firstName": self.first_name, "lastName": self.last_name}
