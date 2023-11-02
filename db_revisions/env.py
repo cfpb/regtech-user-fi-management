@@ -1,8 +1,7 @@
 import os
 from dotenv import load_dotenv
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 from alembic import context
 from entities.models import Base
 
@@ -45,13 +44,6 @@ target_metadata.schema = INST_DB_SCHEMA
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-
-
-def include_object(object, name, type_, reflected, compare_to):
-    if type_ == "table" and name == "alembic_version":
-        return False
-    else:
-        return True
 
 
 def run_migrations_offline() -> None:
@@ -97,10 +89,7 @@ def run_migrations_online() -> None:
 
         with connectable.connect() as connection:
             context.configure(
-                connection=connection,
-                target_metadata=target_metadata,
-                version_table_schema=target_metadata.schema,
-                include_object=include_object,
+                connection=connection, target_metadata=target_metadata, version_table_schema=target_metadata.schema
             )
 
             with context.begin_transaction():

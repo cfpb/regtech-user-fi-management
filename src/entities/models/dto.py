@@ -73,7 +73,7 @@ class AuthenticatedUser(BaseUser, BaseModel):
         )
 
     @classmethod
-    def parse_institutions(cls, institutions: Optional[List[str]] = None) -> List[str]:
+    def parse_institutions(cls, institutions: List[str] | None) -> List[str]:
         """
         Parse out the list of institutions returned by Keycloak
 
