@@ -1,6 +1,4 @@
-import os
 import logging
-import env  # noqa: F401
 from http import HTTPStatus
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -11,6 +9,8 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from routers import admin_router, institutions_router
 
 from oauth2 import BearerTokenAuthBackend
+
+from config import settings
 
 log = logging.getLogger()
 
@@ -32,7 +32,9 @@ async def general_exception_handler(request: Request, exception: Exception) -> J
     )
 
 
-oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl=os.getenv("AUTH_URL"), tokenUrl=os.getenv("TOKEN_URL"))
+oauth2_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl=settings.auth_url.unicode_string(), tokenUrl=settings.token_url.unicode_string()
+)
 
 app.add_middleware(AuthenticationMiddleware, backend=BearerTokenAuthBackend(oauth2_scheme))
 app.add_middleware(
