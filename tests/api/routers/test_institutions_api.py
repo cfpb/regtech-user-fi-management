@@ -176,7 +176,7 @@ class TestInstitutionsApi:
     def test_get_associated_institutions_with_no_institutions(
         self, app_fixture: FastAPI, auth_mock: Mock, get_institutions_mock: Mock
     ):
-        get_institutions_mock.return_value = None
+        get_institutions_mock.return_value = []
         claims = {
             "name": "test",
             "preferred_username": "test_user",
@@ -191,5 +191,5 @@ class TestInstitutionsApi:
         client = TestClient(app_fixture)
         res = client.get("/v1/institutions/associated")
         assert res.status_code == 200
-        get_institutions_mock.assert_not_called()
+        get_institutions_mock.assert_called_once_with(ANY, [])
         assert res.json() == []

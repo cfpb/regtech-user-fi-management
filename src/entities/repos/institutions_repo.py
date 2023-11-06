@@ -27,7 +27,7 @@ async def get_institutions(
             .limit(count)
             .offset(page * count)
         )
-        if leis:
+        if leis is not None:
             stmt = stmt.filter(FinancialInstitutionDao.lei.in_(leis))
         elif d := domain.strip():
             search = "%{}%".format(d)
