@@ -12,9 +12,16 @@ from oauth2 import BearerTokenAuthBackend
 
 from config import settings
 
+from db_revisions import upgrade_database
+
 log = logging.getLogger()
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+async def startup() -> None:
+    upgrade_database()
 
 
 @app.exception_handler(HTTPException)
