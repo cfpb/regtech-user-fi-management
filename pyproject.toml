@@ -48,6 +48,7 @@ addopts = [
 testpaths = ["tests"]
 env = [
   "INST_CONN=postgresql+asyncpg://localhost",
+  "INST_DB_SCHEMA=main",
   "KC_URL=http://localhost",
   "KC_REALM=",
   "KC_ADMIN_CLIENT_ID=",
