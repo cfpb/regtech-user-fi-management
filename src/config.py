@@ -1,10 +1,58 @@
 import os
+import sys
 from typing import Dict, Any
-
 from pydantic import TypeAdapter
 from pydantic.networks import HttpUrl, PostgresDsn
 from pydantic.types import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from alembic import command as alembic
+from alembic.config import Config
+from dotenv import load_dotenv
+
+
+# Start Alembic
+if getattr(sys, "frozen", False):
+    # we are running in a bundle
+    basedir = sys._MEIPast
+else:
+    # we are running in a normal Python environment
+    basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    sys.path.append(basedir)
+
+alembic_dir = os.path.join(basedir, "db_revisions")
+sys.path.append(alembic_dir)
+
+# this specific to SBL configuration
+env_file = os.path.join(basedir, "src/.env.local")
+
+ENV = os.getenv("ENV", "LOCAL")
+
+if ENV == "LOCAL":
+    load_dotenv(env_file)
+else:
+    load_dotenv()
+
+INST_DB_USER = os.environ.get("INST_DB_USER")
+INST_DB_PWD = os.environ.get("INST_DB_PWD")
+INST_DB_HOST = os.environ.get("INST_DB_HOST")
+INST_DB_NAME = os.environ.get("INST_DB_NAME")
+INST_DB_SCHEMA = os.environ.get("INST_DB_SCHEMA")
+INST_DB_PATH = f"{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
+INST_DB_URL = f"postgresql://{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
+# end specific SBL configuration
+
+def get_alembic_config(db_url: str = INST_DB_URL) -> Config:
+    alembic_cfg = Config()
+    alembic_cfg.set_main_option("script_location", alembic_dir)
+    alembic_cfg.set_main_option("sqlalchemy.url", str(db_url))
+    return alembic_cfg
+
+
+def upgrade_database(revision: str = "head", db_url: str = INST_DB_URL) -> None:
+    alembic_cfg = get_alembic_config(db_url)
+    alembic.upgrade(alembic_cfg, revision)
+
+#End Alembic
 
 JWT_OPTS_PREFIX = "jwt_opts_"
 

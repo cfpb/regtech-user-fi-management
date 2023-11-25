@@ -2,7 +2,7 @@ from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 from alembic import context
 from entities.models import Base
-from db_revisions.utils import INST_DB_URL, INST_DB_SCHEMA
+from config import INST_DB_URL, INST_DB_SCHEMA
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -29,7 +29,8 @@ def run_migrations_offline():
 
 
 def run_migrations_online():
-    configuration = config.get_section(config.config_ini_section)
+    """configuration = config.get_section(config.config_ini_section)
+
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",
@@ -40,7 +41,24 @@ def run_migrations_online():
             connection=connection, target_metadata=target_metadata, version_table_schema=target_metadata.schema
         )
         with context.begin_transaction():
-            context.run_migrations()
+            context.run_migrations()"""
+
+    connectable = context.config.attributes.get("connection", None)
+
+    if connectable is None:
+        connectable = engine_from_config(
+            context.config.get_section(context.config.config_ini_section),
+            prefix="sqlalchemy.",
+            poolclass=pool.NullPool,
+        )
+
+        with connectable.connect() as connection:
+            context.configure(
+                connection=connection, target_metadata=target_metadata, version_table_schema=target_metadata.schema
+            )
+
+            with context.begin_transaction():
+                context.run_migrations()
 
 
 if context.is_offline_mode():

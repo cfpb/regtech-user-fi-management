@@ -10,9 +10,7 @@ from routers import admin_router, institutions_router
 
 from oauth2 import BearerTokenAuthBackend
 
-from config import settings
-
-from db_revisions import upgrade_database
+from config import settings, upgrade_database
 
 log = logging.getLogger()
 
