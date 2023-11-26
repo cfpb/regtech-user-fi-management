@@ -41,6 +41,7 @@ INST_DB_PATH = f"{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
 INST_DB_URL = f"postgresql://{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
 # end specific SBL configuration
 
+
 def get_alembic_config(db_url: str = INST_DB_URL) -> Config:
     alembic_cfg = Config()
     alembic_cfg.set_main_option("script_location", alembic_dir)
@@ -52,7 +53,8 @@ def upgrade_database(revision: str = "head", db_url: str = INST_DB_URL) -> None:
     alembic_cfg = get_alembic_config(db_url)
     alembic.upgrade(alembic_cfg, revision)
 
-#End Alembic
+
+# End Alembic
 
 JWT_OPTS_PREFIX = "jwt_opts_"
 
