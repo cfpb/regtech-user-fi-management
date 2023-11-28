@@ -24,7 +24,7 @@ def upgrade() -> None:
         op.create_table(
             "denied_domains",
             sa.Column("domain", sa.String(), nullable=False),
-            sa.Column("event_time", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+            sa.Column("event_time", sa.DateTime(), server_default=sa.func.now(), nullable=False),
             sa.PrimaryKeyConstraint("domain"),
         )
         op.create_index(op.f("ix_denied_domains_domain"), "denied_domains", ["domain"], unique=False)

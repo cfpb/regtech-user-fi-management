@@ -6,7 +6,6 @@ from entities.models import Base
 from dotenv import load_dotenv
 
 # SBL-specific configuration
-
 ENV = os.getenv("ENV", "LOCAL")
 
 if ENV == "LOCAL":
@@ -75,18 +74,18 @@ def run_migrations_online() -> None:
 
     if connectable is None:
         connectable = engine_from_config(
-            context.config.get_section(context.config.config_ini_section),
+            context.config.get_section(context.config.config_ini_section, {}),
             prefix="sqlalchemy.",
             poolclass=pool.NullPool,
         )
 
-        with connectable.connect() as connection:
-            context.configure(
-                connection=connection, target_metadata=target_metadata, version_table_schema=target_metadata.schema
-            )
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection, target_metadata=target_metadata, version_table_schema=target_metadata.schema
+        )
 
-            with context.begin_transaction():
-                context.run_migrations()
+        with context.begin_transaction():
+            context.run_migrations()
 
 
 if context.is_offline_mode():

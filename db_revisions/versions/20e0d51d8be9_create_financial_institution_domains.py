@@ -24,7 +24,7 @@ def upgrade() -> None:
             "financial_institution_domains",
             sa.Column("domain", sa.String(), nullable=False),
             sa.Column("lei", sa.String(), nullable=False),
-            sa.Column("event_time", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+            sa.Column("event_time", sa.DateTime(), server_default=sa.func.now(), nullable=False),
             sa.ForeignKeyConstraint(
                 ["lei"],
                 ["financial_institutions.lei"],
