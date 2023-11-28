@@ -1,3 +1,4 @@
+import os
 import logging
 from http import HTTPStatus
 from fastapi import FastAPI, HTTPException, Request
@@ -5,12 +6,14 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.authentication import AuthenticationMiddleware
+from alembic.config import Config
+from alembic import command
 
 from routers import admin_router, institutions_router
 
 from oauth2 import BearerTokenAuthBackend
 
-from config import settings, upgrade_database
+from config import settings
 
 log = logging.getLogger()
 
@@ -18,8 +21,12 @@ app = FastAPI()
 
 
 @app.on_event("startup")
-async def startup() -> None:
-    upgrade_database()
+async def app_start():
+    file_dir = os.path.dirname(os.path.realpath(__file__))
+    alembic_cfg = Config(f"{file_dir}/../alembic.ini")
+    alembic_cfg.set_main_option("script_location", f"{file_dir}/../db_revisions")
+    alembic_cfg.set_main_option("prepend_sys_path", f"{file_dir}/../")
+    command.upgrade(alembic_cfg, "head")
 
 
 @app.exception_handler(HTTPException)

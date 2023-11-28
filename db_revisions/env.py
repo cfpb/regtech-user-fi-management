@@ -1,8 +1,28 @@
+import os
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 from alembic import context
 from entities.models import Base
-from config import INST_DB_URL, INST_DB_SCHEMA
+from dotenv import load_dotenv
+
+# SBL-specific configuration
+
+ENV = os.getenv("ENV", "LOCAL")
+
+if ENV == "LOCAL":
+    file_dir = os.path.dirname(os.path.realpath(__file__))
+    load_dotenv(f"{file_dir}/../src/.env.local")
+else:
+    load_dotenv()
+
+INST_DB_USER = os.environ.get("INST_DB_USER")
+INST_DB_PWD = os.environ.get("INST_DB_PWD")
+INST_DB_HOST = os.environ.get("INST_DB_HOST")
+INST_DB_NAME = os.environ.get("INST_DB_NAME")
+INST_DB_SCHEMA = os.environ.get("INST_DB_SCHEMA")
+INST_DB_PATH = f"{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
+INST_DB_URL = f"postgresql://{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
+# END SBL-specific configuration
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
