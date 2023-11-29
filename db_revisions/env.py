@@ -19,7 +19,8 @@ if config.config_file_name is not None:
 ENV = os.getenv("ENV", "LOCAL")
 
 if ENV == "LOCAL":
-    load_dotenv("src/.env.local")
+    file_dir = os.path.dirname(os.path.realpath(__file__))
+    load_dotenv(f"{file_dir}/../src/.env.local")
 else:
     load_dotenv()
 
