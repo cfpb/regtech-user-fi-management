@@ -16,7 +16,7 @@ class TestInstitutionsRepo:
         self,
         transaction_session: AsyncSession,
     ):
-        fi_dao_123, fi_dao_456 = FinancialInstitutionDao(
+        fi_dao_123, fi_dao_456, fi_dao_sub_456 = FinancialInstitutionDao(
             name="Test Bank 123",
             lei="TESTBANK123",
             domains=[FinancialInstitutionDomainDao(domain="test.bank.1", lei="TESTBANK123")],
@@ -24,17 +24,33 @@ class TestInstitutionsRepo:
             name="Test Bank 456",
             lei="TESTBANK456",
             domains=[FinancialInstitutionDomainDao(domain="test.bank.2", lei="TESTBANK456")],
+        ), FinancialInstitutionDao(
+            name="Test Sub Bank 456",
+            lei="TESTSUBBANK456",
+            domains=[FinancialInstitutionDomainDao(domain="sub.test.bank.2", lei="TESTSUBBANK456")],
         )
         transaction_session.add(fi_dao_123)
         transaction_session.add(fi_dao_456)
+        transaction_session.add(fi_dao_sub_456)
         await transaction_session.commit()
 
     async def test_get_institutions(self, query_session: AsyncSession):
         res = await repo.get_institutions(query_session)
-        assert len(res) == 2
+        assert len(res) == 3
 
-    async def test_get_institutions_by_domain(self, query_session: AsyncSession):
+    async def test_get_institutions_by_domain(self, query_session: AsyncSession): 
+        #verify 'generic' domain queries don't work
+        res = await repo.get_institutions(query_session, domain="bank")
+        assert len(res) == 0
+        
         res = await repo.get_institutions(query_session, domain="test.bank.1")
+        assert len(res) == 1
+        
+        #shouldn't find sub.test.bank.2
+        res = await repo.get_institutions(query_session, domain="test.bank.2")
+        assert len(res) == 1
+        
+        res = await repo.get_institutions(query_session, domain="sub.test.bank.2")
         assert len(res) == 1
 
     async def test_get_institutions_by_domain_not_existing(self, query_session: AsyncSession):
@@ -63,7 +79,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(name="Test Bank 234", lei="TESTBANK123"),
         )
         res = await repo.get_institutions(transaction_session)
-        assert len(res) == 2
+        assert len(res) == 3
         assert res[0].name == "Test Bank 234"
 
     async def test_add_domains(self, transaction_session: AsyncSession, query_session: AsyncSession):

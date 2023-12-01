@@ -23,6 +23,7 @@ async def get_institutions(
     async with session.begin():
         stmt = (
             select(FinancialInstitutionDao)
+            .join(FinancialInstitutionDomainDao)
             .options(joinedload(FinancialInstitutionDao.domains))
             .limit(count)
             .offset(page * count)
@@ -30,11 +31,7 @@ async def get_institutions(
         if leis is not None:
             stmt = stmt.filter(FinancialInstitutionDao.lei.in_(leis))
         elif d := domain.strip():
-            search = "%{}%".format(d)
-            stmt = stmt.join(
-                FinancialInstitutionDomainDao,
-                FinancialInstitutionDao.lei == FinancialInstitutionDomainDao.lei,
-            ).filter(FinancialInstitutionDomainDao.domain.like(search))
+            stmt = stmt.filter(FinancialInstitutionDomainDao.domain == d)
         res = await session.scalars(stmt)
         return res.unique().all()
 
