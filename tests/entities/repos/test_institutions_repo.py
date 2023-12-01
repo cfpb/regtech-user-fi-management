@@ -16,18 +16,22 @@ class TestInstitutionsRepo:
         self,
         transaction_session: AsyncSession,
     ):
-        fi_dao_123, fi_dao_456, fi_dao_sub_456 = FinancialInstitutionDao(
-            name="Test Bank 123",
-            lei="TESTBANK123",
-            domains=[FinancialInstitutionDomainDao(domain="test.bank.1", lei="TESTBANK123")],
-        ), FinancialInstitutionDao(
-            name="Test Bank 456",
-            lei="TESTBANK456",
-            domains=[FinancialInstitutionDomainDao(domain="test.bank.2", lei="TESTBANK456")],
-        ), FinancialInstitutionDao(
-            name="Test Sub Bank 456",
-            lei="TESTSUBBANK456",
-            domains=[FinancialInstitutionDomainDao(domain="sub.test.bank.2", lei="TESTSUBBANK456")],
+        fi_dao_123, fi_dao_456, fi_dao_sub_456 = (
+            FinancialInstitutionDao(
+                name="Test Bank 123",
+                lei="TESTBANK123",
+                domains=[FinancialInstitutionDomainDao(domain="test.bank.1", lei="TESTBANK123")],
+            ), 
+            FinancialInstitutionDao(
+                name="Test Bank 456",
+                lei="TESTBANK456",
+                domains=[FinancialInstitutionDomainDao(domain="test.bank.2", lei="TESTBANK456")],
+            ), 
+            FinancialInstitutionDao(
+                name="Test Sub Bank 456",
+                lei="TESTSUBBANK456",
+                domains=[FinancialInstitutionDomainDao(domain="sub.test.bank.2", lei="TESTSUBBANK456")],
+            )
         )
         transaction_session.add(fi_dao_123)
         transaction_session.add(fi_dao_456)
