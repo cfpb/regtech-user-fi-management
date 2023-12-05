@@ -75,7 +75,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(name="New Bank 123", lei="NEWBANK123"),
         )
         res = await repo.get_institutions(transaction_session)
-        assert len(res) == 3
+        assert len(res) == 4
 
     async def test_update_institution(self, transaction_session: AsyncSession):
         await repo.upsert_institution(
