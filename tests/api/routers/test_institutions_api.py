@@ -79,6 +79,52 @@ class TestInstitutionsApi:
         assert res.status_code == 200
         assert res.json()[1].get("name") == "testName"
 
+    def test_create_institution_only_required_fields(
+        self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock
+    ):
+        upsert_institution_mock = mocker.patch("entities.repos.institutions_repo.upsert_institution")
+        upsert_institution_mock.return_value = FinancialInstitutionDao(
+            name="testName",
+            lei="testLei",
+            hq_address_street_1="Test Address Street 1",
+            hq_address_city="Test City 1",
+            hq_address_state_code="VA",
+            hq_address_zip="00000",
+        )
+        upsert_group_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.upsert_group")
+        upsert_group_mock.return_value = "leiGroup"
+        client = TestClient(app_fixture)
+        res = client.post(
+            "/v1/institutions/",
+            json={
+                "name": "testName",
+                "lei": "testLei",
+                "hq_address_street_1": "Test Address Street 1",
+                "hq_address_city": "Test City 1",
+                "hq_address_state_code": "VA",
+                "hq_address_zip": "00000",
+            },
+        )
+        assert res.status_code == 200
+        assert res.json()[1].get("name") == "testName"
+        assert res.json()[1].get("tax_id") is None
+
+    def test_create_institution_missing_required_field(
+        self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock
+    ):
+        client = TestClient(app_fixture)
+        res = client.post(
+            "/v1/institutions/",
+            json={
+                "name": "testName",
+                "lei": "testLei",
+                "hq_address_street_1": "Test Address Street 1",
+                "hq_address_city": "Test City 1",
+                "hq_address_state_code": "VA",
+            },
+        )
+        assert res.status_code == 422
+
     def test_create_institution_authed_no_permission(self, app_fixture: FastAPI, auth_mock: Mock):
         claims = {
             "name": "test",
