@@ -187,10 +187,50 @@ class TestInstitutionsRepo:
         res = await repo.get_institutions(transaction_session)
         assert len(res) == 4
 
+    async def test_add_institution_only_required_fields(
+        self, transaction_session: AsyncSession, query_session: AsyncSession
+    ):
+        await repo.upsert_institution(
+            transaction_session,
+            FinancialInstitutionDao(
+                name="Minimal Bank 123",
+                lei="MINBANK123",
+                hq_address_street_1="Minimal Address Street 1",
+                hq_address_city="Minimal City 1",
+                hq_address_state_code="FL",
+                hq_address_zip="22222",
+            ),
+        )
+        res = await repo.get_institution(query_session, "MINBANK123")
+        assert res is not None
+        assert res.tax_id is None
+
+    async def test_add_institution_missing_required_fields(
+        self, transaction_session: AsyncSession, query_session: AsyncSession
+    ):
+        with pytest.raises(Exception) as e:
+            await repo.upsert_institution(
+                transaction_session,
+                FinancialInstitutionDao(
+                    name="Minimal Bank 123",
+                    lei="MINBANK123",
+                ),
+            )
+        assert "not null constraint failed" in str(e.value).lower()
+        res = await repo.get_institution(query_session, "MINBANK123")
+        assert res is None
+
     async def test_update_institution(self, transaction_session: AsyncSession):
         await repo.upsert_institution(
             transaction_session,
-            FinancialInstitutionDao(name="Test Bank 234", lei="TESTBANK123"),
+            FinancialInstitutionDao(
+                name="Test Bank 234",
+                lei="TESTBANK123",
+                hq_address_street_1="Test Address Street 1",
+                hq_address_city="Test City 1",
+                hq_address_state_code="GA",
+                hq_address_zip="00000",
+            ),
         )
         res = await repo.get_institutions(transaction_session)
         assert len(res) == 3

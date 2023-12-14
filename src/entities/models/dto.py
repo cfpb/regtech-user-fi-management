@@ -19,27 +19,27 @@ class FinancialInsitutionDomainDto(FinancialInsitutionDomainBase):
 
 
 class FinancialInstitutionBase(BaseModel):
+    lei: str
     name: str
 
 
 class FinancialInstitutionDto(FinancialInstitutionBase):
-    lei: str
-    tax_id: str
-    rssd_id: int
-    primary_federal_regulator_id: str
-    hmda_institution_type_id: str
-    sbl_institution_type_id: str
+    tax_id: str | None = None
+    rssd_id: int | None = None
+    primary_federal_regulator_id: str | None = None
+    hmda_institution_type_id: str | None = None
+    sbl_institution_type_id: str | None = None
     hq_address_street_1: str
-    hq_address_street_2: str
+    hq_address_street_2: str | None = None
     hq_address_city: str
     hq_address_state_code: str
     hq_address_zip: str
-    parent_lei: str
-    parent_legal_name: str
-    parent_rssd_id: int
-    top_holder_lei: str
-    top_holder_legal_name: str
-    top_holder_rssd_id: int
+    parent_lei: str | None = None
+    parent_legal_name: str | None = None
+    parent_rssd_id: int | None = None
+    top_holder_lei: str | None = None
+    top_holder_legal_name: str | None = None
+    top_holder_rssd_id: int | None = None
 
     class Config:
         from_attributes = True

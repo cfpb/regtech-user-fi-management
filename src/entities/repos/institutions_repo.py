@@ -74,6 +74,22 @@ async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto)
             session.add(db_fi)
         else:
             db_fi.name = fi.name
+            db_fi.tax_id = fi.tax_id
+            db_fi.rssd_id = fi.rssd_id
+            db_fi.primary_federal_regulator_id = fi.primary_federal_regulator_id
+            db_fi.hmda_institution_type_id = fi.hmda_institution_type_id
+            db_fi.sbl_institution_type_id = fi.sbl_institution_type_id
+            db_fi.hq_address_street_1 = fi.hq_address_street_1
+            db_fi.hq_address_street_2 = fi.hq_address_street_2
+            db_fi.hq_address_city = fi.hq_address_city
+            db_fi.hq_address_state_code = fi.hq_address_state_code
+            db_fi.hq_address_zip = fi.hq_address_zip
+            db_fi.parent_lei = fi.parent_lei
+            db_fi.parent_legal_name = fi.parent_legal_name
+            db_fi.parent_rssd_id = fi.parent_rssd_id
+            db_fi.top_holder_lei = fi.top_holder_lei
+            db_fi.top_holder_legal_name = fi.top_holder_legal_name
+            db_fi.top_holder_rssd_id = fi.top_holder_rssd_id
         await session.commit()
         return db_fi
 

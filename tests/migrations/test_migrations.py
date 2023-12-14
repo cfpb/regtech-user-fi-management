@@ -25,7 +25,7 @@ def test_tables_exist_after_migration(alembic_runner: MigrationContext, alembic_
     assert "sbl_institution_type" in tables
 
 
-def test_gnarly_migration_xyz123(alembic_runner: MigrationContext, alembic_engine: Engine):
+def test_data_feed_after_migration_045aa502e050(alembic_runner: MigrationContext, alembic_engine: Engine):
     # Migrate up to, but not including this new migration
     alembic_runner.migrate_up_before("045aa502e050")
 
