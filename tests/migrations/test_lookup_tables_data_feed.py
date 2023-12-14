@@ -24,7 +24,6 @@ def test_address_state_data_feed(alembic_runner: MigrationContext, alembic_engin
     alembic_runner.migrate_up_one()
 
     with alembic_engine.connect() as conn:
-        # address_state_rows = conn.execute(text("SELECT code, name from %s" % address_state_tablename)).fetchall()
         address_state_rows = conn.execute(select(AddressStateDao.code, AddressStateDao.name)).fetchall()
     address_state_expected = data_feed_helper(AddressStateDao.__tablename__)
     assert address_state_rows == address_state_expected
