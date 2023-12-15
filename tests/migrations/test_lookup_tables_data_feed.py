@@ -3,7 +3,6 @@ import csv
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from pytest_alembic import MigrationContext
-from entities.models import AddressStateDao, FederalRegulatorDao, HMDAInstitutionTypeDao, SBLInstitutionTypeDao
 
 
 def data_feed_helper(table_name):
