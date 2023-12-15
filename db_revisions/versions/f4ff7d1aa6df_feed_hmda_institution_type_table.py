@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file(HMDAInstitutionTypeDao.__tablename__)
+    data = get_feed_data_from_file("hmda_institution_type")
 
     op.bulk_insert(HMDAInstitutionTypeDao.__table__, data)
 

@@ -18,7 +18,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file(SBLInstitutionTypeDao.__tablename__)
+    data = get_feed_data_from_file("sbl_institution_type")
 
     op.bulk_insert(SBLInstitutionTypeDao.__table__, data)
 

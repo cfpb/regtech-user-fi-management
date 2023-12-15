@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file(FederalRegulatorDao.__tablename__)
+    data = get_feed_data_from_file("federal_regulator")
 
     op.bulk_insert(FederalRegulatorDao.__table__, data)
 

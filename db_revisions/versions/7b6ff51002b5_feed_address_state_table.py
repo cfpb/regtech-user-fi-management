@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file(AddressStateDao.__tablename__)
+    data = get_feed_data_from_file("address_state")
 
     op.bulk_insert(AddressStateDao.__table__, data)
 
