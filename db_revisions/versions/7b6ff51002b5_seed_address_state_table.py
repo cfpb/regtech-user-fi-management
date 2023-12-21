@@ -1,4 +1,4 @@
-"""Feed Address State table
+"""Seed Address State table
 
 Revision ID: 7b6ff51002b5
 Revises: 045aa502e050
@@ -8,7 +8,7 @@ Create Date: 2023-12-14 01:21:48.325752
 from typing import Sequence, Union
 from alembic import op
 from entities.models import AddressStateDao
-from config import address_state_feed
+from db_revisions.seed import address_state_seed
 
 
 # revision identifiers, used by Alembic.
@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.bulk_insert(AddressStateDao.__table__, address_state_feed)
+    op.bulk_insert(AddressStateDao.__table__, address_state_seed)
 
 
 def downgrade() -> None:

@@ -34,7 +34,7 @@ pytest-alembic = "^0.10.7"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-pythonpath = ["src"]
+pythonpath = ["src","db_revisions"]
 addopts = [
   "--cov-report=term-missing",
   "--cov-branch",

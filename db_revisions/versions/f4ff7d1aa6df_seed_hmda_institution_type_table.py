@@ -1,4 +1,4 @@
-"""Feed HMDA Institution Type table
+"""Seed HMDA Institution Type table
 
 Revision ID: f4ff7d1aa6df
 Revises: 26a742d97ad9
@@ -8,7 +8,7 @@ Create Date: 2023-12-14 01:23:47.017878
 from typing import Sequence, Union
 from alembic import op
 from entities.models import HMDAInstitutionTypeDao
-from config import hmda_institution_type_feed
+from db_revisions.seed import hmda_institution_type_seed
 
 
 # revision identifiers, used by Alembic.
@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.bulk_insert(HMDAInstitutionTypeDao.__table__, hmda_institution_type_feed)
+    op.bulk_insert(HMDAInstitutionTypeDao.__table__, hmda_institution_type_seed)
 
 
 def downgrade() -> None:

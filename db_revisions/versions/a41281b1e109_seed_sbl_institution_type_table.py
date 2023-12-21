@@ -1,4 +1,4 @@
-"""Feed SBL Institution Type table
+"""Seed SBL Institution Type table
 
 Revision ID: a41281b1e109
 Revises: f4ff7d1aa6df
@@ -8,7 +8,7 @@ Create Date: 2023-12-14 01:24:00.120073
 from typing import Sequence, Union
 from alembic import op
 from entities.models import SBLInstitutionTypeDao
-from config import sbl_institution_type_feed
+from db_revisions.seed import sbl_institution_type_seed
 
 # revision identifiers, used by Alembic.
 revision: str = "a41281b1e109"
@@ -18,7 +18,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.bulk_insert(SBLInstitutionTypeDao.__table__, sbl_institution_type_feed)
+    op.bulk_insert(SBLInstitutionTypeDao.__table__, sbl_institution_type_seed)
 
 
 def downgrade() -> None:
