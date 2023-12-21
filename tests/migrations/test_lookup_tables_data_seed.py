@@ -14,7 +14,7 @@ def test_address_state_data_seed(alembic_runner: MigrationContext, alembic_engin
     # Migrate up to, but not including this new migration
     alembic_runner.migrate_up_before("7b6ff51002b5")
 
-    # Test address_state feed
+    # Test address_state seed
     address_state_tablename = "address_state"
     alembic_runner.migrate_up_one()
     with alembic_engine.connect() as conn:
@@ -28,7 +28,7 @@ def test_federal_regulator_data_seed(alembic_runner: MigrationContext, alembic_e
     # Migrate up to, but not including this new migration
     alembic_runner.migrate_up_before("26a742d97ad9")
 
-    # Test federal_regulator feed
+    # Test federal_regulator seed
     federal_regulator_tablename = "federal_regulator"
     alembic_runner.migrate_up_one()
     with alembic_engine.connect() as conn:
@@ -42,7 +42,7 @@ def test_hmda_institution_type_data_seed(alembic_runner: MigrationContext, alemb
     # Migrate up to, but not including this new migration
     alembic_runner.migrate_up_before("f4ff7d1aa6df")
 
-    # Test hmda_institution_type feed
+    # Test hmda_institution_type seed
     hmda_institution_type_tablename = "hmda_institution_type"
     alembic_runner.migrate_up_one()
     with alembic_engine.connect() as conn:
@@ -58,7 +58,7 @@ def test_sbl_institution_type_data_seed(alembic_runner: MigrationContext, alembi
     # Migrate up to, but not including this new migration
     alembic_runner.migrate_up_before("a41281b1e109")
 
-    # Test sbl_institution_type feed
+    # Test sbl_institution_type seed
     sbl_institution_type_tablename = "sbl_institution_type"
     alembic_runner.migrate_up_one()
     with alembic_engine.connect() as conn:

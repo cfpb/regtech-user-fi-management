@@ -4,7 +4,7 @@ START seed data for the lookup tables:
     federal_regulator
     hmda_institution_type
     sbl_institution_type
-These are accessed in db_revisions/versions/* scripts and in test/migrations/test_lookup_tables_data_feed .
+These are accessed in db_revisions/versions/* scripts and in test/migrations/test_lookup_tables_data_seed .
 """
 
 address_state_seed = [
