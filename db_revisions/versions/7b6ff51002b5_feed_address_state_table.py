@@ -7,8 +7,8 @@ Create Date: 2023-12-14 01:21:48.325752
 """
 from typing import Sequence, Union
 from alembic import op
-from db_revisions.utils import get_feed_data_from_file
 from entities.models import AddressStateDao
+from config import address_state_feed
 
 
 # revision identifiers, used by Alembic.
@@ -19,9 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file("address_state")
-
-    op.bulk_insert(AddressStateDao.__table__, data)
+    op.bulk_insert(AddressStateDao.__table__, address_state_feed)
 
 
 def downgrade() -> None:

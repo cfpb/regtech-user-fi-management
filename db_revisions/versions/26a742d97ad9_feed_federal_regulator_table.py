@@ -7,8 +7,8 @@ Create Date: 2023-12-14 01:23:17.872728
 """
 from typing import Sequence, Union
 from alembic import op
-from db_revisions.utils import get_feed_data_from_file
 from entities.models import FederalRegulatorDao
+from config import federal_regulator_feed
 
 
 # revision identifiers, used by Alembic.
@@ -19,9 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file("federal_regulator")
-
-    op.bulk_insert(FederalRegulatorDao.__table__, data)
+    op.bulk_insert(FederalRegulatorDao.__table__, federal_regulator_feed)
 
 
 def downgrade() -> None:

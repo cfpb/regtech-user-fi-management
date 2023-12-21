@@ -7,8 +7,8 @@ Create Date: 2023-12-14 01:24:00.120073
 """
 from typing import Sequence, Union
 from alembic import op
-from db_revisions.utils import get_feed_data_from_file
 from entities.models import SBLInstitutionTypeDao
+from config import sbl_institution_type_feed
 
 # revision identifiers, used by Alembic.
 revision: str = "a41281b1e109"
@@ -18,9 +18,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file("sbl_institution_type")
-
-    op.bulk_insert(SBLInstitutionTypeDao.__table__, data)
+    op.bulk_insert(SBLInstitutionTypeDao.__table__, sbl_institution_type_feed)
 
 
 def downgrade() -> None:

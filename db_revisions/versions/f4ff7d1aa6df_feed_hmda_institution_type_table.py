@@ -7,8 +7,8 @@ Create Date: 2023-12-14 01:23:47.017878
 """
 from typing import Sequence, Union
 from alembic import op
-from db_revisions.utils import get_feed_data_from_file
 from entities.models import HMDAInstitutionTypeDao
+from config import hmda_institution_type_feed
 
 
 # revision identifiers, used by Alembic.
@@ -19,9 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    data = get_feed_data_from_file("hmda_institution_type")
-
-    op.bulk_insert(HMDAInstitutionTypeDao.__table__, data)
+    op.bulk_insert(HMDAInstitutionTypeDao.__table__, hmda_institution_type_feed)
 
 
 def downgrade() -> None:
