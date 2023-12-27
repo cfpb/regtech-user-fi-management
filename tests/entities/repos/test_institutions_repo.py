@@ -46,6 +46,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Test Bank 123",
                 lei="TESTBANK123",
+                is_active=True,
                 domains=[FinancialInstitutionDomainDao(domain="test.bank.1", lei="TESTBANK123")],
                 tax_id="123456789",
                 rssd_id=1234,
@@ -67,6 +68,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Test Bank 456",
                 lei="TESTBANK456",
+                is_active=True,
                 domains=[FinancialInstitutionDomainDao(domain="test.bank.2", lei="TESTBANK456")],
                 tax_id="987654321",
                 rssd_id=4321,
@@ -88,6 +90,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Test Sub Bank 456",
                 lei="TESTSUBBANK456",
+                is_active=True,
                 domains=[FinancialInstitutionDomainDao(domain="sub.test.bank.2", lei="TESTSUBBANK456")],
                 tax_id="765432198",
                 rssd_id=2134,
@@ -166,6 +169,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="New Bank 123",
                 lei="NEWBANK123",
+                is_active=True,
                 tax_id="654321987",
                 rssd_id=6543,
                 primary_federal_regulator_id="FRI3",
@@ -195,6 +199,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Minimal Bank 123",
                 lei="MINBANK123",
+                is_active=True,
                 hq_address_street_1="Minimal Address Street 1",
                 hq_address_city="Minimal City 1",
                 hq_address_state_code="FL",
@@ -226,6 +231,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Test Bank 234",
                 lei="TESTBANK123",
+                is_active=True,
                 hq_address_street_1="Test Address Street 1",
                 hq_address_city="Test City 1",
                 hq_address_state_code="GA",

@@ -32,6 +32,7 @@ class TestInstitutionsApi:
         upsert_institution_mock.return_value = FinancialInstitutionDao(
             name="testName",
             lei="testLei",
+            is_active=True,
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
             tax_id="123456789",
             rssd_id=1234,
@@ -58,6 +59,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "testLei",
+                "is_active": True,
                 "tax_id": "123456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FRI2",
@@ -86,6 +88,7 @@ class TestInstitutionsApi:
         upsert_institution_mock.return_value = FinancialInstitutionDao(
             name="testName",
             lei="testLei",
+            is_active=True,
             hq_address_street_1="Test Address Street 1",
             hq_address_city="Test City 1",
             hq_address_state_code="VA",
@@ -99,6 +102,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "testLei",
+                "is_active": True,
                 "hq_address_street_1": "Test Address Street 1",
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
@@ -142,6 +146,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "testLei",
+                "is_active": True,
                 "tax_id": "123456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FIR2",
@@ -173,6 +178,7 @@ class TestInstitutionsApi:
         get_institution_mock.return_value = FinancialInstitutionDao(
             name="Test Bank 123",
             lei="TESTBANK123",
+            is_active=True,
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
             tax_id="123456789",
             rssd_id=1234,
@@ -266,6 +272,7 @@ class TestInstitutionsApi:
             FinancialInstitutionDao(
                 name="Test Bank 123",
                 lei="TESTBANK123",
+                is_active=True,
                 domains=[FinancialInstitutionDomainDao(domain="test123.bank", lei="TESTBANK123")],
                 tax_id="123456789",
                 rssd_id=1234,
@@ -287,6 +294,7 @@ class TestInstitutionsApi:
             FinancialInstitutionDao(
                 name="Test Bank 234",
                 lei="TESTBANK234",
+                is_active=True,
                 domains=[FinancialInstitutionDomainDao(domain="test234.bank", lei="TESTBANK234")],
                 tax_id="123456879",
                 rssd_id=6879,

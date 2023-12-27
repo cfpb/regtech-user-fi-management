@@ -56,24 +56,7 @@ async def get_associated_institutions(request: Request):
     associated_institutions = await repo.get_institutions(request.state.db_session, user.institutions)
     return [
         FinanicialInstitutionAssociationDto(
-            name=institution.name,
-            lei=institution.lei,
-            tax_id=institution.tax_id,
-            rssd_id=institution.rssd_id,
-            primary_federal_regulator_id=institution.primary_federal_regulator_id,
-            hmda_institution_type_id=institution.hmda_institution_type_id,
-            sbl_institution_type_id=institution.sbl_institution_type_id,
-            hq_address_street_1=institution.hq_address_street_1,
-            hq_address_street_2=institution.hq_address_street_2,
-            hq_address_city=institution.hq_address_city,
-            hq_address_state_code=institution.hq_address_state_code,
-            hq_address_zip=institution.hq_address_zip,
-            parent_lei=institution.parent_lei,
-            parent_legal_name=institution.parent_legal_name,
-            parent_rssd_id=institution.parent_rssd_id,
-            top_holder_lei=institution.top_holder_lei,
-            top_holder_legal_name=institution.top_holder_legal_name,
-            top_holder_rssd_id=institution.top_holder_rssd_id,
+            **institution.__dict__,
             approved=email_domain in [inst_domain.domain for inst_domain in institution.domains],
         )
         for institution in associated_institutions

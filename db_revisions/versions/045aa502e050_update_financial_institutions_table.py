@@ -84,7 +84,9 @@ def downgrade() -> None:
     op.drop_constraint(
         constraint_name="fk_federal_regulator_financial_institutions", table_name="financial_institutions"
     )
-    op.drop_constraint(constraint_name="fk_address_state_financial_institutions", table_name="financial_institutions")
+    op.drop_constraint(
+        constraint_name="fk_address_state_code_financial_institutions", table_name="financial_institutions"
+    )
     op.drop_constraint(
         constraint_name="fk_hmda_institution_type_financial_institutions", table_name="financial_institutions"
     )

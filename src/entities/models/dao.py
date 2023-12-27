@@ -18,6 +18,7 @@ class FinancialInstitutionDao(AuditMixin, Base):
     __tablename__ = "financial_institutions"
     lei: Mapped[str] = mapped_column(unique=True, index=True, primary_key=True)
     name: Mapped[str] = mapped_column(index=True)
+    is_active: Mapped[bool] = mapped_column(index=True)
     domains: Mapped[List["FinancialInstitutionDomainDao"]] = relationship(
         "FinancialInstitutionDomainDao", back_populates="fi"
     )

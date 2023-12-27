@@ -50,46 +50,14 @@ async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto)
         stmt = select(FinancialInstitutionDao).filter(FinancialInstitutionDao.lei == fi.lei)
         res = await session.execute(stmt)
         db_fi = res.scalar_one_or_none()
+        fi_data = fi.__dict__.copy()
+        fi_data.pop("_sa_instance_state", None)
         if db_fi is None:
-            db_fi = FinancialInstitutionDao(
-                lei=fi.lei,
-                name=fi.name,
-                tax_id=fi.tax_id,
-                rssd_id=fi.rssd_id,
-                primary_federal_regulator_id=fi.primary_federal_regulator_id,
-                hmda_institution_type_id=fi.hmda_institution_type_id,
-                sbl_institution_type_id=fi.sbl_institution_type_id,
-                hq_address_street_1=fi.hq_address_street_1,
-                hq_address_street_2=fi.hq_address_street_2,
-                hq_address_city=fi.hq_address_city,
-                hq_address_state_code=fi.hq_address_state_code,
-                hq_address_zip=fi.hq_address_zip,
-                parent_lei=fi.parent_lei,
-                parent_legal_name=fi.parent_legal_name,
-                parent_rssd_id=fi.parent_rssd_id,
-                top_holder_lei=fi.top_holder_lei,
-                top_holder_legal_name=fi.top_holder_legal_name,
-                top_holder_rssd_id=fi.top_holder_rssd_id,
-            )
+            db_fi = FinancialInstitutionDao(**fi_data)
             session.add(db_fi)
         else:
-            db_fi.name = fi.name
-            db_fi.tax_id = fi.tax_id
-            db_fi.rssd_id = fi.rssd_id
-            db_fi.primary_federal_regulator_id = fi.primary_federal_regulator_id
-            db_fi.hmda_institution_type_id = fi.hmda_institution_type_id
-            db_fi.sbl_institution_type_id = fi.sbl_institution_type_id
-            db_fi.hq_address_street_1 = fi.hq_address_street_1
-            db_fi.hq_address_street_2 = fi.hq_address_street_2
-            db_fi.hq_address_city = fi.hq_address_city
-            db_fi.hq_address_state_code = fi.hq_address_state_code
-            db_fi.hq_address_zip = fi.hq_address_zip
-            db_fi.parent_lei = fi.parent_lei
-            db_fi.parent_legal_name = fi.parent_legal_name
-            db_fi.parent_rssd_id = fi.parent_rssd_id
-            db_fi.top_holder_lei = fi.top_holder_lei
-            db_fi.top_holder_legal_name = fi.top_holder_legal_name
-            db_fi.top_holder_rssd_id = fi.top_holder_rssd_id
+            for key, value in fi_data.items():
+                setattr(db_fi, key, value)
         await session.commit()
         return db_fi
 

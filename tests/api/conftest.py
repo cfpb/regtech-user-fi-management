@@ -54,6 +54,7 @@ def get_institutions_mock(mocker: MockerFixture) -> Mock:
         FinancialInstitutionDao(
             name="Test Bank 123",
             lei="TESTBANK123",
+            is_active=True,
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
             tax_id="123456789",
             rssd_id=1234,

@@ -21,6 +21,7 @@ class FinancialInsitutionDomainDto(FinancialInsitutionDomainBase):
 class FinancialInstitutionBase(BaseModel):
     lei: str
     name: str
+    is_active: bool
 
 
 class FinancialInstitutionDto(FinancialInstitutionBase):
