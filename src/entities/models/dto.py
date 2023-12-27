@@ -45,10 +45,6 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
         from_attributes = True
 
 
-class FinancialInstitutionWithDomainsDto(FinancialInstitutionDto):
-    domains: List[FinancialInsitutionDomainDto] = []
-
-
 class DeniedDomainDto(BaseModel):
     domain: str
 
@@ -63,10 +59,6 @@ class UserProfile(BaseModel):
 
     def to_keycloak_user(self):
         return {"firstName": self.first_name, "lastName": self.last_name}
-
-
-class FinanicialInstitutionAssociationDto(FinancialInstitutionDto):
-    approved: bool
 
 
 class FederalRegulatorBase(BaseModel):
@@ -111,6 +103,18 @@ class AddressStateDto(AddressStateBase):
 
     class Config:
         from_attributes = True
+
+
+class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
+    primary_federal_regulator: FederalRegulatorDto | None = None
+    hmda_institution_type: HMDAInstitutionTypeDto | None = None
+    sbl_institution_type: SBLInstitutionTypeDto | None = None
+    hq_address_state: AddressStateDto
+    domains: List[FinancialInsitutionDomainDto] = []
+
+
+class FinanicialInstitutionAssociationDto(FinancialInstitutionWithRelationsDto):
+    approved: bool
 
 
 class AuthenticatedUser(BaseUser, BaseModel):

@@ -5,7 +5,15 @@ from fastapi import FastAPI
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials, UnauthenticatedUser
 
-from entities.models import AuthenticatedUser, FinancialInstitutionDao, FinancialInstitutionDomainDao
+from entities.models import (
+    AuthenticatedUser,
+    FinancialInstitutionDao,
+    FinancialInstitutionDomainDao,
+    FederalRegulatorDao,
+    AddressStateDao,
+    HMDAInstitutionTypeDao,
+    SBLInstitutionTypeDao,
+)
 
 
 @pytest.fixture
@@ -58,12 +66,16 @@ def get_institutions_mock(mocker: MockerFixture) -> Mock:
             tax_id="123456789",
             rssd_id=1234,
             primary_federal_regulator_id="FRI1",
+            primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
             hmda_institution_type_id="HIT1",
+            hmda_institution_type=HMDAInstitutionTypeDao(id="HIT1", name="HIT1"),
             sbl_institution_type_id="SIT1",
+            sbl_institution_type=SBLInstitutionTypeDao(id="SIT1", name="SIT1"),
             hq_address_street_1="Test Address Street 1",
             hq_address_street_2="",
             hq_address_city="Test City 1",
             hq_address_state_code="GA",
+            hq_address_state=AddressStateDao(code="GA", name="Georgia"),
             hq_address_zip="00000",
             parent_lei="PARENTTESTBANK123",
             parent_legal_name="PARENT TEST BANK 123",
