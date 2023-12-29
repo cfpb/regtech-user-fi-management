@@ -71,10 +71,11 @@ async def get_associated_institutions(request: Request):
 @router.get("/types/{type}", response_model=List[InstitutionTypeDto])
 @requires("authenticated")
 async def get_institution_types(request: Request, type: InstitutionType):
-    if type == "sbl":
-        return await repo.get_sbl_types(request.state.db_session)
-    else:
-        return await repo.get_hmda_types(request.state.db_session)
+    match type:
+        case "sbl":
+            return await repo.get_sbl_types(request.state.db_session)
+        case "hmda":
+            return await repo.get_hmda_types(request.state.db_session)
 
 
 @router.get("/address-states", response_model=List[AddressStateDto])
