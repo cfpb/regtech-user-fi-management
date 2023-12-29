@@ -62,16 +62,17 @@ class FederalRegulatorDao(AuditMixin, Base):
     name: Mapped[str] = mapped_column(unique=True, nullable=False)
 
 
-class HMDAInstitutionTypeDao(AuditMixin, Base):
-    __tablename__ = "hmda_institution_type"
+class InstitutionTypeMixin(AuditMixin):
     id: Mapped[str] = mapped_column(index=True, primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(unique=True)
 
 
-class SBLInstitutionTypeDao(AuditMixin, Base):
+class HMDAInstitutionTypeDao(InstitutionTypeMixin, Base):
+    __tablename__ = "hmda_institution_type"
+
+
+class SBLInstitutionTypeDao(InstitutionTypeMixin, Base):
     __tablename__ = "sbl_institution_type"
-    id: Mapped[str] = mapped_column(index=True, primary_key=True, unique=True)
-    name: Mapped[str] = mapped_column(unique=True, nullable=False)
 
 
 class AddressStateDao(AuditMixin, Base):

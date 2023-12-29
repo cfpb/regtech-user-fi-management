@@ -16,9 +16,7 @@ __all__ = [
     "SBLInstitutionTypeDao",
     "AddressStateDao",
     "FederalRegulatorDto",
-    # "HMDAInstitutionTypeDto",
     "InstitutionTypeDto",
-    # "SBLInstitutionTypeDto",
     "AddressStateDto",
 ]
 
@@ -42,8 +40,6 @@ from .dto import (
     UserProfile,
     AuthenticatedUser,
     FederalRegulatorDto,
-    # HMDAInstitutionTypeDto,
     InstitutionTypeDto,
-    # SBLInstitutionTypeDto,
     AddressStateDto,
 )
