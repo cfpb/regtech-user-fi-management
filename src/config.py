@@ -1,7 +1,10 @@
 import os
+import logging
+import re
+from urllib import parse
 from typing import Dict, Any
 
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, field_validator, FieldValidationInfo
 from pydantic.networks import HttpUrl, PostgresDsn
 from pydantic.types import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -30,6 +33,18 @@ class Settings(BaseSettings):
     def __init__(self, **data):
         super().__init__(**data)
         self.set_jwt_opts()
+
+    @field_validator("inst_conn", mode="before")
+    @classmethod
+    def encode_db_password(cls, postgres_dsn, info: FieldValidationInfo) -> Any:
+        log = logging.getLogger()
+        pwd = re.search(".*:.*:(.*)@", postgres_dsn)
+        if pwd:
+            pwd_str = pwd.group(1)
+            encoded_password = parse.quote(pwd_str, safe="")
+            return postgres_dsn.replace(pwd_str, encoded_password)
+        else:
+            log.error(f"Postgres DSN did not contain a properly formatted URL: {postgres_dsn}")
 
     def set_jwt_opts(self) -> None:
         """

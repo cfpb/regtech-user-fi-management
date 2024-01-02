@@ -2,6 +2,12 @@ import pytest
 from config import Settings
 
 
+def test_psql_password_encoding():
+    mock_config = {"inst_conn": "postgresql+asyncpg://test:\z9-/tgb76@test/test"}
+    settings = Settings(**mock_config)
+    assert str(settings.inst_conn) == "postgresql+asyncpg://test:%5Cz9-%2Ftgb76@test/test"
+
+
 def test_jwt_opts_valid_values():
     mock_config = {
         "jwt_opts_test1": "true",
