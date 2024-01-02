@@ -7,7 +7,7 @@ Create Date: 2023-12-14 01:21:48.325752
 """
 from typing import Sequence, Union
 from alembic import op
-from entities.models.dao import Base
+from sqlalchemy import MetaData, Table
 
 
 # revision identifiers, used by Alembic.
@@ -15,8 +15,6 @@ revision: str = "7b6ff51002b5"
 down_revision: Union[str, None] = "045aa502e050"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
-
-address_state_table = Base.metadata.tables.get("address_state")
 
 
 def upgrade() -> None:
@@ -80,8 +78,16 @@ def upgrade() -> None:
         {"code": "VI", "name": "Virgin Islands, U.S."},
     ]
 
-    op.bulk_insert(address_state_table, seed_data)
+    meta = MetaData()
+    meta.reflect(op.get_bind())
+    table = Table("address_state", meta)
+
+    op.bulk_insert(table, seed_data)
 
 
 def downgrade() -> None:
-    op.execute(address_state_table.delete())
+    meta = MetaData()
+    meta.reflect(op.get_bind())
+    table = Table("address_state", meta)
+
+    op.execute(table.delete())

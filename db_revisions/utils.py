@@ -1,5 +1,5 @@
 from alembic import op
-from sqlalchemy import engine_from_config
+from sqlalchemy import MetaData, Table, engine_from_config
 import sqlalchemy
 
 
@@ -11,3 +11,10 @@ def table_exists(table_name):
     inspector = sqlalchemy.inspect(engine)
     tables = inspector.get_table_names()
     return table_name in tables
+
+
+def get_table_by_name(table_name):
+    meta = MetaData()
+    meta.reflect(op.get_bind())
+    table = Table(table_name, meta)
+    return table
