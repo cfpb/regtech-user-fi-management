@@ -1,8 +1,6 @@
 import os
-import logging
-import re
 from urllib import parse
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from pydantic import TypeAdapter, field_validator, ValidationInfo
 from pydantic.networks import HttpUrl, PostgresDsn
@@ -17,8 +15,13 @@ if os.getenv("ENV", "LOCAL") == "LOCAL":
 
 
 class Settings(BaseSettings):
-    inst_conn: PostgresDsn
     inst_db_schema: str = "public"
+    inst_db_name: str
+    inst_db_user: str
+    inst_db_pwd: str
+    inst_db_host: str
+    inst_db_scheme: str
+    inst_conn: Optional[PostgresDsn] = None
     auth_client: str
     auth_url: HttpUrl
     token_url: HttpUrl
@@ -36,15 +39,15 @@ class Settings(BaseSettings):
 
     @field_validator("inst_conn", mode="before")
     @classmethod
-    def encode_db_password(cls, postgres_dsn, info: ValidationInfo) -> Any:
-        log = logging.getLogger()
-        pwd = re.search(".*:.*:(.*)@", postgres_dsn)
-        if pwd:
-            pwd_str = pwd.group(1)
-            encoded_password = parse.quote(pwd_str, safe="")
-            return postgres_dsn.replace(pwd_str, encoded_password)
-        else:
-            log.error(f"Postgres DSN did not contain a properly formatted URL: {postgres_dsn}")
+    def build_postgres_dsn(cls, postgres_dsn, info: ValidationInfo) -> Any:
+        postgres_dsn = PostgresDsn.build(
+            scheme=info.data.get("inst_db_scheme"),
+            username=info.data.get("inst_db_user"),
+            password=parse.quote(info.data.get("inst_db_pwd"), safe=""),
+            host=info.data.get("inst_db_host"),
+            path=info.data.get("inst_db_name"),
+        )
+        return str(postgres_dsn)
 
     def set_jwt_opts(self) -> None:
         """
