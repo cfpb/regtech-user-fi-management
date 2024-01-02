@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     inst_db_user: str
     inst_db_pwd: str
     inst_db_host: str
-    inst_db_scheme: str
+    inst_db_scheme: str = "postgresql+asyncpg"
     inst_conn: Optional[PostgresDsn] = None
     auth_client: str
     auth_url: HttpUrl
