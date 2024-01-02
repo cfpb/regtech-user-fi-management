@@ -4,7 +4,7 @@ import re
 from urllib import parse
 from typing import Dict, Any
 
-from pydantic import TypeAdapter, field_validator, FieldValidationInfo
+from pydantic import TypeAdapter, field_validator, ValidationInfo
 from pydantic.networks import HttpUrl, PostgresDsn
 from pydantic.types import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -36,7 +36,7 @@ class Settings(BaseSettings):
 
     @field_validator("inst_conn", mode="before")
     @classmethod
-    def encode_db_password(cls, postgres_dsn, info: FieldValidationInfo) -> Any:
+    def encode_db_password(cls, postgres_dsn, info: ValidationInfo) -> Any:
         log = logging.getLogger()
         pwd = re.search(".*:.*:(.*)@", postgres_dsn)
         if pwd:
