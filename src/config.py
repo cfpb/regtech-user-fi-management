@@ -1,6 +1,6 @@
 import os
 from urllib import parse
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 from pydantic import TypeAdapter, field_validator, ValidationInfo
 from pydantic.networks import HttpUrl, PostgresDsn
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     inst_db_pwd: str
     inst_db_host: str
     inst_db_scheme: str = "postgresql+asyncpg"
-    inst_conn: Optional[PostgresDsn] = None
+    inst_conn: PostgresDsn | None = None
     auth_client: str
     auth_url: HttpUrl
     token_url: HttpUrl
