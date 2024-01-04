@@ -7,7 +7,7 @@ Create Date: 2023-12-14 01:23:17.872728
 """
 from typing import Sequence, Union
 from alembic import op
-from sqlalchemy import MetaData, Table
+from utils import get_table_by_name
 
 
 # revision identifiers, used by Alembic.
@@ -28,16 +28,12 @@ def upgrade() -> None:
         {"id": "OTS", "name": "Office of Thrift Supervision (only valid until July 21, 2011)"},
     ]
 
-    meta = MetaData()
-    meta.reflect(op.get_bind())
-    table = Table("federal_regulator", meta)
+    table = get_table_by_name("federal_regulator")
 
     op.bulk_insert(table, seed_data)
 
 
 def downgrade() -> None:
-    meta = MetaData()
-    meta.reflect(op.get_bind())
-    table = Table("federal_regulator", meta)
+    table = get_table_by_name("federal_regulator")
 
     op.execute(table.delete())
