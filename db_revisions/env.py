@@ -1,4 +1,5 @@
 import os
+from urllib import parse
 from dotenv import load_dotenv
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
@@ -29,7 +30,7 @@ INST_DB_PWD = os.environ.get("INST_DB_PWD")
 INST_DB_HOST = os.environ.get("INST_DB_HOST")
 INST_DB_NAME = os.environ.get("INST_DB_NAME")
 INST_DB_SCHEMA = os.environ.get("INST_DB_SCHEMA")
-INST_CONN = f"postgresql://{INST_DB_USER}:{INST_DB_PWD}@{INST_DB_HOST}/{INST_DB_NAME}"
+INST_CONN = f"postgresql://{INST_DB_USER}:{parse.quote(INST_DB_PWD, safe='')}@{INST_DB_HOST}/{INST_DB_NAME}"
 config.set_main_option("sqlalchemy.url", INST_CONN)
 
 # end specific SBL configuration
