@@ -20,7 +20,7 @@ class FinancialInstitutionDao(AuditMixin, Base):
     name: Mapped[str] = mapped_column(index=True)
     is_active: Mapped[bool] = mapped_column(index=True)
     domains: Mapped[List["FinancialInstitutionDomainDao"]] = relationship(
-        "FinancialInstitutionDomainDao", back_populates="fi"
+        "FinancialInstitutionDomainDao", back_populates="fi", lazy="selectin"
     )
     tax_id: Mapped[str] = mapped_column(String(9), unique=True, nullable=True)
     rssd_id: Mapped[int] = mapped_column(unique=True, nullable=True)

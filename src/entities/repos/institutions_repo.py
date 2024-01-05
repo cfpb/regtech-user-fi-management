@@ -80,7 +80,8 @@ async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto)
         else:
             for key, value in fi_data.items():
                 setattr(db_fi, key, value)
-        await session.commit()
+        await session.flush([db_fi])
+        await session.refresh(db_fi)
         return db_fi
 
 
