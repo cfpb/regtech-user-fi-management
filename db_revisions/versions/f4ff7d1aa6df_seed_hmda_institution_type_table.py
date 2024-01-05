@@ -34,7 +34,7 @@ seed_data = [
     {"id": "15", "name": "MBS of Savings and Loan Holding Co"},
     {"id": "16", "name": "MBS of state chartered Thrift"},
     {"id": "17", "name": "MBS of federally chartered thrift (OCC supervised)"},
-    {"id": "18", "name": "Affiliate of depository institution. MBS is in the same ownership org as a depository."},
+    {"id": "18", "name": "Affiliate of depository institution; MBS is in the same ownership org as a depository"},
 ]
 
 

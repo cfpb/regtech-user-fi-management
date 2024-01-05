@@ -16,18 +16,18 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 seed_data = [
-    {"id": "1", "name": "Bank or savings association."},
-    {"id": "2", "name": "Minority depository institution."},
-    {"id": "3", "name": "Credit union."},
-    {"id": "4", "name": "Nondepository institution."},
-    {"id": "5", "name": "Community development financial institution (CDFI)."},
-    {"id": "6", "name": "Other nonprofit financial institution."},
-    {"id": "7", "name": "Farm Credit System institution."},
-    {"id": "8", "name": "Government lender."},
-    {"id": "9", "name": "Commercial finance company."},
-    {"id": "10", "name": "Equipment finance company."},
-    {"id": "11", "name": "Industrial loan company."},
-    {"id": "12", "name": "Online lender."},
+    {"id": "1", "name": "Bank or savings association"},
+    {"id": "2", "name": "Minority depository institution"},
+    {"id": "3", "name": "Credit union"},
+    {"id": "4", "name": "Nondepository institution"},
+    {"id": "5", "name": "Community development financial institution (CDFI)"},
+    {"id": "6", "name": "Other nonprofit financial institution"},
+    {"id": "7", "name": "Farm Credit System institution"},
+    {"id": "8", "name": "Government lender"},
+    {"id": "9", "name": "Commercial finance company"},
+    {"id": "10", "name": "Equipment finance company"},
+    {"id": "11", "name": "Industrial loan company"},
+    {"id": "12", "name": "Online lender"},
     {"id": "13", "name": "Other"},
 ]
 

@@ -97,7 +97,7 @@ def test_sbl_institution_type_data_seed(alembic_runner: MigrationContext, alembi
         sbl_institution_type_rows = conn.execute(
             text("SELECT id, name from %s where id = :id " % sbl_institution_type_tablename), (dict(id="1"))
         ).fetchall()
-    sbl_institution_type_expected = [("1", "Bank or savings association.")]
+    sbl_institution_type_expected = [("1", "Bank or savings association")]
 
     assert sbl_institution_type_rows == sbl_institution_type_expected
 
