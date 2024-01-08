@@ -69,17 +69,9 @@ async def get_federal_regulators(session: AsyncSession) -> List[FederalRegulator
 
 async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto) -> FinancialInstitutionDao:
     async with session.begin():
-        stmt = select(FinancialInstitutionDao).filter(FinancialInstitutionDao.lei == fi.lei)
-        res = await session.execute(stmt)
-        db_fi = res.scalar_one_or_none()
         fi_data = fi.__dict__.copy()
         fi_data.pop("_sa_instance_state", None)
-        if db_fi is None:
-            db_fi = FinancialInstitutionDao(**fi_data)
-            session.add(db_fi)
-        else:
-            for key, value in fi_data.items():
-                setattr(db_fi, key, value)
+        db_fi = await session.merge(FinancialInstitutionDao(**fi_data))
         await session.flush([db_fi])
         await session.refresh(db_fi)
         return db_fi
