@@ -16,6 +16,7 @@ from entities.models import (
     DeniedDomainDao,
     AddressStateDao,
     FederalRegulatorDao,
+    SblTypeMappingDao,
 )
 
 
@@ -72,15 +73,12 @@ async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto)
         fi_data = fi.__dict__.copy()
         fi_data.pop("_sa_instance_state", None)
 
-        # Populate with model objects from SBLInstitutionTypeDao and clear out
-        # the id field since it's just a view
-        if "sbl_institution_type_ids" in fi_data:
-            sbl_type_stmt = select(SBLInstitutionTypeDao).filter(
-                SBLInstitutionTypeDao.id.in_(fi_data["sbl_institution_type_ids"])
-            )
-            sbl_types = await session.scalars(sbl_type_stmt)
-            fi_data["sbl_institution_types"] = sbl_types.all()
-            del fi_data["sbl_institution_type_ids"]
+        if "sbl_institution_types" in fi_data:
+            types_association = [
+                SblTypeMappingDao(type_id=t) if type(t) is str else SblTypeMappingDao(type_id=t.id, details=t.details)
+                for t in fi.sbl_institution_types
+            ]
+            fi_data["sbl_institution_types"] = types_association
 
         db_fi = await session.merge(FinancialInstitutionDao(**fi_data))
         await session.flush([db_fi])

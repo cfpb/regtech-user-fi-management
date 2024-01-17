@@ -18,6 +18,9 @@ __all__ = [
     "FederalRegulatorDto",
     "InstitutionTypeDto",
     "AddressStateDto",
+    "SblTypeMappingDao",
+    "SblTypeAssociationDto",
+    "SblTypeAssociationDetailsDto",
 ]
 
 from .dao import (
@@ -29,6 +32,7 @@ from .dao import (
     HMDAInstitutionTypeDao,
     SBLInstitutionTypeDao,
     AddressStateDao,
+    SblTypeMappingDao,
 )
 from .dto import (
     FinancialInstitutionDto,
@@ -42,4 +46,6 @@ from .dto import (
     FederalRegulatorDto,
     InstitutionTypeDto,
     AddressStateDto,
+    SblTypeAssociationDto,
+    SblTypeAssociationDetailsDto,
 )

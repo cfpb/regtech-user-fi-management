@@ -10,7 +10,7 @@ def test_financial_institutions_schema_migrate_up_to_045aa502e050(
     alembic_runner.migrate_up_to("045aa502e050")
 
     inspector = sqlalchemy.inspect(alembic_engine)
-    expexted_columns = [
+    expected_columns = [
         "lei",
         "name",
         "event_time",
@@ -35,7 +35,7 @@ def test_financial_institutions_schema_migrate_up_to_045aa502e050(
     columns = inspector.get_columns("financial_institutions")
     columns_names = [column.get("name") for column in columns]
 
-    assert columns_names == expexted_columns
+    assert columns_names == expected_columns
 
 
 def test_financial_institutions_schema_migrate_up_to_20e0d51d8be9(
@@ -44,7 +44,7 @@ def test_financial_institutions_schema_migrate_up_to_20e0d51d8be9(
     alembic_runner.migrate_up_to("20e0d51d8be9")
 
     inspector = sqlalchemy.inspect(alembic_engine)
-    expexted_columns = [
+    expected_columns = [
         "lei",
         "name",
         "event_time",
@@ -53,4 +53,14 @@ def test_financial_institutions_schema_migrate_up_to_20e0d51d8be9(
     columns = inspector.get_columns("financial_institutions")
     columns_names = [column.get("name") for column in columns]
 
-    assert columns_names == expexted_columns
+    assert columns_names == expected_columns
+
+
+def test_fi_types_table_6826f05140cd(alembic_runner: MigrationContext, alembic_engine: Engine):
+    alembic_runner.migrate_up_to("6826f05140cd")
+    inspector = sqlalchemy.inspect(alembic_engine)
+    expected_columns = ["fi_id", "type_id", "details"]
+    columns = inspector.get_columns("fi_to_type_mapping")
+    columns_names = [column.get("name") for column in columns]
+
+    assert columns_names == expected_columns

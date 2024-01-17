@@ -12,6 +12,7 @@ from entities.models import (
     AddressStateDao,
     HMDAInstitutionTypeDao,
     SBLInstitutionTypeDao,
+    SblTypeMappingDao,
 )
 
 
@@ -47,7 +48,7 @@ class TestInstitutionsApi:
             primary_federal_regulator=FederalRegulatorDao(id="FRI2", name="FRI2"),
             hmda_institution_type_id="HIT2",
             hmda_institution_type=HMDAInstitutionTypeDao(id="HIT2", name="HIT2"),
-            sbl_institution_types=[SBLInstitutionTypeDao(id="SIT2", name="SIT2")],
+            sbl_institution_types=[SblTypeMappingDao(sbl_type=SBLInstitutionTypeDao(id="SIT2", name="SIT2"))],
             hq_address_street_1="Test Address Street 1",
             hq_address_street_2="",
             hq_address_city="Test City 1",
@@ -140,6 +141,26 @@ class TestInstitutionsApi:
         )
         assert res.status_code == 422
 
+    def test_create_institution_missing_sbl_type_free_form(
+        self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock
+    ):
+        client = TestClient(app_fixture)
+        res = client.post(
+            "/v1/institutions/",
+            json={
+                "name": "testName",
+                "lei": "testLei",
+                "is_active": True,
+                "hq_address_street_1": "Test Address Street 1",
+                "hq_address_city": "Test City 1",
+                "hq_address_state_code": "VA",
+                "hq_address_zip": "00000",
+                "sbl_institution_types": [{"id": "13"}],
+            },
+        )
+        assert res.status_code == 422
+        assert "requires additional details." in res.json()["detail"][0]["msg"]
+
     def test_create_institution_authed_no_permission(self, app_fixture: FastAPI, auth_mock: Mock):
         claims = {
             "name": "test",
@@ -197,7 +218,7 @@ class TestInstitutionsApi:
             primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
             hmda_institution_type_id="HIT1",
             hmda_institution_type=HMDAInstitutionTypeDao(id="HIT1", name="HIT1"),
-            sbl_institution_types=[SBLInstitutionTypeDao(id="SIT1", name="SIT1")],
+            sbl_institution_types=[SblTypeMappingDao(sbl_type=SBLInstitutionTypeDao(id="SIT1", name="SIT1"))],
             hq_address_street_1="Test Address Street 1",
             hq_address_street_2="",
             hq_address_city="Test City 1",
@@ -294,7 +315,7 @@ class TestInstitutionsApi:
                 primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
                 hmda_institution_type_id="HIT1",
                 hmda_institution_type=HMDAInstitutionTypeDao(id="HIT1", name="HIT1"),
-                sbl_institution_types=[SBLInstitutionTypeDao(id="SIT1", name="SIT1")],
+                sbl_institution_types=[SblTypeMappingDao(sbl_type=SBLInstitutionTypeDao(id="SIT1", name="SIT1"))],
                 hq_address_street_1="Test Address Street 1",
                 hq_address_street_2="",
                 hq_address_city="Test City 1",
@@ -319,7 +340,7 @@ class TestInstitutionsApi:
                 primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
                 hmda_institution_type_id="HIT1",
                 hmda_institution_type=HMDAInstitutionTypeDao(id="HIT1", name="HIT1"),
-                sbl_institution_types=[SBLInstitutionTypeDao(id="SIT1", name="SIT1")],
+                sbl_institution_types=[SblTypeMappingDao(sbl_type=SBLInstitutionTypeDao(id="SIT1", name="SIT1"))],
                 hq_address_street_1="Test Address Street 2",
                 hq_address_street_2="",
                 hq_address_city="Test City 2",

@@ -1,10 +1,9 @@
 from datetime import datetime
 from typing import List
-from sqlalchemy import ForeignKey, func, String, Table, Column
+from sqlalchemy import ForeignKey, func, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
 
 
 class Base(AsyncAttrs, DeclarativeBase):
@@ -15,12 +14,12 @@ class AuditMixin(object):
     event_time: Mapped[datetime] = mapped_column(server_default=func.now())
 
 
-fi_to_type_mapping = Table(
-    "fi_to_type_mapping",
-    Base.metadata,
-    Column("fi_id", ForeignKey("financial_institutions.lei"), primary_key=True),
-    Column("type_id", ForeignKey("sbl_institution_type.id"), primary_key=True),
-)
+class SblTypeMappingDao(Base):
+    __tablename__ = "fi_to_type_mapping"
+    lei: Mapped[str] = mapped_column("fi_id", ForeignKey("financial_institutions.lei"), primary_key=True)
+    type_id: Mapped[str] = mapped_column(ForeignKey("sbl_institution_type.id"), primary_key=True)
+    sbl_type: Mapped["SBLInstitutionTypeDao"] = relationship(lazy="selectin")
+    details: Mapped[str] = mapped_column(nullable=True)
 
 
 class FinancialInstitutionDao(AuditMixin, Base):
@@ -37,10 +36,7 @@ class FinancialInstitutionDao(AuditMixin, Base):
     primary_federal_regulator: Mapped["FederalRegulatorDao"] = relationship(lazy="selectin")
     hmda_institution_type_id: Mapped[str] = mapped_column(ForeignKey("hmda_institution_type.id"), nullable=True)
     hmda_institution_type: Mapped["HMDAInstitutionTypeDao"] = relationship(lazy="selectin")
-    sbl_institution_types: Mapped[List["SBLInstitutionTypeDao"]] = relationship(
-        lazy="selectin", secondary=fi_to_type_mapping
-    )
-    sbl_institution_type_ids: AssociationProxy[List[str]] = association_proxy("sbl_institution_types", "id")
+    sbl_institution_types: Mapped[List[SblTypeMappingDao]] = relationship(lazy="selectin", cascade="all, delete-orphan")
     hq_address_street_1: Mapped[str]
     hq_address_street_2: Mapped[str] = mapped_column(nullable=True)
     hq_address_city: Mapped[str]

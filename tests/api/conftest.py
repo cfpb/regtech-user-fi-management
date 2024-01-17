@@ -13,6 +13,7 @@ from entities.models import (
     AddressStateDao,
     HMDAInstitutionTypeDao,
     SBLInstitutionTypeDao,
+    SblTypeMappingDao,
 )
 
 
@@ -70,7 +71,7 @@ def get_institutions_mock(mocker: MockerFixture) -> Mock:
             primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
             hmda_institution_type_id="HIT1",
             hmda_institution_type=HMDAInstitutionTypeDao(id="HIT1", name="HIT1"),
-            sbl_institution_types=[SBLInstitutionTypeDao(id="SIT1", name="SIT1")],
+            sbl_institution_types=[SblTypeMappingDao(sbl_type=SBLInstitutionTypeDao(id="SIT1", name="SIT1"))],
             hq_address_street_1="Test Address Street 1",
             hq_address_street_2="",
             hq_address_city="Test City 1",

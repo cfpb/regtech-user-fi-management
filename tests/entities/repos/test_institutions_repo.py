@@ -13,6 +13,8 @@ from entities.models import (
     FederalRegulatorDao,
     HMDAInstitutionTypeDao,
     SBLInstitutionTypeDao,
+    SblTypeMappingDao,
+    SblTypeAssociationDto,
 )
 from entities.repos import institutions_repo as repo
 
@@ -39,9 +41,9 @@ class TestInstitutionsRepo:
             HMDAInstitutionTypeDao(id="HIT3", name="Test HMDA Instituion ID 3"),
         )
         sbl_it_dao_sit1, sbl_it_dao_sit2, sbl_it_dao_sit3 = (
-            SBLInstitutionTypeDao(id="SIT1", name="Test SBL Instituion ID 1"),
-            SBLInstitutionTypeDao(id="SIT2", name="Test SBL Instituion ID 2"),
-            SBLInstitutionTypeDao(id="SIT3", name="Test SBL Instituion ID 3"),
+            SBLInstitutionTypeDao(id="1", name="Test SBL Instituion ID 1"),
+            SBLInstitutionTypeDao(id="2", name="Test SBL Instituion ID 2"),
+            SBLInstitutionTypeDao(id="13", name="Test SBL Instituion ID Other"),
         )
         fi_dao_123, fi_dao_456, fi_dao_sub_456 = (
             FinancialInstitutionDao(
@@ -53,7 +55,7 @@ class TestInstitutionsRepo:
                 rssd_id=1234,
                 primary_federal_regulator_id="FRI1",
                 hmda_institution_type_id="HIT1",
-                sbl_institution_types=[sbl_it_dao_sit1],
+                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit1)],
                 hq_address_street_1="Test Address Street 1",
                 hq_address_street_2="",
                 hq_address_city="Test City 1",
@@ -75,7 +77,7 @@ class TestInstitutionsRepo:
                 rssd_id=4321,
                 primary_federal_regulator_id="FRI2",
                 hmda_institution_type_id="HIT2",
-                sbl_institution_types=[sbl_it_dao_sit2],
+                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit2)],
                 hq_address_street_1="Test Address Street 2",
                 hq_address_street_2="",
                 hq_address_city="Test City 2",
@@ -97,7 +99,7 @@ class TestInstitutionsRepo:
                 rssd_id=2134,
                 primary_federal_regulator_id="FRI3",
                 hmda_institution_type_id="HIT3",
-                sbl_institution_types=[sbl_it_dao_sit3],
+                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit3, details="test")],
                 hq_address_street_1="Test Address Street 3",
                 hq_address_street_2="",
                 hq_address_city="Test City 3",
@@ -134,7 +136,7 @@ class TestInstitutionsRepo:
         await transaction_session.commit()
 
     async def test_get_sbl_types(self, query_session: AsyncSession):
-        expected_ids = {"SIT1", "SIT2", "SIT3"}
+        expected_ids = {"1", "2", "13"}
         res = await repo.get_sbl_types(query_session)
         assert len(res) == 3
         assert set([r.id for r in res]) == expected_ids
@@ -199,7 +201,7 @@ class TestInstitutionsRepo:
                 rssd_id=6543,
                 primary_federal_regulator_id="FRI3",
                 hmda_institution_type_id="HIT3",
-                sbl_institution_type_ids=["SIT3"],
+                sbl_institution_types=[SblTypeAssociationDto(id="1")],
                 hq_address_street_1="Test Address Street 3",
                 hq_address_street_2="",
                 hq_address_city="Test City 3",
@@ -218,7 +220,7 @@ class TestInstitutionsRepo:
         assert len(res) == 4
         new_sbl_types = next(iter([fi for fi in res if fi.lei == "NEWBANK123"])).sbl_institution_types
         assert len(new_sbl_types) == 1
-        assert next(iter(new_sbl_types)).name == "Test SBL Instituion ID 3"
+        assert next(iter(new_sbl_types)).sbl_type.name == "Test SBL Instituion ID 1"
 
     async def test_add_institution_only_required_fields(
         self, transaction_session: AsyncSession, query_session: AsyncSession
@@ -313,8 +315,8 @@ class TestInstitutionsRepo:
 
     async def test_institution_mapped_to_sbl_it_valid(self, query_session: AsyncSession):
         res = await repo.get_institutions(query_session, leis=["TESTBANK123"])
-        assert res[0].sbl_institution_types[0].name == "Test SBL Instituion ID 1"
+        assert res[0].sbl_institution_types[0].sbl_type.name == "Test SBL Instituion ID 1"
 
     async def test_institution_mapped_to_sbl_it_invalid(self, query_session: AsyncSession):
         res = await repo.get_institutions(query_session, leis=["TESTBANK456"])
-        assert res[0].sbl_institution_types[0].name != "Test SBL Instituion ID 1"
+        assert res[0].sbl_institution_types[0].sbl_type.name != "Test SBL Instituion ID 1"
