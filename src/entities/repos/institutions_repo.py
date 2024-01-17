@@ -75,7 +75,7 @@ async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto)
 
         if "sbl_institution_types" in fi_data:
             types_association = [
-                SblTypeMappingDao(type_id=t) if type(t) is str else SblTypeMappingDao(type_id=t.id, details=t.details)
+                SblTypeMappingDao(type_id=t) if isinstance(t, str) else SblTypeMappingDao(type_id=t.id, details=t.details)
                 for t in fi.sbl_institution_types
             ]
             fi_data["sbl_institution_types"] = types_association
