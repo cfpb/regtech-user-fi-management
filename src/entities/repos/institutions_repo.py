@@ -83,7 +83,9 @@ async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto)
             fi_data["sbl_institution_types"] = types_association
 
         db_fi = await session.merge(FinancialInstitutionDao(**fi_data))
-        return await session.get(FinancialInstitutionDao, db_fi.lei)
+        await session.flush()
+        await session.refresh(db_fi)
+        return db_fi
 
 
 async def add_domains(
