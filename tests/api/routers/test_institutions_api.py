@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials
-from oauth2.oauth2_backend import AuthenticatedUser
+from regtech_api_commons.models.auth import AuthenticatedUser
 from entities.models import (
     FinancialInstitutionDao,
     FinancialInstitutionDomainDao,
@@ -62,7 +62,7 @@ class TestInstitutionsApi:
             top_holder_legal_name="TOP HOLDER LEI 123",
             top_holder_rssd_id=123456,
         )
-        upsert_group_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.upsert_group")
+        upsert_group_mock = mocker.patch("regtech_api_commons.oauth2.oauth2_admin.OAuth2Admin.upsert_group")
         upsert_group_mock.return_value = "leiGroup"
         client = TestClient(app_fixture)
         res = client.post(
@@ -106,7 +106,7 @@ class TestInstitutionsApi:
             hq_address_state=AddressStateDao(code="VA", name="Virginia"),
             hq_address_zip="00000",
         )
-        upsert_group_mock = mocker.patch("oauth2.oauth2_admin.OAuth2Admin.upsert_group")
+        upsert_group_mock = mocker.patch("regtech_api_commons.oauth2.oauth2_admin.OAuth2Admin.upsert_group")
         upsert_group_mock.return_value = "leiGroup"
         client = TestClient(app_fixture)
         res = client.post(

@@ -4,9 +4,8 @@ import pytest
 from fastapi import FastAPI
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials, UnauthenticatedUser
-
+from regtech_api_commons.models.auth import AuthenticatedUser
 from entities.models import (
-    AuthenticatedUser,
     FinancialInstitutionDao,
     FinancialInstitutionDomainDao,
     FederalRegulatorDao,
@@ -32,7 +31,7 @@ def app_fixture(mocker: MockerFixture) -> FastAPI:
 
 @pytest.fixture
 def auth_mock(mocker: MockerFixture) -> Mock:
-    return mocker.patch("oauth2.oauth2_backend.BearerTokenAuthBackend.authenticate")
+    return mocker.patch("regtech_api_commons.oauth2.oauth2_backend.BearerTokenAuthBackend.authenticate")
 
 
 @pytest.fixture
