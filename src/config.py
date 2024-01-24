@@ -24,11 +24,9 @@ class Settings(BaseSettings):
     inst_db_host: str
     inst_db_scheme: str = "postgresql+asyncpg"
     inst_conn: PostgresDsn | None = None
-    # jwt_opts: Dict[str, bool | int] = {}
 
     def __init__(self, **data):
         super().__init__(**data)
-        # self.set_jwt_opts()
 
     @field_validator("inst_conn", mode="before")
     @classmethod
