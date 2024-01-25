@@ -6,9 +6,6 @@ from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials
 
 from regtech_api_commons.models.auth import AuthenticatedUser
-from regtech_api_commons.oauth2 import oauth2_admin
-
-oauth2_admin.OAuth2Admin.update_user
 
 
 class TestAdminApi:
