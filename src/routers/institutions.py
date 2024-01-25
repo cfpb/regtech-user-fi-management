@@ -1,6 +1,7 @@
 from fastapi import Depends, Request, HTTPException
 from http import HTTPStatus
 from regtech_api_commons.oauth2.oauth2_admin import OAuth2Admin
+from config import kc_settings
 from regtech_api_commons.api import Router
 from dependencies import check_domain, parse_leis, get_email_domain
 from typing import Annotated, List, Tuple, Literal
@@ -19,6 +20,8 @@ from entities.models import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.authentication import requires
 from regtech_api_commons.models.auth import AuthenticatedUser
+
+oauth2_admin = OAuth2Admin(kc_settings)
 
 InstitutionType = Literal["sbl", "hmda"]
 
@@ -49,7 +52,7 @@ async def create_institution(
     fi: FinancialInstitutionDto,
 ):
     db_fi = await repo.upsert_institution(request.state.db_session, fi)
-    kc_id = OAuth2Admin.upsert_group(fi.lei, fi.name)
+    kc_id = oauth2_admin.upsert_group(fi.lei, fi.name)
     return kc_id, db_fi
 
 
