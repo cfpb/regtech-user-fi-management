@@ -27,8 +27,8 @@ async def setup_fi_dao_listeners():
             if not attr_hist.has_changes():
                 continue
             if attr.key == "sbl_institution_types":
-                old_types = [o.as_dict() for o in attr_hist.deleted]
-                new_types = [{**n.as_dict(), "version": new_version} for n in attr_hist.added]
+                old_types = [o.as_db_dict() for o in attr_hist.deleted]
+                new_types = [{**n.as_db_dict(), "version": new_version} for n in attr_hist.added]
                 changes[attr.key] = {"old": old_types, "new": new_types}
             else:
                 changes[attr.key] = {"old": attr_hist.deleted, "new": attr_hist.added}
