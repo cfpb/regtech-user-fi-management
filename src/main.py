@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from alembic.config import Config
 from alembic import command
+from entities.listeners import setup_fi_dao_listeners
 
 from routers import admin_router, institutions_router
 
@@ -33,6 +34,7 @@ async def lifespan(app_: FastAPI):
     log.info("Starting up...")
     log.info("run alembic upgrade head...")
     run_migrations()
+    await setup_fi_dao_listeners()
     yield
     log.info("Shutting down...")
 

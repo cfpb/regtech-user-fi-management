@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import List
-from sqlalchemy import ForeignKey, func, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import ForeignKey, func, String, inspect
+from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs
 
 
@@ -16,14 +15,24 @@ class AuditMixin(object):
 
 class SblTypeMappingDao(Base):
     __tablename__ = "fi_to_type_mapping"
+    version: Mapped[int] = mapped_column(nullable=False, default=0)
+    __mapper_args__ = {"version_id_col": version, "version_id_generator": False}
     lei: Mapped[str] = mapped_column("fi_id", ForeignKey("financial_institutions.lei"), primary_key=True)
     type_id: Mapped[str] = mapped_column(ForeignKey("sbl_institution_type.id"), primary_key=True)
     sbl_type: Mapped["SBLInstitutionTypeDao"] = relationship(lazy="selectin")
-    details: Mapped[str] = mapped_column(nullable=True)
+    details: Mapped[str] = mapped_column()
+    modified_by: Mapped[str] = mapped_column()
+    def as_db_dict(self):
+        data = {}
+        for attr, column in inspect(self.__class__).c.items():
+            data[column.name] = getattr(self, attr)
+        return data
 
 
 class FinancialInstitutionDao(AuditMixin, Base):
     __tablename__ = "financial_institutions"
+    version: Mapped[int] = mapped_column(nullable=False, default=0)
+    __mapper_args__ = {"version_id_col": version, "version_id_generator": False}
     lei: Mapped[str] = mapped_column(unique=True, index=True, primary_key=True)
     name: Mapped[str] = mapped_column(index=True)
     is_active: Mapped[bool] = mapped_column(index=True)
@@ -49,6 +58,7 @@ class FinancialInstitutionDao(AuditMixin, Base):
     top_holder_lei: Mapped[str] = mapped_column(String(20), nullable=True)
     top_holder_legal_name: Mapped[str] = mapped_column(nullable=True)
     top_holder_rssd_id: Mapped[int] = mapped_column(nullable=True)
+    modified_by: Mapped[str] = mapped_column()
 
 
 class FinancialInstitutionDomainDao(AuditMixin, Base):

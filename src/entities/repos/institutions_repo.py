@@ -1,8 +1,11 @@
+from datetime import datetime
 from typing import List
 
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from regtech_api_commons.models import AuthenticatedUser
 
 from .repo_utils import query_type
 
@@ -68,21 +71,21 @@ async def get_federal_regulators(session: AsyncSession) -> List[FederalRegulator
     return await query_type(session, FederalRegulatorDao)
 
 
-async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto) -> FinancialInstitutionDao:
+async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto, user: AuthenticatedUser) -> FinancialInstitutionDao:
     async with session.begin():
         fi_data = fi.__dict__.copy()
         fi_data.pop("_sa_instance_state", None)
 
         if "sbl_institution_types" in fi_data:
             types_association = [
-                SblTypeMappingDao(type_id=t)
+                SblTypeMappingDao(type_id=t, lei=fi.lei, modified_by=user.id)
                 if isinstance(t, str)
-                else SblTypeMappingDao(type_id=t.id, details=t.details)
+                else SblTypeMappingDao(type_id=t.id, details=t.details, lei=fi.lei, modified_by=user.id)
                 for t in fi.sbl_institution_types
             ]
             fi_data["sbl_institution_types"] = types_association
 
-        db_fi = await session.merge(FinancialInstitutionDao(**fi_data))
+        db_fi = await session.merge(FinancialInstitutionDao(**fi_data, modified_by=user.id, event_time=datetime.now()))
         await session.flush()
         await session.refresh(db_fi)
         return db_fi

@@ -51,7 +51,7 @@ async def create_institution(
     request: Request,
     fi: FinancialInstitutionDto,
 ):
-    db_fi = await repo.upsert_institution(request.state.db_session, fi)
+    db_fi = await repo.upsert_institution(request.state.db_session, fi, request.user)
     kc_id = oauth2_admin.upsert_group(fi.lei, fi.name)
     return kc_id, db_fi
 
