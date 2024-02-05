@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '329c70502325'
-down_revision: Union[str, None] = '3f893e52d05c'
+revision: str = "329c70502325"
+down_revision: Union[str, None] = "3f893e52d05c"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -43,7 +43,7 @@ def upgrade() -> None:
         sa.Column("event_time", sa.DateTime(), server_default=sa.func.now(), nullable=False),
         sa.Column("modified_by", sa.String()),
         sa.Column("changeset", sa.JSON),
-        sa.PrimaryKeyConstraint("lei", "version")
+        sa.PrimaryKeyConstraint("lei", "version"),
     )
 
 

@@ -37,6 +37,7 @@ def auth_mock(mocker: MockerFixture) -> Mock:
 @pytest.fixture
 def authed_user_mock(auth_mock: Mock) -> Mock:
     claims = {
+        "id": "test_user_id",
         "name": "test",
         "preferred_username": "test_user",
         "email": "test@local.host",
@@ -56,7 +57,7 @@ def unauthed_user_mock(auth_mock: Mock) -> Mock:
 
 
 @pytest.fixture
-def get_institutions_mock(mocker: MockerFixture) -> Mock:
+def get_institutions_mock(mocker: MockerFixture, authed_user_mock: Mock) -> Mock:
     mock = mocker.patch("entities.repos.institutions_repo.get_institutions")
     mock.return_value = [
         FinancialInstitutionDao(
@@ -83,6 +84,7 @@ def get_institutions_mock(mocker: MockerFixture) -> Mock:
             top_holder_lei="TOPHOLDERLEI123",
             top_holder_legal_name="TOP HOLDER LEI 123",
             top_holder_rssd_id=123456,
+            modified_by="test_user_id",
         )
     ]
     return mock

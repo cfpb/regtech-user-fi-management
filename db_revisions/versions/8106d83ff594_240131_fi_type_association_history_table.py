@@ -12,10 +12,11 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '8106d83ff594'
-down_revision: Union[str, None] = '329c70502325'
+revision: str = "8106d83ff594"
+down_revision: Union[str, None] = "329c70502325"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
+
 
 def upgrade() -> None:
     op.create_table(
@@ -27,7 +28,7 @@ def upgrade() -> None:
         sa.Column("modified_by", sa.String()),
         sa.Column("event_time", sa.DateTime(), server_default=sa.func.now(), nullable=False),
         sa.Column("changeset", sa.JSON),
-        sa.PrimaryKeyConstraint("fi_id", "type_id", "version")
+        sa.PrimaryKeyConstraint("fi_id", "type_id", "version"),
     )
 
 

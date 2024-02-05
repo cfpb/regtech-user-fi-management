@@ -17,9 +17,12 @@ from entities.models import (
     SblTypeAssociationDto,
 )
 from entities.repos import institutions_repo as repo
+from regtech_api_commons.models import AuthenticatedUser
 
 
 class TestInstitutionsRepo:
+    auth_user: AuthenticatedUser = AuthenticatedUser.from_claim({"id": "test_user_id"})
+
     @pytest.fixture(scope="function", autouse=True)
     async def setup(
         self,
@@ -55,7 +58,7 @@ class TestInstitutionsRepo:
                 rssd_id=1234,
                 primary_federal_regulator_id="FRI1",
                 hmda_institution_type_id="HIT1",
-                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit1)],
+                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit1, modified_by="test_user_id")],
                 hq_address_street_1="Test Address Street 1",
                 hq_address_street_2="",
                 hq_address_city="Test City 1",
@@ -67,6 +70,7 @@ class TestInstitutionsRepo:
                 top_holder_lei="TOPHOLDERLEI123",
                 top_holder_legal_name="TOP HOLDER LEI 123",
                 top_holder_rssd_id=123456,
+                modified_by="test_user_id",
             ),
             FinancialInstitutionDao(
                 name="Test Bank 456",
@@ -77,7 +81,7 @@ class TestInstitutionsRepo:
                 rssd_id=4321,
                 primary_federal_regulator_id="FRI2",
                 hmda_institution_type_id="HIT2",
-                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit2)],
+                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit2, modified_by="test_user_id")],
                 hq_address_street_1="Test Address Street 2",
                 hq_address_street_2="",
                 hq_address_city="Test City 2",
@@ -89,6 +93,7 @@ class TestInstitutionsRepo:
                 top_holder_lei="TOPHOLDERLEI456",
                 top_holder_legal_name="TOP HOLDER LEI 456",
                 top_holder_rssd_id=654321,
+                modified_by="test_user_id",
             ),
             FinancialInstitutionDao(
                 name="Test Sub Bank 456",
@@ -99,7 +104,9 @@ class TestInstitutionsRepo:
                 rssd_id=2134,
                 primary_federal_regulator_id="FRI3",
                 hmda_institution_type_id="HIT3",
-                sbl_institution_types=[SblTypeMappingDao(sbl_type=sbl_it_dao_sit3, details="test")],
+                sbl_institution_types=[
+                    SblTypeMappingDao(sbl_type=sbl_it_dao_sit3, modified_by="test_user_id", details="test")
+                ],
                 hq_address_street_1="Test Address Street 3",
                 hq_address_street_2="",
                 hq_address_city="Test City 3",
@@ -111,6 +118,7 @@ class TestInstitutionsRepo:
                 top_holder_lei="TOPHOLDERLEI456",
                 top_holder_legal_name="TOP HOLDER LEI SUB BANK 456",
                 top_holder_rssd_id=321654,
+                modified_by="test_user_id",
             ),
         )
 
@@ -213,7 +221,9 @@ class TestInstitutionsRepo:
                 top_holder_lei="TOPHOLDERNEWBANKLEI123",
                 top_holder_legal_name="TOP HOLDER NEW BANK LEI 123",
                 top_holder_rssd_id=876543,
+                modified_by="test_user_id",
             ),
+            self.auth_user,
         )
         assert db_fi.domains == []
         res = await repo.get_institutions(transaction_session)
@@ -227,7 +237,7 @@ class TestInstitutionsRepo:
     ):
         await repo.upsert_institution(
             transaction_session,
-            FinancialInstitutionDao(
+            FinancialInstitutionDto(
                 name="Minimal Bank 123",
                 lei="MINBANK123",
                 is_active=True,
@@ -236,6 +246,7 @@ class TestInstitutionsRepo:
                 hq_address_state_code="FL",
                 hq_address_zip="22222",
             ),
+            self.auth_user,
         )
         res = await repo.get_institution(query_session, "MINBANK123")
         assert res is not None
@@ -247,19 +258,20 @@ class TestInstitutionsRepo:
         with pytest.raises(Exception) as e:
             await repo.upsert_institution(
                 transaction_session,
-                FinancialInstitutionDao(
+                FinancialInstitutionDto(
                     name="Minimal Bank 123",
                     lei="MINBANK123",
                 ),
+                self.auth_user,
             )
-        assert "not null constraint failed" in str(e.value).lower()
+        assert "field required" in str(e.value).lower()
         res = await repo.get_institution(query_session, "MINBANK123")
         assert res is None
 
     async def test_update_institution(self, transaction_session: AsyncSession):
         await repo.upsert_institution(
             transaction_session,
-            FinancialInstitutionDao(
+            FinancialInstitutionDto(
                 name="Test Bank 234",
                 lei="TESTBANK123",
                 is_active=True,
@@ -268,6 +280,7 @@ class TestInstitutionsRepo:
                 hq_address_state_code="GA",
                 hq_address_zip="00000",
             ),
+            self.auth_user,
         )
         res = await repo.get_institutions(transaction_session)
         assert len(res) == 3

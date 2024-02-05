@@ -71,7 +71,9 @@ async def get_federal_regulators(session: AsyncSession) -> List[FederalRegulator
     return await query_type(session, FederalRegulatorDao)
 
 
-async def upsert_institution(session: AsyncSession, fi: FinancialInstitutionDto, user: AuthenticatedUser) -> FinancialInstitutionDao:
+async def upsert_institution(
+    session: AsyncSession, fi: FinancialInstitutionDto, user: AuthenticatedUser
+) -> FinancialInstitutionDao:
     async with session.begin():
         fi_data = fi.__dict__.copy()
         fi_data.pop("_sa_instance_state", None)

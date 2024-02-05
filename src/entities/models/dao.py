@@ -20,8 +20,9 @@ class SblTypeMappingDao(Base):
     lei: Mapped[str] = mapped_column("fi_id", ForeignKey("financial_institutions.lei"), primary_key=True)
     type_id: Mapped[str] = mapped_column(ForeignKey("sbl_institution_type.id"), primary_key=True)
     sbl_type: Mapped["SBLInstitutionTypeDao"] = relationship(lazy="selectin")
-    details: Mapped[str] = mapped_column()
+    details: Mapped[str] = mapped_column(nullable=True)
     modified_by: Mapped[str] = mapped_column()
+
     def as_db_dict(self):
         data = {}
         for attr, column in inspect(self.__class__).c.items():
