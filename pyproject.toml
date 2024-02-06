@@ -22,8 +22,6 @@ pydantic-settings = "^2.0.3"
 regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git"}
 
 [tool.poetry.group.dev.dependencies]
-ruff = "0.0.278"
-black = "~23.7.0"
 httpx = "^0.24.1"
 pytest = "^7.4.0"
 pytest-asyncio = "^0.21.1"
@@ -32,6 +30,11 @@ pytest-cov = "^4.1.0"
 pytest-mock = "^3.11.1"
 pytest-env = "^1.0.1"
 pytest-alembic = "^0.10.7"
+
+
+[tool.poetry.group.linters.dependencies]
+ruff = "0.0.278"
+black = "23.7.0"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
