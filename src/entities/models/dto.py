@@ -62,6 +62,7 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
     top_holder_lei: str | None = None
     top_holder_legal_name: str | None = None
     top_holder_rssd_id: int | None = None
+    version: int | None = None
 
     class Config:
         from_attributes = True

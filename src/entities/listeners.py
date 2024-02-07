@@ -5,16 +5,8 @@ from .models.dao import Base, FinancialInstitutionDao
 from entities.engine.engine import engine
 
 
-async def setup_fi_dao_listeners():
-    async with engine.begin() as connection:
-        fi_history, mapping_history = await connection.run_sync(
-            lambda conn: (
-                Table("financial_institutions_history", Base.metadata, autoload_with=conn),
-                Table("fi_to_type_mapping_history", Base.metadata, autoload_with=conn),
-            )
-        )
-
-    def insert_history(
+def _setup_fi_history(fi_history: Table, mapping_history: Table):
+    def _insert_history(
         mapper: Mapper[FinancialInstitutionDao], connection: Connection, target: FinancialInstitutionDao
     ):
         new_version = target.version + 1 if target.version else 1
@@ -47,5 +39,19 @@ async def setup_fi_dao_listeners():
             connection.execute(fi_history.insert().values(hist))
             connection.execute(mapping_history.insert().values(types))
 
-    event.listen(FinancialInstitutionDao, "before_insert", insert_history)
-    event.listen(FinancialInstitutionDao, "before_update", insert_history)
+    return _insert_history
+
+
+async def setup_dao_listeners():
+    async with engine.begin() as connection:
+        fi_history, mapping_history = await connection.run_sync(
+            lambda conn: (
+                Table("financial_institutions_history", Base.metadata, autoload_with=conn),
+                Table("fi_to_type_mapping_history", Base.metadata, autoload_with=conn),
+            )
+        )
+
+    insert_fi_history = _setup_fi_history(fi_history, mapping_history)
+
+    event.listen(FinancialInstitutionDao, "before_insert", insert_fi_history)
+    event.listen(FinancialInstitutionDao, "before_update", insert_fi_history)

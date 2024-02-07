@@ -77,6 +77,7 @@ async def upsert_institution(
     async with session.begin():
         fi_data = fi.__dict__.copy()
         fi_data.pop("_sa_instance_state", None)
+        fi_data.pop("version", None)
 
         if "sbl_institution_types" in fi_data:
             types_association = [
