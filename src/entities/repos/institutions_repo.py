@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from sqlalchemy import select, func
@@ -88,7 +87,7 @@ async def upsert_institution(
             ]
             fi_data["sbl_institution_types"] = types_association
 
-        db_fi = await session.merge(FinancialInstitutionDao(**fi_data, modified_by=user.id, event_time=datetime.now()))
+        db_fi = await session.merge(FinancialInstitutionDao(**fi_data, modified_by=user.id))
         await session.flush()
         await session.refresh(db_fi)
         return db_fi

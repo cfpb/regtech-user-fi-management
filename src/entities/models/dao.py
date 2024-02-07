@@ -10,7 +10,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 
 class AuditMixin(object):
-    event_time: Mapped[datetime] = mapped_column(server_default=func.now())
+    event_time: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
 
 
 class SblTypeMappingDao(Base):
