@@ -39,3 +39,11 @@ def test_tables_not_exist_migrate_down_to_base(alembic_runner: MigrationContext,
     assert "denied_domains" not in tables
     assert "financial_institutions" not in tables
     assert "financial_institution_domains" not in tables
+
+
+def test_fi_history_tables_8106d83ff594(alembic_runner: MigrationContext, alembic_engine: Engine):
+    alembic_runner.migrate_up_to("8106d83ff594")
+    inspector = sqlalchemy.inspect(alembic_engine)
+    tables = inspector.get_table_names()
+    assert "financial_institutions_history" in tables
+    assert "fi_to_type_mapping_history" in tables

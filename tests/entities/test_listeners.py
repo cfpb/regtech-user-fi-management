@@ -1,8 +1,10 @@
-from unittest.mock import Mock
+import pytest
+from unittest.mock import Mock, call
 from pytest_mock import MockerFixture
 
-from sqlalchemy import Connection, Table
+from sqlalchemy import Connection, Insert, Table
 from sqlalchemy.orm import Mapper, InstanceState, AttributeState
+from sqlalchemy.orm.attributes import History
 
 from entities.models.dao import FinancialInstitutionDao, SBLInstitutionTypeDao, SblTypeMappingDao
 
@@ -37,6 +39,14 @@ class TestListeners:
         modified_by="test_user_id",
     )
 
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.fi_history.reset_mock()
+        self.fi_history.columns = {"name": "test"}
+        self.mapping_history.reset_mock()
+        self.mapper.reset_mock()
+        self.connection.reset_mock()
+
     def test_fi_history_listener(self, mocker: MockerFixture):
         inspect_mock = mocker.patch("entities.listeners.inspect")
         attr_mock1: AttributeState = Mock(AttributeState)
@@ -45,10 +55,55 @@ class TestListeners:
         attr_mock2.key = "event_time"
         state_mock: InstanceState = Mock(InstanceState)
         state_mock.attrs = [attr_mock1, attr_mock2]
-        self.fi_history.columns = {"name": "test"}
         inspect_mock.return_value = state_mock
         fi_listener = _setup_fi_history(self.fi_history, self.mapping_history)
         fi_listener(self.mapper, self.connection, self.target)
         inspect_mock.assert_called_once_with(self.target)
-        attr_mock1.load_history.assert_called_once()
         self.fi_history.insert.assert_called_once()
+        self.mapping_history.insert.assert_called_once()
+
+    def _get_fi_inspect_mock(self):
+        fi_attr_mock: AttributeState = Mock(AttributeState)
+        fi_attr_mock.key = "sbl_institution_types"
+        fi_attr_mock.value = self.target.sbl_institution_types
+        fi_attr_mock.history = History(added=[], deleted=[], unchanged=[])
+        fi_state_mock: InstanceState = Mock(InstanceState)
+        fi_state_mock.attrs = [fi_attr_mock]
+        return fi_state_mock
+
+    def _get_mapping_inspect_mock(self):
+        mapping_attr_mock: AttributeState = Mock(AttributeState)
+        mapping_attr_mock.key = "details"
+        mapping_attr_mock.history = History(added=["new type"], deleted=["old type"], unchanged=[])
+        mapping_state_mock: InstanceState = Mock(InstanceState)
+        mapping_state_mock.attrs = [mapping_attr_mock]
+        return mapping_state_mock
+
+    def test_fi_mapping_changed(self, mocker: MockerFixture):
+        inspect_mock = mocker.patch("entities.listeners.inspect")
+        fi_state_mock = self._get_fi_inspect_mock()
+        mapping_state_mock = self._get_mapping_inspect_mock()
+
+        def inspect_side_effect(inspect_target):
+            if inspect_target == self.target:
+                return fi_state_mock
+            elif inspect_target == self.target.sbl_institution_types[0]:
+                return mapping_state_mock
+
+        inspect_mock.side_effect = inspect_side_effect
+        fi_insert_mock = Mock(Insert)
+        self.fi_history.insert.return_value = fi_insert_mock
+        mapping_insert_mock = Mock(Insert)
+        self.mapping_history.insert.return_value = mapping_insert_mock
+        fi_listener = _setup_fi_history(self.fi_history, self.mapping_history)
+        fi_listener(self.mapper, self.connection, self.target)
+        inspect_mock.assert_has_calls([call(self.target), call(self.target.sbl_institution_types[0])])
+        self.fi_history.insert.assert_called_once()
+        self.mapping_history.insert.assert_called_once()
+        fi_insert_mock.values.assert_called_once()
+        args, _ = fi_insert_mock.values.call_args
+        insert_data = args[0]
+        assert insert_data["changeset"]["sbl_institution_types"]["field_changes"][0]["details"] == {
+            "old": ["old type"],
+            "new": ["new type"],
+        }

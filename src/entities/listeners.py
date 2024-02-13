@@ -1,8 +1,45 @@
+from typing import List
 from sqlalchemy import Connection, Table, event, inspect
 from sqlalchemy.orm import Mapper
 
-from .models.dao import Base, FinancialInstitutionDao
+from .models.dao import Base, FinancialInstitutionDao, SblTypeMappingDao
 from entities.engine.engine import engine
+
+
+def inspect_fi(fi: FinancialInstitutionDao):
+    changes = {}
+    new_version = fi.version + 1 if fi.version else 1
+    state = inspect(fi)
+    for attr in state.attrs:
+        if attr.key == "event_time":
+            continue
+        if attr.key == "sbl_institution_types":
+            field_changes = inspect_type_fields(attr.value)
+            if attr.history.has_changes() or field_changes:
+                old_types = {"old": [o.as_db_dict() for o in attr.history.deleted]} if attr.history.deleted else {}
+                new_types = (
+                    {"new": [{**n.as_db_dict(), "version": new_version} for n in attr.history.added]}
+                    if attr.history.added
+                    else {}
+                )
+                changes[attr.key] = {**old_types, **new_types, "field_changes": field_changes}
+        elif attr.history.has_changes():
+            changes[attr.key] = {"old": attr.history.deleted, "new": attr.history.added}
+    return changes
+
+
+def inspect_type_fields(types: List[SblTypeMappingDao], fields: List[str] = ["details"]):
+    changes = []
+    for t in types:
+        state = inspect(t)
+        attr_changes = {
+            attr.key: {"old": attr.history.deleted, "new": attr.history.added}
+            for attr in state.attrs
+            if attr.key in fields and attr.history.has_changes()
+        }
+        if attr_changes:
+            changes.append({**t.as_db_dict(), **attr_changes})
+    return changes
 
 
 def _setup_fi_history(fi_history: Table, mapping_history: Table):
@@ -10,20 +47,7 @@ def _setup_fi_history(fi_history: Table, mapping_history: Table):
         mapper: Mapper[FinancialInstitutionDao], connection: Connection, target: FinancialInstitutionDao
     ):
         new_version = target.version + 1 if target.version else 1
-        changes = {}
-        state = inspect(target)
-        for attr in state.attrs:
-            if attr.key == "event_time":
-                continue
-            attr_hist = attr.load_history()
-            if not attr_hist.has_changes():
-                continue
-            if attr.key == "sbl_institution_types":
-                old_types = [o.as_db_dict() for o in attr_hist.deleted]
-                new_types = [{**n.as_db_dict(), "version": new_version} for n in attr_hist.added]
-                changes[attr.key] = {"old": old_types, "new": new_types}
-            else:
-                changes[attr.key] = {"old": attr_hist.deleted, "new": attr_hist.added}
+        changes = inspect_fi(target)
         if changes:
             target.version = new_version
             for t in target.sbl_institution_types:
