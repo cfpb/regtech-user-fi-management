@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials
 
-from regtech_api_commons.models.auth import AuthenticatedUser
+from regtech_api_commons.models import RegTechUser, AuthenticatedUser
 
 
 class TestAdminApi:
@@ -15,13 +15,16 @@ class TestAdminApi:
         assert res.status_code == 403
 
     def test_get_me_authed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
+        get_user_mock = mocker.patch("regtech_api_commons.oauth2.OAuth2Admin.get_user")
+        get_user_mock.return_value = authed_user_mock.return_value[1]
         client = TestClient(app_fixture)
         res = client.get("/v1/admin/me")
+        get_user_mock.assert_called_once_with("testuser123")
         assert res.status_code == 200
         assert res.json().get("name") == "test"
         assert res.json().get("institutions") == []
 
-    def test_get_me_authed_with_institutions(self, app_fixture: FastAPI, auth_mock: Mock):
+    def test_get_me_authed_with_institutions(self, mocker: MockerFixture, app_fixture: FastAPI, auth_mock: Mock):
         claims = {
             "name": "test",
             "preferred_username": "test_user",
@@ -33,6 +36,8 @@ class TestAdminApi:
             AuthCredentials(["authenticated"]),
             AuthenticatedUser.from_claim(claims),
         )
+        get_user_mock = mocker.patch("regtech_api_commons.oauth2.OAuth2Admin.get_user")
+        get_user_mock.return_value = RegTechUser.from_claim(claims)
         client = TestClient(app_fixture)
         res = client.get("/v1/admin/me")
         assert res.status_code == 200

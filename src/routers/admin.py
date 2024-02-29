@@ -7,8 +7,8 @@ from dependencies import check_domain
 from regtech_api_commons.api import Router
 from entities.models import UserProfile
 
-from regtech_api_commons.models.auth import AuthenticatedUser
-from regtech_api_commons.oauth2.oauth2_admin import OAuth2Admin
+from regtech_api_commons.models import RegTechUser
+from regtech_api_commons.oauth2 import OAuth2Admin
 from config import kc_settings
 
 router = Router()
@@ -16,10 +16,10 @@ router = Router()
 oauth2_admin = OAuth2Admin(kc_settings)
 
 
-@router.get("/me/", response_model=AuthenticatedUser)
+@router.get("/me/", response_model=RegTechUser)
 @requires("authenticated")
 def get_me(request: Request):
-    return request.user
+    return oauth2_admin.get_user(request.user.id)
 
 
 @router.put("/me/", status_code=HTTPStatus.ACCEPTED, dependencies=[Depends(check_domain)])

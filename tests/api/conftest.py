@@ -4,7 +4,7 @@ import pytest
 from fastapi import FastAPI
 from pytest_mock import MockerFixture
 from starlette.authentication import AuthCredentials, UnauthenticatedUser
-from regtech_api_commons.models.auth import AuthenticatedUser
+from regtech_api_commons.models import AuthenticatedUser
 from entities.models import (
     FinancialInstitutionDao,
     FinancialInstitutionDomainDao,
@@ -37,7 +37,6 @@ def auth_mock(mocker: MockerFixture) -> Mock:
 @pytest.fixture
 def authed_user_mock(auth_mock: Mock) -> Mock:
     claims = {
-        "id": "test_user_id",
         "name": "test",
         "preferred_username": "test_user",
         "email": "test@local.host",
