@@ -37,6 +37,38 @@ class TestInstitutionsApi:
         res = client.post("/v1/institutions/", json={"name": "testName", "lei": "testLei"})
         assert res.status_code == 403
 
+    def test_invalid_tax_id(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
+        client = TestClient(app_fixture)
+        res = client.post(
+            "/v1/institutions/",
+            json={
+                "name": "testName",
+                "lei": "testLei",
+                "is_active": True,
+                "tax_id": "123456789",
+                "rssd_id": 12344,
+                "primary_federal_regulator_id": "FRI2",
+                "hmda_institution_type_id": "HIT2",
+                "sbl_institution_type_ids": ["SIT2"],
+                "hq_address_street_1": "Test Address Street 1",
+                "hq_address_street_2": "",
+                "hq_address_city": "Test City 1",
+                "hq_address_state_code": "VA",
+                "hq_address_zip": "00000",
+                "parent_lei": "PARENTTESTBANK123",
+                "parent_legal_name": "PARENT TEST BANK 123",
+                "parent_rssd_id": 12345,
+                "top_holder_lei": "TOPHOLDERLEI123",
+                "top_holder_legal_name": "TOP HOLDER LEI 123",
+                "top_holder_rssd_id": 123456,
+            },
+        )
+        assert (
+            res.json()["detail"][0]["msg"]
+            == "Value error, Invalid tax_id 123456789. FinancialInstitution tax_id must conform to XX-XXXXXXX pattern."
+        )
+        assert res.status_code == 422
+
     def test_create_institution_authed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         upsert_institution_mock = mocker.patch("entities.repos.institutions_repo.upsert_institution")
         upsert_institution_mock.return_value = FinancialInstitutionDao(
@@ -44,7 +76,7 @@ class TestInstitutionsApi:
             lei="testLei",
             is_active=True,
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
-            tax_id="123456789",
+            tax_id="12-3456789",
             rssd_id=1234,
             primary_federal_regulator_id="FRI2",
             primary_federal_regulator=FederalRegulatorDao(id="FRI2", name="FRI2"),
@@ -73,7 +105,7 @@ class TestInstitutionsApi:
                 "name": "testName",
                 "lei": "testLei",
                 "is_active": True,
-                "tax_id": "123456789",
+                "tax_id": "12-3456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FRI2",
                 "hmda_institution_type_id": "HIT2",
@@ -181,7 +213,7 @@ class TestInstitutionsApi:
                 "name": "testName",
                 "lei": "testLei",
                 "is_active": True,
-                "tax_id": "123456789",
+                "tax_id": "12-3456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FIR2",
                 "hmda_institution_type_id": "HIT2",
@@ -214,7 +246,7 @@ class TestInstitutionsApi:
             lei="TESTBANK123",
             is_active=True,
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
-            tax_id="123456789",
+            tax_id="12-3456789",
             rssd_id=1234,
             primary_federal_regulator_id="FRI1",
             primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
@@ -311,7 +343,7 @@ class TestInstitutionsApi:
                 lei="TESTBANK123",
                 is_active=True,
                 domains=[FinancialInstitutionDomainDao(domain="test123.bank", lei="TESTBANK123")],
-                tax_id="123456789",
+                tax_id="12-3456789",
                 rssd_id=1234,
                 primary_federal_regulator_id="FRI1",
                 primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
@@ -336,7 +368,7 @@ class TestInstitutionsApi:
                 lei="TESTBANK234",
                 is_active=True,
                 domains=[FinancialInstitutionDomainDao(domain="test234.bank", lei="TESTBANK234")],
-                tax_id="123456879",
+                tax_id="12-3456879",
                 rssd_id=6879,
                 primary_federal_regulator_id="FRI1",
                 primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),
@@ -437,7 +469,7 @@ class TestInstitutionsApi:
             lei="TESTBANK123",
             is_active=True,
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
-            tax_id="123456789",
+            tax_id="12-3456789",
             rssd_id=1234,
             primary_federal_regulator_id="FRI1",
             primary_federal_regulator=FederalRegulatorDao(id="FRI1", name="FRI1"),

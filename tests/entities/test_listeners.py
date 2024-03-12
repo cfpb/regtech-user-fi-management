@@ -20,7 +20,7 @@ class TestListeners:
         name="Test Bank 123",
         lei="TESTBANK123",
         is_active=True,
-        tax_id="123456789",
+        tax_id="12-3456789",
         rssd_id=1234,
         primary_federal_regulator_id="FRI1",
         hmda_institution_type_id="HIT1",

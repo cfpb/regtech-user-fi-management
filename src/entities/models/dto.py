@@ -1,3 +1,5 @@
+import re
+
 from typing import Generic, List, Set, Sequence
 from pydantic import BaseModel, model_validator
 from typing import TypeVar
@@ -75,6 +77,16 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
     top_holder_legal_name: str | None = None
     top_holder_rssd_id: int | None = None
     version: int | None = None
+
+    @model_validator(mode="after")
+    def validate_fi(self) -> "FinancialInstitutionDto":
+        if self.tax_id:
+            match = re.match(r"^([0-9]{2}-[0-9]{7})", self.tax_id)
+            if not match:
+                raise ValueError(
+                    f"Invalid tax_id {self.tax_id}. FinancialInstitution tax_id must conform to XX-XXXXXXX pattern."
+                )
+        return self
 
     class Config:
         from_attributes = True
