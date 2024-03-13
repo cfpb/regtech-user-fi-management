@@ -12,7 +12,7 @@ from entities.models import (
     FinancialInstitutionWithRelationsDto,
     FinancialInsitutionDomainDto,
     FinancialInsitutionDomainCreate,
-    FinanicialInstitutionAssociationDto,
+    FinancialInstitutionAssociationDto,
     InstitutionTypeDto,
     AddressStateDto,
     FederalRegulatorDto,
@@ -59,14 +59,14 @@ async def create_institution(
     return kc_id, db_fi
 
 
-@router.get("/associated", response_model=List[FinanicialInstitutionAssociationDto])
+@router.get("/associated", response_model=List[FinancialInstitutionAssociationDto])
 @requires("authenticated")
 async def get_associated_institutions(request: Request):
     user: AuthenticatedUser = request.user
     email_domain = get_email_domain(user.email)
     associated_institutions = await repo.get_institutions(request.state.db_session, user.institutions)
     return [
-        FinanicialInstitutionAssociationDto(
+        FinancialInstitutionAssociationDto(
             **institution.__dict__,
             approved=email_domain in [inst_domain.domain for inst_domain in institution.domains],
         )

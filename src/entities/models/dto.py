@@ -154,5 +154,5 @@ class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
     domains: List[FinancialInsitutionDomainDto] = []
 
 
-class FinanicialInstitutionAssociationDto(FinancialInstitutionWithRelationsDto):
+class FinancialInstitutionAssociationDto(FinancialInstitutionWithRelationsDto):
     approved: bool
