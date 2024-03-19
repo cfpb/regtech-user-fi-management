@@ -61,7 +61,8 @@ def _setup_fi_history(fi_history: Table, mapping_history: Table):
             hist["changeset"] = changes
             types = [t.as_db_dict() for t in target.sbl_institution_types]
             connection.execute(fi_history.insert().values(hist))
-            connection.execute(mapping_history.insert().values(types))
+            if types:
+                connection.execute(mapping_history.insert().values(types))
 
     return _insert_history
 

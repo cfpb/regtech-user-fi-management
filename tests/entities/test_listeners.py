@@ -1,3 +1,4 @@
+from copy import deepcopy
 import pytest
 from unittest.mock import Mock, call
 from pytest_mock import MockerFixture
@@ -65,6 +66,23 @@ class TestListeners:
         inspect_mock.assert_called_once_with(self.target)
         self.fi_history.insert.assert_called_once()
         self.mapping_history.insert.assert_called_once()
+
+    def test_fi_history_listener_no_types(self, mocker: MockerFixture):
+        inspect_mock = mocker.patch("regtech_user_fi_management.entities.listeners.inspect")
+        attr_mock1: AttributeState = Mock(AttributeState)
+        attr_mock1.key = "name"
+        attr_mock2: AttributeState = Mock(AttributeState)
+        attr_mock2.key = "event_time"
+        state_mock: InstanceState = Mock(InstanceState)
+        state_mock.attrs = [attr_mock1, attr_mock2]
+        inspect_mock.return_value = state_mock
+        fi_listener = _setup_fi_history(self.fi_history, self.mapping_history)
+        no_types = deepcopy(self.target)
+        delattr(no_types, "sbl_institution_types")
+        fi_listener(self.mapper, self.connection, no_types)
+        inspect_mock.assert_called_once_with(no_types)
+        self.fi_history.insert.assert_called_once()
+        self.mapping_history.insert.assert_not_called()
 
     def _get_fi_inspect_mock(self):
         fi_attr_mock: AttributeState = Mock(AttributeState)
