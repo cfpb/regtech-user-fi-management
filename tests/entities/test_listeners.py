@@ -78,7 +78,7 @@ class TestListeners:
         inspect_mock.return_value = state_mock
         fi_listener = _setup_fi_history(self.fi_history, self.mapping_history)
         no_types = deepcopy(self.target)
-        delattr(no_types, "sbl_institution_types")
+        no_types.sbl_institution_types = []
         fi_listener(self.mapper, self.connection, no_types)
         inspect_mock.assert_called_once_with(no_types)
         self.fi_history.insert.assert_called_once()
