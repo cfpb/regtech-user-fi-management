@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import (
 from asyncio import current_task
 from regtech_user_fi_management.config import settings
 
-engine = create_async_engine(str(settings.inst_conn), echo=True).execution_options(
+engine = create_async_engine(str(settings.inst_conn), echo=settings.db_logging).execution_options(
     schema_translate_map={None: settings.inst_db_schema}
 )
 SessionLocal = async_scoped_session(async_sessionmaker(engine, expire_on_commit=False), current_task)

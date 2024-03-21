@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     inst_db_scheme: str = "postgresql+asyncpg"
     inst_conn: str | None = None
     admin_scopes: Set[str] = set(["query-groups", "manage-users"])
+    db_logging: bool = True
 
     def __init__(self, **data):
         super().__init__(**data)
