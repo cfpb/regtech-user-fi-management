@@ -106,3 +106,24 @@ def test_sbl_institution_type_data_seed(alembic_runner: MigrationContext, alembi
             text("SELECT id, name FROM %s" % sbl_institution_type_tablename)
         ).fetchall()
     assert sbl_institution_type_before_seed == [("00", "TestSblInstitutionType")]
+
+
+def test_denied_domains_data_seed(alembic_runner: MigrationContext, alembic_engine: Engine):
+    # Migrate up to, but not including this new migration
+    alembic_runner.migrate_up_before("d6e4a13fbebd")
+
+    # Test denied_domains seed
+    denied_domain_tablename = "denied_domains"
+    alembic_runner.migrate_up_one()
+    with alembic_engine.connect() as conn:
+        denied_domains_rows = conn.execute(
+            text("SELECT domain from %s where domain = :domain " % denied_domain_tablename), (dict(domain="yahoo.fr"))
+        ).fetchall()
+    denied_domains_expected = [("yahoo.fr",)]
+
+    assert denied_domains_rows == denied_domains_expected
+
+    alembic_runner.migrate_down_one()
+    with alembic_engine.connect() as conn:
+        denied_domains_before_seed = conn.execute(text("SELECT domain FROM %s" % denied_domain_tablename)).fetchall()
+    assert denied_domains_before_seed == []
