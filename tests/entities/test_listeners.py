@@ -32,6 +32,8 @@ class TestListeners:
         sbl_institution_types=[SblTypeMappingDao(sbl_type=SBLInstitutionTypeDao(id="SIT1", name="SIT1"))],
         hq_address_street_1="Test Address Street 1",
         hq_address_street_2="",
+        hq_address_street_3="",
+        hq_address_street_4="",
         hq_address_city="Test City 1",
         hq_address_state_code="GA",
         hq_address_zip="00000",

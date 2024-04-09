@@ -67,6 +67,8 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
     sbl_institution_types: List[SblTypeAssociationDto | str] = []
     hq_address_street_1: str
     hq_address_street_2: str | None = None
+    hq_address_street_3: str | None = None
+    hq_address_street_4: str | None = None
     hq_address_city: str
     hq_address_state_code: str
     hq_address_zip: str

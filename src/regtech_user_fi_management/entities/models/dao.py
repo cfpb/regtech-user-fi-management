@@ -55,6 +55,8 @@ class FinancialInstitutionDao(AuditMixin, Base):
     sbl_institution_types: Mapped[List[SblTypeMappingDao]] = relationship(lazy="selectin", cascade="all, delete-orphan")
     hq_address_street_1: Mapped[str]
     hq_address_street_2: Mapped[str] = mapped_column(nullable=True)
+    hq_address_street_3: Mapped[str] = mapped_column(nullable=True)
+    hq_address_street_4: Mapped[str] = mapped_column(nullable=True)
     hq_address_city: Mapped[str]
     hq_address_state_code: Mapped[str] = mapped_column(ForeignKey("address_state.code"))
     hq_address_state: Mapped["AddressStateDao"] = relationship(lazy="selectin")

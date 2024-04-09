@@ -58,3 +58,12 @@ def test_fi_history_tables_0e520c01fb42(alembic_runner: MigrationContext, alembi
 
     tax_column = [c for c in inspector.get_columns("financial_institutions_history") if c["name"] == "tax_id"][0]
     assert tax_column["type"].length == 10
+
+
+def test_migration_to_2ad66aaf4583(alembic_runner: MigrationContext, alembic_engine: Engine):
+    alembic_runner.migrate_up_to("2ad66aaf4583")
+
+    inspector = sqlalchemy.inspect(alembic_engine)
+
+    assert "hq_address_street_3" in [c["name"] for c in inspector.get_columns("financial_institutions")]
+    assert "hq_address_street_4" in [c["name"] for c in inspector.get_columns("financial_institutions")]
