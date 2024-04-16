@@ -7,6 +7,7 @@ from pydantic import field_validator, PostgresDsn, ValidationInfo
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from regtech_api_commons.oauth2.config import KeycloakSettings
+from regtech_regex.regex_config import RegexConfigs
 
 
 JWT_OPTS_PREFIX = "jwt_opts_"
@@ -48,3 +49,5 @@ class Settings(BaseSettings):
 settings = Settings()
 
 kc_settings = KeycloakSettings(_env_file=env_files_to_load)
+
+regex_configs = RegexConfigs.instance()

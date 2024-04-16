@@ -1,4 +1,4 @@
-import re
+from regtech_user_fi_management.config import regex_configs
 
 from typing import Generic, List, Set, Sequence
 from pydantic import BaseModel, model_validator
@@ -83,18 +83,13 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
     @model_validator(mode="after")
     def validate_fi(self) -> "FinancialInstitutionDto":
         if self.tax_id:
-            match = re.match(r"^([0-9]{2}-[0-9]{7})", self.tax_id)
+            match = regex_configs.tin.regex.match(self.tax_id)
             if not match:
-                raise ValueError(
-                    f"Invalid tax_id {self.tax_id}. FinancialInstitution tax_id must conform to XX-XXXXXXX pattern."
-                )
+                raise ValueError(f"Invalid tax_id {self.tax_id}. {regex_configs.tin.error_text}")
         if self.lei:
-            match = re.match(r"^([a-zA-Z0-9]{20})", self.lei)
+            match = regex_configs.lei.regex.match(self.lei)
             if not match:
-                raise ValueError(
-                    f"Invalid lei {self.lei}. FinancialInstitution lei must be 20 characaters long and contain only "
-                    "letters and numbers."
-                )
+                raise ValueError(f"Invalid lei {self.lei}. {regex_configs.lei.error_text}")
         return self
 
     class Config:

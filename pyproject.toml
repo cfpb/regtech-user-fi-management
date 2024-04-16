@@ -16,6 +16,7 @@ psycopg2-binary = "^2.9.6"
 asyncpg = "^0.29.0"
 alembic = "^1.12.0"
 regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git"}
+regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
 
 [tool.poetry.group.dev.dependencies]
 httpx = "^0.24.1"

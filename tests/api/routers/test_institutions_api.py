@@ -16,6 +16,7 @@ from regtech_user_fi_management.entities.models.dao import (
     SblTypeMappingDao,
 )
 from regtech_user_fi_management.entities.models.dto import SblTypeAssociationDto
+from regtech_user_fi_management.config import regex_configs
 
 
 class TestInstitutionsApi:
@@ -86,8 +87,7 @@ class TestInstitutionsApi:
             },
         )
         assert (
-            res.json()["detail"][0]["msg"]
-            == "Value error, Invalid tax_id 123456789. FinancialInstitution tax_id must conform to XX-XXXXXXX pattern."
+            res.json()["detail"][0]["msg"] == f"Value error, Invalid tax_id 123456789. {regex_configs.tin.error_text}"
         )
         assert res.status_code == 422
 
@@ -119,11 +119,7 @@ class TestInstitutionsApi:
                 "top_holder_rssd_id": 123456,
             },
         )
-        assert (
-            res.json()["detail"][0]["msg"]
-            == "Value error, Invalid lei test_Lei. FinancialInstitution lei must be 20 characaters long and contain "
-            "only letters and numbers."
-        )
+        assert res.json()["detail"][0]["msg"] == f"Value error, Invalid lei test_Lei. {regex_configs.lei.error_text}"
         assert res.status_code == 422
 
     def test_create_institution_authed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
@@ -132,9 +128,9 @@ class TestInstitutionsApi:
         )
         upsert_institution_mock.return_value = FinancialInstitutionDao(
             name="testName",
-            lei="testLEI0000000000000",
+            lei="1234567890ABCDEFGH00",
             is_active=True,
-            domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="testLEI0000000000000")],
+            domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="1234567890ABCDEFGH00")],
             tax_id="12-3456789",
             rssd_id=1234,
             primary_federal_regulator_id="FRI2",
@@ -164,7 +160,7 @@ class TestInstitutionsApi:
             "/v1/institutions/",
             json={
                 "name": "testName",
-                "lei": "testLEI0000000000000",
+                "lei": "1234567890ABCDEFGH00",
                 "is_active": True,
                 "tax_id": "12-3456789",
                 "rssd_id": 12344,
@@ -197,7 +193,7 @@ class TestInstitutionsApi:
         )
         upsert_institution_mock.return_value = FinancialInstitutionDao(
             name="testName",
-            lei="testLEI0000000000000",
+            lei="1234567890ABCDEFGH00",
             is_active=True,
             hq_address_street_1="Test Address Street 1",
             hq_address_city="Test City 1",
@@ -212,7 +208,7 @@ class TestInstitutionsApi:
             "/v1/institutions/",
             json={
                 "name": "testName",
-                "lei": "testLEI0000000000000",
+                "lei": "1234567890ABCDEFGH00",
                 "is_active": True,
                 "hq_address_street_1": "Test Address Street 1",
                 "hq_address_city": "Test City 1",
@@ -232,7 +228,7 @@ class TestInstitutionsApi:
             "/v1/institutions/",
             json={
                 "name": "testName",
-                "lei": "testLEI0000000000000",
+                "lei": "1234567890ABCDEFGH00",
                 "hq_address_street_1": "Test Address Street 1",
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
@@ -248,7 +244,7 @@ class TestInstitutionsApi:
             "/v1/institutions/",
             json={
                 "name": "testName",
-                "lei": "testLEI0000000000000",
+                "lei": "1234567890ABCDEFGH00",
                 "is_active": True,
                 "hq_address_street_1": "Test Address Street 1",
                 "hq_address_city": "Test City 1",
@@ -276,7 +272,7 @@ class TestInstitutionsApi:
             "/v1/institutions/",
             json={
                 "name": "testName",
-                "lei": "testLEI0000000000000",
+                "lei": "1234567890ABCDEFGH00",
                 "is_active": True,
                 "tax_id": "12-3456789",
                 "rssd_id": 12344,
