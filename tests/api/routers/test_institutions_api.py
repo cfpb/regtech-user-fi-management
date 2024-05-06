@@ -87,8 +87,7 @@ class TestInstitutionsApi:
             },
         )
         assert (
-            res.json()["error_detail"][0]["msg"]
-            == f"Value error, Invalid tax_id 123456789. {regex_configs.tin.error_text}"
+            f"Value error, Invalid tax_id 123456789. {regex_configs.tin.error_text}" in res.json()["error_detail"]
         )
         assert res.status_code == 422
 
@@ -121,7 +120,7 @@ class TestInstitutionsApi:
             },
         )
         assert (
-            res.json()["error_detail"][0]["msg"] == f"Value error, Invalid lei test_Lei. {regex_configs.lei.error_text}"
+            f"Value error, Invalid lei test_Lei. {regex_configs.lei.error_text}" in res.json()["error_detail"]
         )
         assert res.status_code == 422
 
@@ -257,7 +256,7 @@ class TestInstitutionsApi:
             },
         )
         assert res.status_code == 422
-        assert "requires additional details." in res.json()["error_detail"][0]["msg"]
+        assert "requires additional details." in res.json()["error_detail"]
 
     def test_create_institution_authed_no_permission(self, app_fixture: FastAPI, auth_mock: Mock):
         claims = {
