@@ -5,6 +5,7 @@ Revises: 7b6ff51002b5
 Create Date: 2023-12-14 01:23:17.872728
 
 """
+
 from typing import Sequence, Union
 from alembic import op
 from db_revisions.utils import get_table_by_name, get_indices_from_collection
