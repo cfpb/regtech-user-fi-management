@@ -86,9 +86,7 @@ class TestInstitutionsApi:
                 "top_holder_rssd_id": 123456,
             },
         )
-        assert (
-            f"Value error, Invalid tax_id 123456789. {regex_configs.tin.error_text}" in res.json()["error_detail"]
-        )
+        assert f"Value error, Invalid tax_id 123456789. {regex_configs.tin.error_text}" in res.json()["error_detail"]
         assert res.status_code == 422
 
     def test_invalid_lei(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
@@ -119,9 +117,7 @@ class TestInstitutionsApi:
                 "top_holder_rssd_id": 123456,
             },
         )
-        assert (
-            f"Value error, Invalid lei test_Lei. {regex_configs.lei.error_text}" in res.json()["error_detail"]
-        )
+        assert f"Value error, Invalid lei test_Lei. {regex_configs.lei.error_text}" in res.json()["error_detail"]
         assert res.status_code == 422
 
     def test_create_institution_authed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
