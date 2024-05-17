@@ -5,10 +5,6 @@ from regtech_user_fi_management.config import kc_settings
 from regtech_api_commons.api.router_wrapper import Router
 from regtech_user_fi_management.dependencies import (
     check_domain,
-    parse_leis,
-    get_email_domain,
-    lei_association_check,
-    fi_search_association_check,
 )
 from typing import Annotated, List, Tuple, Literal
 from regtech_user_fi_management.entities.engine.engine import get_session
@@ -30,6 +26,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.authentication import requires
 from regtech_api_commons.models.auth import AuthenticatedUser
 from regtech_api_commons.api.exceptions import RegTechHttpException
+from regtech_api_commons.api.dependencies import (
+    verify_institution_search,
+    verify_user_lei_relation,
+    parse_leis,
+    get_email_domain,
+)
 
 oauth2_admin = OAuth2Admin(kc_settings)
 
@@ -43,9 +45,10 @@ async def set_db(request: Request, session: Annotated[AsyncSession, Depends(get_
 router = Router(dependencies=[Depends(set_db)])
 
 
-@router.get("/", response_model=List[FinancialInstitutionWithRelationsDto])
+@router.get(
+    "/", response_model=List[FinancialInstitutionWithRelationsDto], dependencies=[Depends(verify_institution_search)]
+)
 @requires("authenticated")
-@fi_search_association_check
 async def get_institutions(
     request: Request,
     leis: List[str] = Depends(parse_leis),
@@ -104,9 +107,10 @@ async def get_federal_regulators(request: Request):
     return await repo.get_federal_regulators(request.state.db_session)
 
 
-@router.get("/{lei}", response_model=FinancialInstitutionWithRelationsDto)
+@router.get(
+    "/{lei}", response_model=FinancialInstitutionWithRelationsDto, dependencies=[Depends(verify_user_lei_relation)]
+)
 @requires("authenticated")
-@lei_association_check
 async def get_institution(
     request: Request,
     lei: str,
@@ -117,9 +121,12 @@ async def get_institution(
     return res
 
 
-@router.get("/{lei}/types/{type}", response_model=VersionedData[List[SblTypeAssociationDetailsDto]] | None)
+@router.get(
+    "/{lei}/types/{type}",
+    response_model=VersionedData[List[SblTypeAssociationDetailsDto]] | None,
+    dependencies=[Depends(verify_user_lei_relation)],
+)
 @requires("authenticated")
-@lei_association_check
 async def get_types(request: Request, response: Response, lei: str, type: InstitutionType):
     match type:
         case "sbl":
@@ -133,9 +140,12 @@ async def get_types(request: Request, response: Response, lei: str, type: Instit
             )
 
 
-@router.put("/{lei}/types/{type}", response_model=VersionedData[List[SblTypeAssociationDetailsDto]] | None)
+@router.put(
+    "/{lei}/types/{type}",
+    response_model=VersionedData[List[SblTypeAssociationDetailsDto]] | None,
+    dependencies=[Depends(verify_user_lei_relation)],
+)
 @requires("authenticated")
-@lei_association_check
 async def update_types(
     request: Request, response: Response, lei: str, type: InstitutionType, types_patch: SblTypeAssociationPatchDto
 ):
