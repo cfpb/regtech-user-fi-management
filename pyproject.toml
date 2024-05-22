@@ -17,7 +17,7 @@ regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git"}
 regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.0"
+pytest = "^8.2.1"
 pytest-asyncio = "^0.23.7"
 aiosqlite = "^0.20.0"
 pytest-cov = "^5.0.0"
