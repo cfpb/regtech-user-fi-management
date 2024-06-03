@@ -67,10 +67,10 @@ class TestInstitutionsRepo:
                 hq_address_city="Test City 1",
                 hq_address_state_code="GA",
                 hq_address_zip="00000",
-                parent_lei="PARENTTESTBANK123",
+                parent_lei="012PARENTTESTBANK123",
                 parent_legal_name="PARENT TEST BANK 123",
                 parent_rssd_id=12345,
-                top_holder_lei="TOPHOLDERLEI123",
+                top_holder_lei="01234TOPHOLDERLEI123",
                 top_holder_legal_name="TOP HOLDER LEI 123",
                 top_holder_rssd_id=123456,
                 modified_by="test_user_id",
@@ -92,10 +92,10 @@ class TestInstitutionsRepo:
                 hq_address_city="Test City 2",
                 hq_address_state_code="CA",
                 hq_address_zip="11111",
-                parent_lei="PARENTTESTBANK456",
+                parent_lei="012PARENTTESTBANK456",
                 parent_legal_name="PARENT TEST BANK 456",
                 parent_rssd_id=54321,
-                top_holder_lei="TOPHOLDERLEI456",
+                top_holder_lei="01234TOPHOLDERLEI456",
                 top_holder_legal_name="TOP HOLDER LEI 456",
                 top_holder_rssd_id=654321,
                 modified_by="test_user_id",
@@ -119,10 +119,10 @@ class TestInstitutionsRepo:
                 hq_address_city="Test City 3",
                 hq_address_state_code="FL",
                 hq_address_zip="11111",
-                parent_lei="PARENTTESTBANK456",
+                parent_lei="012PARENTTESTBANK456",
                 parent_legal_name="PARENT TEST SUB BANK 456",
                 parent_rssd_id=21435,
-                top_holder_lei="TOPHOLDERLEI456",
+                top_holder_lei="01234TOPHOLDERLEI456",
                 top_holder_legal_name="TOP HOLDER LEI SUB BANK 456",
                 top_holder_rssd_id=321654,
                 modified_by="test_user_id",
@@ -202,7 +202,7 @@ class TestInstitutionsRepo:
         assert len(res) == 2
 
     async def test_get_institutions_by_lei_list_item_not_existing(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["NOTTESTBANK"])
+        res = await repo.get_institutions(query_session, leis=["0123NOTTESTBANK01234"])
         assert len(res) == 0
 
     async def test_add_institution(self, transaction_session: AsyncSession):
@@ -224,10 +224,10 @@ class TestInstitutionsRepo:
                 hq_address_city="Test City 3",
                 hq_address_state_code="FL",
                 hq_address_zip="22222",
-                parent_lei="PARENTNEWBANK123",
+                parent_lei="0123PARENTNEWBANK123",
                 parent_legal_name="PARENT NEW BANK 123",
                 parent_rssd_id=76543,
-                top_holder_lei="TOPHOLDERNEWBANKLEI123",
+                top_holder_lei="TOPHOLDNEWBANKLEI123",
                 top_holder_legal_name="TOP HOLDER NEW BANK LEI 123",
                 top_holder_rssd_id=876543,
                 modified_by="test_user_id",
