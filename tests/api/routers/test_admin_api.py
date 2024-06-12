@@ -30,7 +30,7 @@ class TestAdminApi:
             "preferred_username": "test_user",
             "email": "test@local.host",
             "sub": "testuser123",
-            "institutions": ["/TEST1LEI", "/TEST2LEI/TEST2CHILDLEI"],
+            "institutions": ["/TEST1LEI100000000000", "/TEST2LEI200000000000/TEST2CHILDLEI1000000"],
         }
         auth_mock.return_value = (
             AuthCredentials(["authenticated"]),
@@ -41,11 +41,13 @@ class TestAdminApi:
         client = TestClient(app_fixture)
         res = client.get("/v1/admin/me")
         assert res.status_code == 200
-        assert res.json().get("institutions") == ["TEST1LEI", "TEST2CHILDLEI"]
+        assert res.json().get("institutions") == ["TEST1LEI100000000000", "TEST2CHILDLEI1000000"]
 
     def test_update_me_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)
-        res = client.put("/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast", "leis": ["testLei"]})
+        res = client.put(
+            "/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast", "leis": ["TEST1LEI100000000000"]}
+        )
         assert res.status_code == 403
 
     def test_update_me_no_permission(self, app_fixture: FastAPI, auth_mock: Mock):
@@ -60,7 +62,9 @@ class TestAdminApi:
             AuthenticatedUser.from_claim(claims),
         )
         client = TestClient(app_fixture)
-        res = client.put("/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast", "leis": ["testLei"]})
+        res = client.put(
+            "/v1/admin/me", json={"first_name": "testFirst", "last_name": "testLast", "leis": ["TEST1LEI100000000000"]}
+        )
         assert res.status_code == 403
 
     def test_update_me(self, mocker: MockerFixture, app_fixture: FastAPI, auth_mock: Mock):
@@ -72,7 +76,7 @@ class TestAdminApi:
             "preferred_username": "test_user",
             "email": "test@local.host",
             "sub": "testuser123",
-            "institutions": ["testlei1", "testlei2"],
+            "institutions": ["TEST1LEI100000000000", "TEST2LEI200000000000"],
         }
         auth_mock.return_value = (
             AuthCredentials(["manage-account"]),
@@ -82,13 +86,17 @@ class TestAdminApi:
         associate_lei_mock.return_value = None
         get_user_mock.return_value = auth_mock.return_value[1]
         client = TestClient(app_fixture)
-        data = {"first_name": "testFirst", "last_name": "testLast", "leis": ["testLei1", "testLei2"]}
+        data = {
+            "first_name": "testFirst",
+            "last_name": "testLast",
+            "leis": ["TEST1LEI100000000000", "TEST2LEI200000000000"],
+        }
         res = client.put("/v1/admin/me", json=data)
         update_user_mock.assert_called_once_with("testuser123", {"firstName": "testFirst", "lastName": "testLast"})
-        associate_lei_mock.assert_called_once_with("testuser123", {"testLei1", "testLei2"})
+        associate_lei_mock.assert_called_once_with("testuser123", {"TEST1LEI100000000000", "TEST2LEI200000000000"})
         assert res.status_code == 200
         assert res.json().get("name") == "testFirst testLast"
-        assert res.json().get("institutions") == ["testlei1", "testlei2"]
+        assert res.json().get("institutions") == ["TEST1LEI100000000000", "TEST2LEI200000000000"]
 
     def test_update_me_no_lei(self, mocker: MockerFixture, app_fixture: FastAPI, auth_mock: Mock):
         update_user_mock = mocker.patch("regtech_api_commons.oauth2.oauth2_admin.OAuth2Admin.update_user")
@@ -122,7 +130,7 @@ class TestAdminApi:
             "preferred_username": "test_user",
             "email": "test@local.host",
             "sub": "testuser123",
-            "institutions": ["testlei1", "testlei2"],
+            "institutions": ["TEST1LEI100000000000", "TEST2LEI200000000000"],
         }
         auth_mock.return_value = (
             AuthCredentials(["manage-account"]),
@@ -131,8 +139,8 @@ class TestAdminApi:
         associate_lei_mock.return_value = None
         get_user_mock.return_value = auth_mock.return_value[1]
         client = TestClient(app_fixture)
-        res = client.put("/v1/admin/me/institutions", json=["testlei1", "testlei2"])
-        associate_lei_mock.assert_called_once_with("testuser123", {"testlei1", "testlei2"})
+        res = client.put("/v1/admin/me/institutions", json=["TEST1LEI100000000000", "TEST2LEI200000000000"])
+        associate_lei_mock.assert_called_once_with("testuser123", {"TEST1LEI100000000000", "TEST2LEI200000000000"})
         assert res.status_code == 200
         assert res.json().get("name") == "test"
-        assert res.json().get("institutions") == ["testlei1", "testlei2"]
+        assert res.json().get("institutions") == ["TEST1LEI100000000000", "TEST2LEI200000000000"]

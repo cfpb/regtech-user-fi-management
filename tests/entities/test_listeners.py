@@ -23,7 +23,7 @@ class TestListeners:
     connection: Connection = Mock(Connection)
     target: FinancialInstitutionDao = FinancialInstitutionDao(
         name="Test Bank 123",
-        lei="TESTBANK123",
+        lei="TESTBANK123000000000",
         is_active=True,
         tax_id="12-3456789",
         rssd_id=1234,
@@ -37,10 +37,10 @@ class TestListeners:
         hq_address_city="Test City 1",
         hq_address_state_code="GA",
         hq_address_zip="00000",
-        parent_lei="PARENTTESTBANK123",
+        parent_lei="012PARENTTESTBANK123",
         parent_legal_name="PARENT TEST BANK 123",
         parent_rssd_id=12345,
-        top_holder_lei="TOPHOLDERLEI123",
+        top_holder_lei="01234TOPHOLDERLEI123",
         top_holder_legal_name="TOP HOLDER LEI 123",
         top_holder_rssd_id=123456,
         modified_by="test_user_id",

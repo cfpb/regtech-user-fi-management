@@ -55,7 +55,7 @@ class TestInstitutionsApi:
 
     def test_create_institution_unauthed(self, app_fixture: FastAPI, unauthed_user_mock: Mock):
         client = TestClient(app_fixture)
-        res = client.post("/v1/institutions/", json={"name": "testName", "lei": "testLei"})
+        res = client.post("/v1/institutions/", json={"name": "testName", "lei": "TESTBANK123000000000"})
         assert res.status_code == 403
 
     def test_invalid_tax_id(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
@@ -78,10 +78,10 @@ class TestInstitutionsApi:
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
                 "hq_address_zip": "00000",
-                "parent_lei": "PARENTTESTBANK123",
+                "parent_lei": "012PARENTTESTBANK123",
                 "parent_legal_name": "PARENT TEST BANK 123",
                 "parent_rssd_id": 12345,
-                "top_holder_lei": "TOPHOLDERLEI123",
+                "top_holder_lei": "01234TOPHOLDERLEI123",
                 "top_holder_legal_name": "TOP HOLDER LEI 123",
                 "top_holder_rssd_id": 123456,
             },
@@ -109,10 +109,10 @@ class TestInstitutionsApi:
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
                 "hq_address_zip": "00000",
-                "parent_lei": "PARENTTESTBANK123",
+                "parent_lei": "012PARENTTESTBANK123",
                 "parent_legal_name": "PARENT TEST BANK 123",
                 "parent_rssd_id": 12345,
-                "top_holder_lei": "TOPHOLDERLEI123",
+                "top_holder_lei": "01234TOPHOLDERLEI123",
                 "top_holder_legal_name": "TOP HOLDER LEI 123",
                 "top_holder_rssd_id": 123456,
             },
@@ -144,10 +144,10 @@ class TestInstitutionsApi:
             hq_address_state_code="VA",
             hq_address_state=AddressStateDao(code="VA", name="Virginia"),
             hq_address_zip="00000",
-            parent_lei="PARENTTESTBANK123",
+            parent_lei="012PARENTTESTBANK123",
             parent_legal_name="PARENT TEST BANK 123",
             parent_rssd_id=12345,
-            top_holder_lei="TOPHOLDERLEI123",
+            top_holder_lei="01234TOPHOLDERLEI123",
             top_holder_legal_name="TOP HOLDER LEI 123",
             top_holder_rssd_id=123456,
         )
@@ -172,10 +172,10 @@ class TestInstitutionsApi:
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
                 "hq_address_zip": "00000",
-                "parent_lei": "PARENTTESTBANK123",
+                "parent_lei": "012PARENTTESTBANK123",
                 "parent_legal_name": "PARENT TEST BANK 123",
                 "parent_rssd_id": 12345,
-                "top_holder_lei": "TOPHOLDERLEI123",
+                "top_holder_lei": "01234TOPHOLDERLEI123",
                 "top_holder_legal_name": "TOP HOLDER LEI 123",
                 "top_holder_rssd_id": 123456,
             },
@@ -284,10 +284,10 @@ class TestInstitutionsApi:
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
                 "hq_address_zip": "00000",
-                "parent_lei": "PARENTTESTBANK123",
+                "parent_lei": "012PARENTTESTBANK123",
                 "parent_legal_name": "PARENT TEST BANK 123",
                 "parent_rssd_id": 12345,
-                "top_holder_lei": "TOPHOLDERLEI123",
+                "top_holder_lei": "01234TOPHOLDERLEI123",
                 "top_holder_legal_name": "TOP HOLDER LEI 123",
                 "top_holder_rssd_id": 123456,
             },
@@ -324,10 +324,10 @@ class TestInstitutionsApi:
             hq_address_state_code="GA",
             hq_address_state=AddressStateDao(code="GA", name="Georgia"),
             hq_address_zip="00000",
-            parent_lei="PARENTTESTBANK123",
+            parent_lei="012PARENTTESTBANK123",
             parent_legal_name="PARENT TEST BANK 123",
             parent_rssd_id=12345,
-            top_holder_lei="TOPHOLDERLEI123",
+            top_holder_lei="01234TOPHOLDERLEI123",
             top_holder_legal_name="TOP HOLDER LEI 123",
             top_holder_rssd_id=123456,
         )
@@ -357,7 +357,7 @@ class TestInstitutionsApi:
 
     def test_add_domains_authed(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         add_domains_mock = mocker.patch("regtech_user_fi_management.entities.repos.institutions_repo.add_domains")
-        add_domains_mock.return_value = [FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")]
+        add_domains_mock.return_value = [FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123000000000")]
         client = TestClient(app_fixture)
 
         lei_path = "testLeiPath"
@@ -427,10 +427,10 @@ class TestInstitutionsApi:
                 hq_address_state_code="GA",
                 hq_address_state=AddressStateDao(code="GA", name="Georgia"),
                 hq_address_zip="00000",
-                parent_lei="PARENTTESTBANK123",
+                parent_lei="012PARENTTESTBANK123",
                 parent_legal_name="PARENT TEST BANK 123",
                 parent_rssd_id=12345,
-                top_holder_lei="TOPHOLDERLEI123",
+                top_holder_lei="01234TOPHOLDERLEI123",
                 top_holder_legal_name="TOP HOLDER LEI 123",
                 top_holder_rssd_id=123456,
             ),
@@ -454,10 +454,10 @@ class TestInstitutionsApi:
                 hq_address_state_code="GA",
                 hq_address_state=AddressStateDao(code="GA", name="Georgia"),
                 hq_address_zip="00000",
-                parent_lei="PARENTTESTBANK123",
+                parent_lei="012PARENTTESTBANK123",
                 parent_legal_name="PARENT TEST BANK 123",
                 parent_rssd_id=14523,
-                top_holder_lei="TOPHOLDERLEI123",
+                top_holder_lei="01234TOPHOLDERLEI123",
                 top_holder_legal_name="TOP HOLDER LEI 123",
                 top_holder_rssd_id=341256,
             ),
@@ -559,15 +559,15 @@ class TestInstitutionsApi:
             hq_address_state_code="GA",
             hq_address_state=AddressStateDao(code="GA", name="Georgia"),
             hq_address_zip="00000",
-            parent_lei="PARENTTESTBANK123",
+            parent_lei="012PARENTTESTBANK123",
             parent_legal_name="PARENT TEST BANK 123",
             parent_rssd_id=12345,
-            top_holder_lei="TOPHOLDERLEI123",
+            top_holder_lei="01234TOPHOLDERLEI123",
             top_holder_legal_name="TOP HOLDER LEI 123",
             top_holder_rssd_id=123456,
         )
         client = TestClient(app_fixture)
-        test_lei = "TESTBANK123"
+        test_lei = "TESTBANK123000000000"
         res = client.get(f"/v1/institutions/{test_lei}/types/sbl")
         assert res.status_code == HTTPStatus.OK
         result = res.json()
@@ -581,20 +581,20 @@ class TestInstitutionsApi:
         )
         get_institution_mock.return_value = None
         client = TestClient(app_fixture)
-        test_lei = "TESTBANK123"
+        test_lei = "TESTBANK123000000000"
         res = client.get(f"/v1/institutions/{test_lei}/types/sbl")
         assert res.status_code == HTTPStatus.NO_CONTENT
 
     def test_get_hmda_types(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         client = TestClient(app_fixture)
-        test_lei = "TESTBANK123"
+        test_lei = "TESTBANK123000000000"
         res = client.get(f"/v1/institutions/{test_lei}/types/hmda")
         assert res.status_code == HTTPStatus.NOT_IMPLEMENTED
 
     def test_update_institution_types(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         mock = mocker.patch("regtech_user_fi_management.entities.repos.institutions_repo.update_sbl_types")
         client = TestClient(app_fixture)
-        test_lei = "TESTBANK123"
+        test_lei = "TESTBANK123000000000"
         res = client.put(
             f"/v1/institutions/{test_lei}/types/sbl",
             json={"sbl_institution_types": ["1", {"id": "2"}, {"id": "13", "details": "test"}]},
@@ -612,7 +612,7 @@ class TestInstitutionsApi:
         )
         get_institution_mock.return_value = None
         client = TestClient(app_fixture)
-        test_lei = "TESTBANK123"
+        test_lei = "TESTBANK123000000000"
         res = client.put(
             f"/v1/institutions/{test_lei}/types/sbl",
             json={"sbl_institution_types": ["1", {"id": "2"}, {"id": "13", "details": "test"}]},
@@ -624,7 +624,7 @@ class TestInstitutionsApi:
     ):
         mock = mocker.patch("regtech_user_fi_management.entities.repos.institutions_repo.update_sbl_types")
         client = TestClient(app_fixture)
-        test_lei = "TESTBANK123"
+        test_lei = "TESTBANK123000000000"
         res = client.put(
             f"/v1/institutions/{test_lei}/types/hmda",
             json={"sbl_institution_types": ["1", {"id": "2"}, {"id": "13", "details": "test"}]},
@@ -635,7 +635,7 @@ class TestInstitutionsApi:
     def test_update_wrong_institution_types(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         mock = mocker.patch("regtech_user_fi_management.entities.repos.institutions_repo.update_sbl_types")
         client = TestClient(app_fixture)
-        test_lei = "TESTBANK123"
+        test_lei = "TESTBANK123000000000"
         res = client.put(
             f"/v1/institutions/{test_lei}/types/test",
             json={"sbl_institution_types": ["1", {"id": "2"}, {"id": "13", "details": "test"}]},
