@@ -66,8 +66,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_8eaaa37a3d202aee_repo_utils_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.5.3">coverage.py v7.5.3</a>,
-            created at 2024-06-24 15:39 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.5.4">coverage.py v7.5.4</a>,
+            created at 2024-06-26 17:43 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -165,7 +165,7 @@
     <p class="run"><span class="n"><a id="t81" href="#t81">81</a></span><span class="t">        <span class="nam">fi_data</span><span class="op">.</span><span class="nam">pop</span><span class="op">(</span><span class="str">"_sa_instance_state"</span><span class="op">,</span> <span class="key">None</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t82" href="#t82">82</a></span><span class="t">        <span class="nam">fi_data</span><span class="op">.</span><span class="nam">pop</span><span class="op">(</span><span class="str">"version"</span><span class="op">,</span> <span class="key">None</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t83" href="#t83">83</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t84" href="#t84">84</a></span><span class="t">        <span class="key">if</span> <span class="str">"sbl_institution_types"</span> <span class="key">in</span> <span class="nam">fi_data</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">84&#x202F;&#x219B;&#x202F;88</span><span class="annotate long">line 84 didn't jump to line 88, because the condition on line 84 was always true</span></span></p>
+    <p class="par run show_par"><span class="n"><a id="t84" href="#t84">84</a></span><span class="t">        <span class="key">if</span> <span class="str">"sbl_institution_types"</span> <span class="key">in</span> <span class="nam">fi_data</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">84&#x202F;&#x219B;&#x202F;88</span><span class="annotate long">line 84 didn't jump to line 88 because the condition on line 84 was always true</span></span></p>
     <p class="run"><span class="n"><a id="t85" href="#t85">85</a></span><span class="t">            <span class="nam">types_association</span> <span class="op">=</span> <span class="nam">get_associated_sbl_types</span><span class="op">(</span><span class="nam">fi</span><span class="op">.</span><span class="nam">lei</span><span class="op">,</span> <span class="nam">user</span><span class="op">.</span><span class="nam">id</span><span class="op">,</span> <span class="nam">fi</span><span class="op">.</span><span class="nam">sbl_institution_types</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t86" href="#t86">86</a></span><span class="t">            <span class="nam">fi_data</span><span class="op">[</span><span class="str">"sbl_institution_types"</span><span class="op">]</span> <span class="op">=</span> <span class="nam">types_association</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t87" href="#t87">87</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -213,7 +213,7 @@
     <p class="pln"><span class="n"><a id="t129" href="#t129">129</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t"><span class="key">async</span> <span class="key">def</span> <span class="nam">is_domain_allowed</span><span class="op">(</span><span class="nam">session</span><span class="op">:</span> <span class="nam">AsyncSession</span><span class="op">,</span> <span class="nam">domain</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">bool</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t">    <span class="key">if</span> <span class="nam">domain</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">132&#x202F;&#x219B;&#x202F;137</span><span class="annotate long">line 132 didn't jump to line 137, because the condition on line 132 was always true</span></span></p>
+    <p class="par run show_par"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t">    <span class="key">if</span> <span class="nam">domain</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">132&#x202F;&#x219B;&#x202F;137</span><span class="annotate long">line 132 didn't jump to line 137 because the condition on line 132 was always true</span></span></p>
     <p class="run"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">        <span class="key">async</span> <span class="key">with</span> <span class="nam">session</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t134" href="#t134">134</a></span><span class="t">            <span class="nam">stmt</span> <span class="op">=</span> <span class="nam">select</span><span class="op">(</span><span class="nam">func</span><span class="op">.</span><span class="nam">count</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">.</span><span class="nam">filter</span><span class="op">(</span><span class="nam">DeniedDomainDao</span><span class="op">.</span><span class="nam">domain</span> <span class="op">==</span> <span class="nam">domain</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t135" href="#t135">135</a></span><span class="t">            <span class="nam">res</span> <span class="op">=</span> <span class="key">await</span> <span class="nam">session</span><span class="op">.</span><span class="nam">scalar</span><span class="op">(</span><span class="nam">stmt</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -227,8 +227,8 @@
             <a class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_8eaaa37a3d202aee_repo_utils_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.5.3">coverage.py v7.5.3</a>,
-            created at 2024-06-24 15:39 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.5.4">coverage.py v7.5.4</a>,
+            created at 2024-06-26 17:43 +0000
         </p>
     </div>
 </footer>
