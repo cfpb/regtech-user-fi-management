@@ -64,7 +64,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
-    allow_headers=["authorization"],
+    allow_headers=["*"],
 )
 
 app.include_router(admin_router, prefix="/v1/admin")
