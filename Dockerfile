@@ -16,4 +16,6 @@ WORKDIR /usr/app/src
 
 EXPOSE 8888
 
+USER sbl
+
 CMD ["uvicorn", "regtech_user_fi_management.main:app", "--host", "0.0.0.0", "--port", "8888", "--log-config", "log-config.yml"]
