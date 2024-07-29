@@ -16,6 +16,7 @@ env_files_to_load: list[Path | str] = [".env"]
 if os.getenv("ENV", "LOCAL") == "LOCAL":
     env_files_to_load.append(".env.local")
 
+
 class ServerConfig(BaseModel):
     host: str = "0.0.0.0"
     """
@@ -38,7 +39,7 @@ class Settings(BaseSettings):
     inst_conn: str | None = None
     admin_scopes: Set[str] = set(["query-groups", "manage-users"])
     db_logging: bool = True
-    
+
     server_config: ServerConfig = ServerConfig()
 
     def __init__(self, **data):
