@@ -59,6 +59,7 @@ env = [
   "TOKEN_URL=http://localhost",
   "CERTS_URL=http://localhost",
   "AUTH_CLIENT=",
+  "ENV=Test",
 ]
 
 [tool.black]

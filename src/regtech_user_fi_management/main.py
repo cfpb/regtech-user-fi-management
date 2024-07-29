@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 import os
 import logging
+import uvicorn
+
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.security import OAuth2AuthorizationCodeBearer
@@ -20,7 +22,7 @@ from regtech_api_commons.api.exception_handlers import (
     general_exception_handler,
 )
 
-from regtech_user_fi_management.config import kc_settings
+from regtech_user_fi_management.config import settings, kc_settings
 from regtech_user_fi_management.entities.listeners import setup_dao_listeners
 from regtech_user_fi_management.routers import admin_router, institutions_router
 
@@ -69,3 +71,14 @@ app.add_middleware(
 
 app.include_router(admin_router, prefix="/v1/admin")
 app.include_router(institutions_router, prefix="/v1/institutions")
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "regtech_user_fi_management.main:app",
+        host=settings.server_config.host,
+        port=settings.server_config.port,
+        timeout_keep_alive=settings.server_config.time_out,
+        workers=settings.server_config.workers,
+        reload=settings.server_config.reload,
+        log_config=settings.server_config.log_config,
+    )

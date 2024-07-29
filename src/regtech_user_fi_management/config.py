@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Set
 from urllib import parse
 
-from pydantic import field_validator, PostgresDsn, ValidationInfo
+from pydantic import field_validator, PostgresDsn, ValidationInfo, BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from regtech_api_commons.oauth2.config import KeycloakSettings
@@ -16,6 +16,17 @@ env_files_to_load: list[Path | str] = [".env"]
 if os.getenv("ENV", "LOCAL") == "LOCAL":
     env_files_to_load.append(".env.local")
 
+class ServerConfig(BaseModel):
+    host: str = "0.0.0.0"
+    """
+    "workers" and "reload" are mutually exclusive, "workers" flag is ignored when reloading is enabled.
+    """
+    workers: int = 4
+    reload: bool = False
+    time_out: int = 65
+    port: int = 8888
+    log_config: str = "log-config.yml"
+
 
 class Settings(BaseSettings):
     inst_db_schema: str = "public"
@@ -27,6 +38,8 @@ class Settings(BaseSettings):
     inst_conn: str | None = None
     admin_scopes: Set[str] = set(["query-groups", "manage-users"])
     db_logging: bool = True
+    
+    server_config: ServerConfig = ServerConfig()
 
     def __init__(self, **data):
         super().__init__(**data)

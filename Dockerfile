@@ -4,13 +4,13 @@ WORKDIR /usr/app
 
 RUN pip install poetry
 
-COPY poetry.lock pyproject.toml alembic.ini ./
+COPY --chown=sbl:sbl poetry.lock pyproject.toml alembic.ini README.md ./
+
+COPY --chown=sbl:sbl ./src ./src
+COPY --chown=sbl:sbl ./db_revisions ./db_revisions
 
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-root
-
-COPY ./src ./src
-COPY ./db_revisions ./db_revisions
+RUN poetry install --only main
 
 WORKDIR /usr/app/src
 
@@ -18,4 +18,4 @@ EXPOSE 8888
 
 USER sbl
 
-CMD ["uvicorn", "regtech_user_fi_management.main:app", "--host", "0.0.0.0", "--port", "8888", "--log-config", "log-config.yml"]
+CMD ["python", "regtech_user_fi_management/main.py"]
