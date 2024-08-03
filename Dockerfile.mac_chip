@@ -1,6 +1,6 @@
 # Use this Dockerfile if you are using a Mac with an Apple chip 
 
-FROM python:3.12.3-alpine
+FROM python:3.13.0rc1-alpine
 
 WORKDIR /usr/app
 
