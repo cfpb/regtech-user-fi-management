@@ -1333,13 +1333,13 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments
 
 [[package]]
 name = "pytest-alembic"
-version = "0.11.0"
+version = "0.11.1"
 description = "A pytest plugin for verifying alembic migrations."
 optional = false
-python-versions = ">=3.6,<4"
+python-versions = "<4,>=3.6"
 files = [
-    {file = "pytest_alembic-0.11.0-py3-none-any.whl", hash = "sha256:bce543dae00eec8b69b283105d48e0b3e1cc31ca721b0a8c46cb4710e7aa0ec8"},
-    {file = "pytest_alembic-0.11.0.tar.gz", hash = "sha256:4f4237c06598226b2bc58df8154a8aed29f7efadd7157ee3a946f81585532627"},
+    {file = "pytest_alembic-0.11.1-py3-none-any.whl", hash = "sha256:f83e8c1534d50ced053aa4b1dbf6e261f4674aa626cb852fc1dcb565049ae152"},
+    {file = "pytest_alembic-0.11.1.tar.gz", hash = "sha256:a920d8770b5be77326c5c1b2bd8d4d4a0dd8fc2c2d57abbcd1fec28a21131b85"},
 ]
 
 [package.dependencies]
@@ -2188,4 +2188,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<4"
-content-hash = "887901d454f4ebf7b507f5f8f466dfe095bb4466dd45968d2544848d75211429"
+content-hash = "90316cfd40ee18c85612a1140b377bd10be2b27fc4a55cb95dac734bffdcbd88"
