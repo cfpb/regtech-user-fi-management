@@ -240,7 +240,6 @@ class TestInstitutionsRepo:
         new_sbl_types = next(iter([fi for fi in res if fi.lei == "NEWBANK1230000000000"])).sbl_institution_types
         assert len(new_sbl_types) == 1
         assert next(iter(new_sbl_types)).sbl_type.name == "Test SBL Instituion ID 1"
-        
 
     async def test_add_institution(self, transaction_session: AsyncSession):
         db_fi = await repo.upsert_institution(
