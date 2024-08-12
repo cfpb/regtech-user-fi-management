@@ -58,7 +58,7 @@ class FinancialInstitutionDao(AuditMixin, Base):
     hq_address_street_3: Mapped[str] = mapped_column(nullable=True)
     hq_address_street_4: Mapped[str] = mapped_column(nullable=True)
     hq_address_city: Mapped[str]
-    hq_address_state_code: Mapped[str] = mapped_column(ForeignKey("address_state.code"))
+    hq_address_state_code: Mapped[str] = mapped_column(ForeignKey("address_state.code"), nullable=True)
     hq_address_state: Mapped["AddressStateDao"] = relationship(lazy="selectin")
     hq_address_zip: Mapped[str] = mapped_column(String(5))
     parent_lei: Mapped[str] = mapped_column(String(20), nullable=True)

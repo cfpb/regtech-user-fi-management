@@ -70,7 +70,7 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
     hq_address_street_3: str | None = None
     hq_address_street_4: str | None = None
     hq_address_city: str
-    hq_address_state_code: str
+    hq_address_state_code: str | None = None
     hq_address_zip: str
     parent_lei: str | None = None
     parent_legal_name: str | None = None

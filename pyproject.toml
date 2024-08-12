@@ -15,6 +15,7 @@ asyncpg = "^0.29.0"
 alembic = "^1.13.2"
 regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git"}
 regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
+greenlet = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

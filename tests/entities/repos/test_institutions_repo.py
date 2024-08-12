@@ -205,6 +205,43 @@ class TestInstitutionsRepo:
         res = await repo.get_institutions(query_session, leis=["0123NOTTESTBANK01234"])
         assert len(res) == 0
 
+    async def test_empty_state(self, transaction_session: AsyncSession):
+        db_fi = await repo.upsert_institution(
+            transaction_session,
+            FinancialInstitutionDto(
+                name="New Bank 123",
+                lei="NEWBANK1230000000000",
+                is_active=True,
+                tax_id="65-4321987",
+                rssd_id=6543,
+                primary_federal_regulator_id="FRI3",
+                hmda_institution_type_id="HIT3",
+                sbl_institution_types=[SblTypeAssociationDto(id="1")],
+                hq_address_street_1="Test Address Street 3",
+                hq_address_street_2="",
+                hq_address_street_3="",
+                hq_address_street_4="",
+                hq_address_city="Test City 3",
+                hq_address_state_code="",
+                hq_address_zip="22222",
+                parent_lei="0123PARENTNEWBANK123",
+                parent_legal_name="PARENT NEW BANK 123",
+                parent_rssd_id=76543,
+                top_holder_lei="TOPHOLDNEWBANKLEI123",
+                top_holder_legal_name="TOP HOLDER NEW BANK LEI 123",
+                top_holder_rssd_id=876543,
+                modified_by="test_user_id",
+            ),
+            self.auth_user,
+        )
+        assert db_fi.domains == []
+        res = await repo.get_institutions(transaction_session)
+        assert len(res) == 4
+        new_sbl_types = next(iter([fi for fi in res if fi.lei == "NEWBANK1230000000000"])).sbl_institution_types
+        assert len(new_sbl_types) == 1
+        assert next(iter(new_sbl_types)).sbl_type.name == "Test SBL Instituion ID 1"
+        
+
     async def test_add_institution(self, transaction_session: AsyncSession):
         db_fi = await repo.upsert_institution(
             transaction_session,
