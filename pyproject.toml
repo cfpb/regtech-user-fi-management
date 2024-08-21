@@ -9,13 +9,12 @@ packages = [{ include = "regtech_user_fi_management", from = "src" }]
 [tool.poetry.dependencies]
 python = ">=3.12,<4"
 python-dotenv = "^1.0.0"
-SQLAlchemy = "^2.0.32"
+SQLAlchemy = { version = "^2.0.32", extras = ["asyncio"]}
 psycopg2-binary = "^2.9.6"
 asyncpg = "^0.29.0"
 alembic = "^1.13.2"
 regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git"}
 regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
-greenlet = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
