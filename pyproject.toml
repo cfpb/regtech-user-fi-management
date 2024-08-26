@@ -18,7 +18,7 @@ regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
-pytest-asyncio = "^0.23.8"
+pytest-asyncio = "^0.24.0"
 aiosqlite = "^0.20.0"
 pytest-cov = "^5.0.0"
 pytest-mock = "^3.11.1"
