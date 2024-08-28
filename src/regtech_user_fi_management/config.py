@@ -9,6 +9,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from regtech_api_commons.oauth2.config import KeycloakSettings
 from regtech_regex.regex_config import RegexConfigs
 
+from pydantic_settings.sources import DotenvType, ENV_FILE_SENTINEL
+
 
 JWT_OPTS_PREFIX = "jwt_opts_"
 
@@ -28,8 +30,8 @@ class Settings(BaseSettings):
     admin_scopes: Set[str] = set(["query-groups", "manage-users"])
     db_logging: bool = True
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def __init__(self, _env_file: DotenvType | None = ENV_FILE_SENTINEL, **data):
+        super().__init__(_env_file=_env_file, **data)
 
     @field_validator("inst_conn", mode="before")
     @classmethod
