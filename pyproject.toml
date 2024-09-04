@@ -9,7 +9,7 @@ packages = [{ include = "regtech_user_fi_management", from = "src" }]
 [tool.poetry.dependencies]
 python = ">=3.12,<4"
 python-dotenv = "^1.0.0"
-SQLAlchemy = { version = "^2.0.33", extras = ["asyncio"]}
+SQLAlchemy = { version = "^2.0.34", extras = ["asyncio"]}
 psycopg2-binary = "^2.9.6"
 asyncpg = "^0.29.0"
 alembic = "^1.13.2"
