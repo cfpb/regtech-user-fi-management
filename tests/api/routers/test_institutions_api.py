@@ -183,11 +183,7 @@ class TestInstitutionsApi:
         assert res.status_code == 200
         assert res.json()[1].get("name") == "testName"
 
-
-
-    def test_empty_state_field(
-        self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock
-    ):
+    def test_empty_state_field(self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock):
         upsert_institution_mock = mocker.patch(
             "regtech_user_fi_management.entities.repos.institutions_repo.upsert_institution"
         )
@@ -215,8 +211,6 @@ class TestInstitutionsApi:
         )
         assert res.status_code == 200
         assert res.json()[1].get("hq_address_state") is None
-
-
 
     def test_create_institution_only_required_fields(
         self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock
