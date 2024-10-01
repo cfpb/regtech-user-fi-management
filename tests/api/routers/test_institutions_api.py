@@ -183,6 +183,41 @@ class TestInstitutionsApi:
         assert res.status_code == 200
         assert res.json()[1].get("name") == "testName"
 
+
+
+    def test_empty_state_field(
+        self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock
+    ):
+        upsert_institution_mock = mocker.patch(
+            "regtech_user_fi_management.entities.repos.institutions_repo.upsert_institution"
+        )
+        upsert_institution_mock.return_value = FinancialInstitutionDao(
+            name="testName",
+            lei="1234567890ABCDEFGH00",
+            is_active=True,
+            hq_address_street_1="Test Address Street 1",
+            hq_address_city="Test City 1",
+            hq_address_zip="00000",
+        )
+        upsert_group_mock = mocker.patch("regtech_api_commons.oauth2.oauth2_admin.OAuth2Admin.upsert_group")
+        upsert_group_mock.return_value = "leiGroup"
+        client = TestClient(app_fixture)
+        res = client.post(
+            "/v1/institutions/",
+            json={
+                "name": "testName",
+                "lei": "1234567890ABCDEFGH00",
+                "is_active": True,
+                "hq_address_street_1": "Test Address Street 1",
+                "hq_address_city": "Test City 1",
+                "hq_address_zip": "00000",
+            },
+        )
+        assert res.status_code == 200
+        assert res.json()[1].get("hq_address_state") is None
+
+
+
     def test_create_institution_only_required_fields(
         self, mocker: MockerFixture, app_fixture: FastAPI, authed_user_mock: Mock
     ):

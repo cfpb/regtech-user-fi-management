@@ -154,7 +154,7 @@ class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
     primary_federal_regulator: FederalRegulatorDto | None = None
     hmda_institution_type: InstitutionTypeDto | None = None
     sbl_institution_types: List[SblTypeAssociationDetailsDto] = []
-    hq_address_state: AddressStateDto
+    hq_address_state: AddressStateDto | None = None
     domains: List[FinancialInsitutionDomainDto] = []
 
 
