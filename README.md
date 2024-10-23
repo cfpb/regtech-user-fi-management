@@ -4,19 +4,19 @@
 
 | Name                                                                   |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
 |----------------------------------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
-| src/regtech\_user\_fi\_management/config.py                            |       33 |        0 |        8 |        1 |     98% |    16->20 |
+| src/regtech\_user\_fi\_management/config.py                            |       33 |        0 |        2 |        1 |     97% |    16->20 |
 | src/regtech\_user\_fi\_management/dependencies.py                      |       15 |        0 |        4 |        0 |    100% |           |
 | src/regtech\_user\_fi\_management/entities/engine/engine.py            |       10 |        0 |        0 |        0 |    100% |           |
-| src/regtech\_user\_fi\_management/entities/listeners.py                |       55 |        5 |       28 |        4 |     84% |18->13, 26->13, 40->33, 51->exit, 71-82 |
+| src/regtech\_user\_fi\_management/entities/listeners.py                |       55 |        5 |       24 |        4 |     89% |18->13, 26->13, 40->33, 51->exit, 71-82 |
 | src/regtech\_user\_fi\_management/entities/models/dao.py               |       80 |        0 |        2 |        0 |    100% |           |
-| src/regtech\_user\_fi\_management/entities/models/dto.py               |      108 |        0 |       16 |        1 |     99% |    89->93 |
-| src/regtech\_user\_fi\_management/entities/repos/institutions\_repo.py |       69 |        1 |       26 |        2 |     97% |84->88, 137 |
-| src/regtech\_user\_fi\_management/entities/repos/repo\_utils.py        |       13 |        0 |        2 |        0 |    100% |           |
-| src/regtech\_user\_fi\_management/main.py                              |       43 |       11 |        2 |        0 |     76% |32-36, 41-46 |
+| src/regtech\_user\_fi\_management/entities/models/dto.py               |      108 |        0 |       12 |        1 |     99% |    89->93 |
+| src/regtech\_user\_fi\_management/entities/repos/institutions\_repo.py |       69 |        1 |       14 |        2 |     96% |84->88, 137 |
+| src/regtech\_user\_fi\_management/entities/repos/repo\_utils.py        |       13 |        0 |        0 |        0 |    100% |           |
+| src/regtech\_user\_fi\_management/main.py                              |       43 |       11 |        0 |        0 |     74% |32-36, 41-46 |
 | src/regtech\_user\_fi\_management/routers/\_\_init\_\_.py              |        3 |        0 |        0 |        0 |    100% |           |
-| src/regtech\_user\_fi\_management/routers/admin.py                     |       27 |        0 |       20 |        0 |    100% |           |
-| src/regtech\_user\_fi\_management/routers/institutions.py              |       87 |        0 |       80 |        3 |     98% |94->exit, 137->exit, 160->exit |
-|                                                              **TOTAL** |  **543** |   **17** |  **188** |   **11** | **96%** |           |
+| src/regtech\_user\_fi\_management/routers/admin.py                     |       27 |        0 |        2 |        0 |    100% |           |
+| src/regtech\_user\_fi\_management/routers/institutions.py              |       87 |        0 |       18 |        3 |     97% |94->exit, 137->exit, 160->exit |
+|                                                              **TOTAL** |  **543** |   **17** |   **78** |   **11** | **95%** |           |
 
 6 empty files skipped.
 
