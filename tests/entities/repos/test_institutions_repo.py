@@ -1,5 +1,6 @@
 import pytest
 from pytest_mock import MockerFixture
+from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from regtech_user_fi_management.entities.models.dto import (
@@ -410,3 +411,79 @@ class TestInstitutionsRepo:
         res = await repo.update_sbl_types(transaction_session, self.auth_user, test_lei, sbl_types)
         commit_spy.assert_not_called()
         assert res is None
+
+    async def test_add_institution_invalid_field_length(self, transaction_session: AsyncSession):
+
+        out_of_range_text = (
+            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget "
+            "dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, "
+            "nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis..."
+        )
+        with pytest.raises(Exception) as e:
+            await repo.upsert_institution(
+                transaction_session,
+                FinancialInstitutionDto(
+                    name="New Bank 123",
+                    lei="NEWBANK1230000000000",
+                    is_active=True,
+                    tax_id="65-4321987",
+                    rssd_id=6543,
+                    primary_federal_regulator_id="FRI3",
+                    hmda_institution_type_id="HIT3",
+                    sbl_institution_types=[SblTypeAssociationDto(id="1")],
+                    hq_address_street_1=out_of_range_text,
+                    hq_address_street_2="",
+                    hq_address_street_3="",
+                    hq_address_street_4="",
+                    hq_address_city="Test City 3",
+                    hq_address_state_code="FL",
+                    hq_address_zip="22222",
+                    parent_lei="0123PARENTNEWBANK123",
+                    parent_legal_name="PARENT NEW BANK 123",
+                    parent_rssd_id=76543,
+                    top_holder_lei="TOPHOLDNEWBANKLEI123",
+                    top_holder_legal_name="TOP HOLDER NEW BANK LEI 123",
+                    top_holder_rssd_id=876543,
+                    modified_by="test_user_id",
+                ),
+                self.auth_user,
+            )
+        assert isinstance(e.value, ValidationError)
+
+    async def test_update_institution_invalid_field_length(self, transaction_session: AsyncSession):
+        out_of_range_text = (
+            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget "
+            "dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, "
+            "nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis..."
+        )
+
+        with pytest.raises(Exception) as e:
+            await repo.upsert_institution(
+                transaction_session,
+                FinancialInstitutionDto(
+                    name="New Bank 123",
+                    lei="NEWBANK1230000000000",
+                    is_active=True,
+                    tax_id="65-4321987",
+                    rssd_id=6543,
+                    primary_federal_regulator_id="FRI3",
+                    hmda_institution_type_id="HIT3",
+                    sbl_institution_types=[SblTypeAssociationDto(id="1")],
+                    hq_address_street_1=out_of_range_text,
+                    hq_address_street_2="",
+                    hq_address_street_3="",
+                    hq_address_street_4="",
+                    hq_address_city="Test City 3",
+                    hq_address_state_code="FL",
+                    hq_address_zip="22222",
+                    parent_lei="0123PARENTNEWBANK123",
+                    parent_legal_name="PARENT NEW BANK 123",
+                    parent_rssd_id=76543,
+                    top_holder_lei="TOPHOLDNEWBANKLEI123",
+                    top_holder_legal_name=out_of_range_text,
+                    top_holder_rssd_id=876543,
+                    modified_by="test_user_id",
+                ),
+                self.auth_user,
+            )
+        assert isinstance(e.value, ValidationError)

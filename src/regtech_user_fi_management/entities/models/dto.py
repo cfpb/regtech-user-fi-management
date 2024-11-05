@@ -1,7 +1,7 @@
 from regtech_user_fi_management.config import regex_configs
 
 from typing import Generic, List, Set, Sequence
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, Field
 from typing import TypeVar
 
 T = TypeVar("T")
@@ -65,18 +65,18 @@ class FinancialInstitutionDto(FinancialInstitutionBase):
     primary_federal_regulator_id: str | None = None
     hmda_institution_type_id: str | None = None
     sbl_institution_types: List[SblTypeAssociationDto | str] = []
-    hq_address_street_1: str
-    hq_address_street_2: str | None = None
-    hq_address_street_3: str | None = None
-    hq_address_street_4: str | None = None
-    hq_address_city: str
+    hq_address_street_1: str = Field(max_length=255)
+    hq_address_street_2: str | None = Field(None, max_length=255)
+    hq_address_street_3: str | None = Field(None, max_length=255)
+    hq_address_street_4: str | None = Field(None, max_length=255)
+    hq_address_city: str = Field(None, max_length=255)
     hq_address_state_code: str | None = None
     hq_address_zip: str
     parent_lei: str | None = None
-    parent_legal_name: str | None = None
+    parent_legal_name: str | None = Field(None, max_length=255)
     parent_rssd_id: int | None = None
     top_holder_lei: str | None = None
-    top_holder_legal_name: str | None = None
+    top_holder_legal_name: str | None = Field(None, max_length=255)
     top_holder_rssd_id: int | None = None
     version: int | None = None
 

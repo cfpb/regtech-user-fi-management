@@ -67,3 +67,21 @@ def test_migration_to_2ad66aaf4583(alembic_runner: MigrationContext, alembic_eng
 
     assert "hq_address_street_3" in [c["name"] for c in inspector.get_columns("financial_institutions")]
     assert "hq_address_street_4" in [c["name"] for c in inspector.get_columns("financial_institutions")]
+
+
+def test_migration_to_6dd77f09fae6(alembic_runner: MigrationContext, alembic_engine: Engine):
+
+    alembic_runner.migrate_up_to("6dd77f09fae6")
+
+    inspector = sqlalchemy.inspect(alembic_engine)
+
+    columns = inspector.get_columns("financial_institutions")
+
+    assert [c for c in columns if c["name"] == "name"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "hq_address_street_1"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "hq_address_street_2"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "hq_address_street_3"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "hq_address_street_4"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "hq_address_city"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "parent_legal_name"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "top_holder_legal_name"][0]["type"].length == 255
