@@ -32,3 +32,13 @@ loggers:
     handlers:
       - access
     propagate: no
+  regtech_api_commons:
+    level: INFO
+    handlers:
+      - default
+    propagate: false
+  regtech_user_fi_management:
+    level: INFO
+    handlers:
+      - default
+    propagate: false
