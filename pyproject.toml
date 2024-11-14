@@ -13,7 +13,7 @@ SQLAlchemy = { version = "^2.0.36", extras = ["asyncio"]}
 psycopg2-binary = "^2.9.10"
 asyncpg = "^0.30.0"
 alembic = "^1.14.0"
-regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git"}
+regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git", branch="checkout_python_3.13"}
 regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
 greenlet = "^3.1.0"
 
