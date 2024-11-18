@@ -54,7 +54,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Test Bank 123",
                 lei="TESTBANK123000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
                 domains=[FinancialInstitutionDomainDao(domain="test.bank.1", lei="TESTBANK123000000000")],
                 tax_id="12-3456789",
                 rssd_id=1234,
@@ -79,7 +79,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Test Bank 456",
                 lei="TESTBANK456000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
                 domains=[FinancialInstitutionDomainDao(domain="test.bank.2", lei="TESTBANK456000000000")],
                 tax_id="98-7654321",
                 rssd_id=4321,
@@ -104,7 +104,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDao(
                 name="Test Sub Bank 456",
                 lei="TESTSUBBANK456000000",
-                is_active=True,
+                lei_status_code="ISSUED",
                 domains=[FinancialInstitutionDomainDao(domain="sub.test.bank.2", lei="TESTSUBBANK456000000")],
                 tax_id="76-5432198",
                 rssd_id=2134,
@@ -212,7 +212,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDto(
                 name="New Bank 123",
                 lei="NEWBANK1230000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
                 tax_id="65-4321987",
                 rssd_id=6543,
                 primary_federal_regulator_id="FRI3",
@@ -248,7 +248,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDto(
                 name="New Bank 123",
                 lei="NEWBANK1230000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
                 tax_id="65-4321987",
                 rssd_id=6543,
                 primary_federal_regulator_id="FRI3",
@@ -286,7 +286,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDto(
                 name="Minimal Bank 123",
                 lei="MINBANK1230000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
                 hq_address_street_1="Minimal Address Street 1",
                 hq_address_city="Minimal City 1",
                 hq_address_state_code="FL",
@@ -320,7 +320,7 @@ class TestInstitutionsRepo:
             FinancialInstitutionDto(
                 name="Test Bank 234",
                 lei="TESTBANK123000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
                 hq_address_street_1="Test Address Street 1",
                 hq_address_city="Test City 1",
                 hq_address_state_code="GA",
@@ -425,7 +425,7 @@ class TestInstitutionsRepo:
                 FinancialInstitutionDto(
                     name="New Bank 123",
                     lei="NEWBANK1230000000000",
-                    is_active=True,
+                    lei_status_code="ISSUED",
                     tax_id="65-4321987",
                     rssd_id=6543,
                     primary_federal_regulator_id="FRI3",
@@ -463,7 +463,7 @@ class TestInstitutionsRepo:
                 FinancialInstitutionDto(
                     name="New Bank 123",
                     lei="NEWBANK1230000000000",
-                    is_active=True,
+                    lei_status_code="ISSUED",
                     tax_id="65-4321987",
                     rssd_id=6543,
                     primary_federal_regulator_id="FRI3",

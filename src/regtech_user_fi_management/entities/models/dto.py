@@ -30,7 +30,7 @@ class FinancialInsitutionDomainDto(FinancialInsitutionDomainBase):
 class FinancialInstitutionBase(BaseModel):
     lei: str
     name: str
-    is_active: bool
+    lei_status_code: str
 
 
 class SblTypeAssociationDto(BaseModel):
@@ -160,3 +160,12 @@ class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
 
 class FinancialInstitutionAssociationDto(FinancialInstitutionWithRelationsDto):
     approved: bool
+
+
+class LeiStatusDto(BaseModel):
+    code: str
+    name: str
+    can_file: bool
+
+    class Config:
+        from_attributes = True

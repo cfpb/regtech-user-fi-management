@@ -85,3 +85,11 @@ def test_migration_to_6dd77f09fae6(alembic_runner: MigrationContext, alembic_eng
     assert [c for c in columns if c["name"] == "hq_address_city"][0]["type"].length == 255
     assert [c for c in columns if c["name"] == "parent_legal_name"][0]["type"].length == 255
     assert [c for c in columns if c["name"] == "top_holder_legal_name"][0]["type"].length == 255
+
+
+def test_tables_exist_migrate_up_to_6613e1e2c133(alembic_runner: MigrationContext, alembic_engine: Engine):
+    alembic_runner.migrate_up_to("6613e1e2c133")
+
+    inspector = sqlalchemy.inspect(alembic_engine)
+    tables = inspector.get_table_names()
+    assert "lei_status" in tables

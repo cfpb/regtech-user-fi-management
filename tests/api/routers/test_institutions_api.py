@@ -14,6 +14,7 @@ from regtech_user_fi_management.entities.models.dao import (
     HMDAInstitutionTypeDao,
     SBLInstitutionTypeDao,
     SblTypeMappingDao,
+    LeiStatusDao,
 )
 from regtech_user_fi_management.entities.models.dto import SblTypeAssociationDto
 from regtech_user_fi_management.config import regex_configs
@@ -65,7 +66,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "TESTBANK123000000000",
-                "is_active": True,
+                "lei_status_code": "ISSUED",
                 "tax_id": "123456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FRI2",
@@ -96,7 +97,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "test_Lei",
-                "is_active": True,
+                "lei_status_code": "ISSUED",
                 "tax_id": "12-3456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FRI2",
@@ -127,7 +128,8 @@ class TestInstitutionsApi:
         upsert_institution_mock.return_value = FinancialInstitutionDao(
             name="testName",
             lei="1234567890ABCDEFGH00",
-            is_active=True,
+            lei_status_code="ISSUED",
+            lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="1234567890ABCDEFGH00")],
             tax_id="12-3456789",
             rssd_id=1234,
@@ -159,7 +161,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "1234567890ABCDEFGH00",
-                "is_active": True,
+                "lei_status_code": "ISSUED",
                 "tax_id": "12-3456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FRI2",
@@ -190,7 +192,8 @@ class TestInstitutionsApi:
         upsert_institution_mock.return_value = FinancialInstitutionDao(
             name="testName",
             lei="1234567890ABCDEFGH00",
-            is_active=True,
+            lei_status_code="ISSUED",
+            lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
             hq_address_street_1="Test Address Street 1",
             hq_address_city="Test City 1",
             hq_address_zip="00000",
@@ -203,7 +206,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "1234567890ABCDEFGH00",
-                "is_active": True,
+                "lei_status_code": "ISSUED",
                 "hq_address_street_1": "Test Address Street 1",
                 "hq_address_city": "Test City 1",
                 "hq_address_zip": "00000",
@@ -221,7 +224,8 @@ class TestInstitutionsApi:
         upsert_institution_mock.return_value = FinancialInstitutionDao(
             name="testName",
             lei="1234567890ABCDEFGH00",
-            is_active=True,
+            lei_status_code="ISSUED",
+            lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
             hq_address_street_1="Test Address Street 1",
             hq_address_city="Test City 1",
             hq_address_state_code="VA",
@@ -236,7 +240,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "1234567890ABCDEFGH00",
-                "is_active": True,
+                "lei_status_code": "ISSUED",
                 "hq_address_street_1": "Test Address Street 1",
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
@@ -272,7 +276,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "1234567890ABCDEFGH00",
-                "is_active": True,
+                "lei_status_code": "ISSUED",
                 "hq_address_street_1": "Test Address Street 1",
                 "hq_address_city": "Test City 1",
                 "hq_address_state_code": "VA",
@@ -300,7 +304,7 @@ class TestInstitutionsApi:
             json={
                 "name": "testName",
                 "lei": "1234567890ABCDEFGH00",
-                "is_active": True,
+                "lei_status_code": "ISSUED",
                 "tax_id": "12-3456789",
                 "rssd_id": 12344,
                 "primary_federal_regulator_id": "FIR2",
@@ -336,7 +340,8 @@ class TestInstitutionsApi:
         get_institution_mock.return_value = FinancialInstitutionDao(
             name="Test Bank 123",
             lei="TESTBANK123000000000",
-            is_active=True,
+            lei_status_code="ISSUED",
+            lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123000000000")],
             tax_id="12-3456789",
             rssd_id=1234,
@@ -439,7 +444,8 @@ class TestInstitutionsApi:
             FinancialInstitutionDao(
                 name="Test Bank 123",
                 lei="TESTBANK123000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
+                lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
                 domains=[FinancialInstitutionDomainDao(domain="test123.bank", lei="TESTBANK123000000000")],
                 tax_id="12-3456789",
                 rssd_id=1234,
@@ -466,7 +472,8 @@ class TestInstitutionsApi:
             FinancialInstitutionDao(
                 name="Test Bank 234",
                 lei="TESTBANK234000000000",
-                is_active=True,
+                lei_status_code="ISSUED",
+                lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
                 domains=[FinancialInstitutionDomainDao(domain="test234.bank", lei="TESTBANK234000000000")],
                 tax_id="12-3456879",
                 rssd_id=6879,
@@ -571,7 +578,8 @@ class TestInstitutionsApi:
             version=inst_version,
             name="Test Bank 123",
             lei="TESTBANK123000000000",
-            is_active=True,
+            lei_status_code="ISSUED",
+            lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123000000000")],
             tax_id="12-3456789",
             rssd_id=1234,

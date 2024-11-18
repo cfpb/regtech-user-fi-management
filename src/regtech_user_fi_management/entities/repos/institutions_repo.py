@@ -16,6 +16,7 @@ from regtech_user_fi_management.entities.models.dao import (
     DeniedDomainDao,
     AddressStateDao,
     FederalRegulatorDao,
+    LeiStatusDao,
 )
 
 from regtech_user_fi_management.entities.models.dto import (
@@ -135,3 +136,7 @@ async def is_domain_allowed(session: AsyncSession, domain: str) -> bool:
             res = await session.scalar(stmt)
             return res == 0
     return False
+
+
+async def get_lei_statuses(session: AsyncSession) -> Sequence[LeiStatusDao]:
+    return await query_type(session, LeiStatusDao)
