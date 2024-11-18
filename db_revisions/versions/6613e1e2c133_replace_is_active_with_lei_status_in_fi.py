@@ -55,7 +55,6 @@ def upgrade() -> None:
             columns=["lei_status_code"],
             unique=False,
         )
-
         batch_op.create_foreign_key(
             "fk_lei_status_financial_institutions",
             "lei_status",
@@ -63,6 +62,7 @@ def upgrade() -> None:
             ["code"],
         )
 
+        batch_op.drop_index(index_name="ix_financial_institutions_is_active")
         batch_op.drop_column("is_active")
 
     # Removing is_active from and adding lei_status_code to financial_institutions_history table
@@ -82,6 +82,7 @@ def downgrade() -> None:
         )
 
         batch_op.drop_constraint(constraint_name="fk_lei_status_financial_institutions")
+        batch_op.drop_index("ix_financial_institutions_lei_status_code")
         batch_op.drop_column("lei_status_code")
 
     lei_status_table = get_table_by_name("lei_status")
