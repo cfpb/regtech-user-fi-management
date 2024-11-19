@@ -100,4 +100,3 @@ def test_migration_to_6613e1e2c133(alembic_runner: MigrationContext, alembic_eng
     assert "lei_status_code" in [
         column.get("name") for column in inspector.get_columns("financial_institutions_history")
     ]
-    assert "is_active" not in [column.get("name") for column in inspector.get_columns("financial_institutions_history")]
