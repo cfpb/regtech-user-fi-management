@@ -86,7 +86,7 @@ def downgrade() -> None:
     )
 
     with op.batch_alter_table("financial_institutions") as batch_op:
-        batch_op.alter_column("is_active", existing_nullable=True, nullable=False, server_default=sa.true())
+        batch_op.alter_column("is_active", existing_nullable=True, nullable=False)
         batch_op.create_index(
             index_name=batch_op.f("ix_financial_institutions_is_active"), columns=["is_active"], unique=False
         )
