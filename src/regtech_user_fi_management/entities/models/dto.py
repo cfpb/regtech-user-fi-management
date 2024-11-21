@@ -1,7 +1,7 @@
 from regtech_user_fi_management.config import regex_configs
 
 from typing import Generic, List, Set, Sequence
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, model_validator
 from typing import TypeVar
 
 T = TypeVar("T")
