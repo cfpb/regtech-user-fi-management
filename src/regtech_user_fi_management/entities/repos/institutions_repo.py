@@ -136,7 +136,3 @@ async def is_domain_allowed(session: AsyncSession, domain: str) -> bool:
             res = await session.scalar(stmt)
             return res == 0
     return False
-
-
-async def get_lei_statuses(session: AsyncSession) -> Sequence[LeiStatusDao]:
-    return await query_type(session, LeiStatusDao)
