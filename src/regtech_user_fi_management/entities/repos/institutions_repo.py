@@ -16,7 +16,6 @@ from regtech_user_fi_management.entities.models.dao import (
     DeniedDomainDao,
     AddressStateDao,
     FederalRegulatorDao,
-    LeiStatusDao,
 )
 
 from regtech_user_fi_management.entities.models.dto import (
