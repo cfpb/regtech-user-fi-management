@@ -412,20 +412,16 @@ class TestInstitutionsRepo:
         commit_spy.assert_not_called()
         assert res is None
 
-    async def test_add_institution_invalid_field_length(self, transaction_session: AsyncSession):
+    async def test_add_institution_no_field_length_restriction(self, transaction_session: AsyncSession):
 
-        out_of_range_text = (
-            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget "
-            "dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, "
-            "nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis..."
-        )
+        out_of_range_text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget "
         with pytest.raises(Exception) as e:
             await repo.upsert_institution(
                 transaction_session,
                 FinancialInstitutionDto(
                     name="New Bank 123",
                     lei="NEWBANK1230000000000",
-                    lei_status_code="ISSUED",
+                    is_active=True,
                     tax_id="65-4321987",
                     rssd_id=6543,
                     primary_federal_regulator_id="FRI3",
@@ -450,7 +446,7 @@ class TestInstitutionsRepo:
             )
         assert isinstance(e.value, ValidationError)
 
-    async def test_update_institution_invalid_field_length(self, transaction_session: AsyncSession):
+    async def test_update_institution_no_field_length_restriction(self, transaction_session: AsyncSession):
         out_of_range_text = (
             "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget "
             "dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, "
@@ -463,14 +459,14 @@ class TestInstitutionsRepo:
                 FinancialInstitutionDto(
                     name="New Bank 123",
                     lei="NEWBANK1230000000000",
-                    lei_status_code="ISSUED",
+                    is_active=True,
                     tax_id="65-4321987",
                     rssd_id=6543,
                     primary_federal_regulator_id="FRI3",
                     hmda_institution_type_id="HIT3",
                     sbl_institution_types=[SblTypeAssociationDto(id="1")],
                     hq_address_street_1=out_of_range_text,
-                    hq_address_street_2="",
+                    hq_address_street_2=out_of_range_text,
                     hq_address_street_3="",
                     hq_address_street_4="",
                     hq_address_city="Test City 3",
