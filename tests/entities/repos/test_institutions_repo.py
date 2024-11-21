@@ -1,6 +1,5 @@
 import pytest
 from pytest_mock import MockerFixture
-from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from regtech_user_fi_management.entities.models.dto import (
