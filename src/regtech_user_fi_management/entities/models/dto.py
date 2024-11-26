@@ -158,6 +158,7 @@ class LeiStatusDto(BaseModel):
     class Config:
         from_attributes = True
 
+
 class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
     primary_federal_regulator: FederalRegulatorDto | None = None
     hmda_institution_type: InstitutionTypeDto | None = None
