@@ -12,6 +12,7 @@ def alembic_config():
             "26a742d97ad9": {"__tablename__": "federal_regulator", "id": "ZZZ", "name": "TestRegulator"},
             "f4ff7d1aa6df": {"__tablename__": "hmda_institution_type", "id": "00", "name": "TestHmdaInstitutionType"},
             "a41281b1e109": {"__tablename__": "sbl_institution_type", "id": "00", "name": "TestSblInstitutionType"},
+            "6613e1e2c133": {"__tablename__": "lei_status", "code": "TEST", "name": "TestLeiStatus", "can_file": True},
         }
     }
 
@@ -280,3 +281,23 @@ def test_denied_domains_data_seed(alembic_runner: MigrationContext, alembic_engi
     with alembic_engine.connect() as conn:
         denied_domains_before_seed = conn.execute(text("SELECT domain FROM %s" % denied_domain_tablename)).fetchall()
     assert denied_domains_before_seed == []
+
+
+def test_lei_status_data_seed(alembic_runner: MigrationContext, alembic_engine: Engine):
+    # Migrate up to, but not including this new migration
+    alembic_runner.migrate_up_before("6613e1e2c133")
+
+    # Test lei_status seed
+    lei_status_tablename = "lei_status"
+    alembic_runner.migrate_up_one()
+    with alembic_engine.connect() as conn:
+        lei_status_rows = conn.execute(
+            text("SELECT code, name from %s where code = :code" % lei_status_tablename), (dict(code="ISSUED"))
+        ).fetchall()
+    lei_status_expected = [("ISSUED", "Issued")]
+    assert lei_status_rows == lei_status_expected
+
+    # alembic_runner.migrate_down_one()
+    # with alembic_engine.connect() as conn:
+    #    lei_status_before_seed = conn.execute(text("SELECT code, name FROM %s" % lei_status_tablename)).fetchall()
+    # assert lei_status_before_seed == [("TEST", "TestLeiStatus")]

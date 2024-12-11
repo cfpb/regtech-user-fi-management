@@ -24,11 +24,21 @@ loggers:
     level: INFO
     handlers:
       - default
-    propagate: no
+    propagate: false
   uvicorn.error:
     level: INFO
   uvicorn.access:
     level: INFO
     handlers:
       - access
-    propagate: no
+    propagate: false
+  regtech_api_commons:
+    level: INFO
+    handlers:
+      - default
+    propagate: false
+  regtech_user_fi_management:
+    level: INFO
+    handlers:
+      - default
+    propagate: false
