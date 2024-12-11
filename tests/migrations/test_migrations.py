@@ -77,11 +77,37 @@ def test_migration_to_6dd77f09fae6(alembic_runner: MigrationContext, alembic_eng
 
     columns = inspector.get_columns("financial_institutions")
 
-    assert [c for c in columns if c["name"] == "name"][0]["type"].length == 255
-    assert [c for c in columns if c["name"] == "hq_address_street_1"][0]["type"].length == 255
-    assert [c for c in columns if c["name"] == "hq_address_street_2"][0]["type"].length == 255
-    assert [c for c in columns if c["name"] == "hq_address_street_3"][0]["type"].length == 255
-    assert [c for c in columns if c["name"] == "hq_address_street_4"][0]["type"].length == 255
-    assert [c for c in columns if c["name"] == "hq_address_city"][0]["type"].length == 255
-    assert [c for c in columns if c["name"] == "parent_legal_name"][0]["type"].length == 255
-    assert [c for c in columns if c["name"] == "top_holder_legal_name"][0]["type"].length == 255
+    assert [c for c in columns if c["name"] == "name"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_1"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_2"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_3"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_4"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_city"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "parent_legal_name"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "top_holder_legal_name"][0]["type"].length is None
+
+
+def test_tables_exist_migrate_up_to_6613e1e2c133(alembic_runner: MigrationContext, alembic_engine: Engine):
+    alembic_runner.migrate_up_to("6613e1e2c133")
+
+    inspector = sqlalchemy.inspect(alembic_engine)
+    tables = inspector.get_table_names()
+    assert "lei_status" in tables
+
+
+def test_migration_to_ca39ad68af05(alembic_runner: MigrationContext, alembic_engine: Engine):
+
+    alembic_runner.migrate_up_to("ca39ad68af05")
+
+    inspector = sqlalchemy.inspect(alembic_engine)
+
+    columns = inspector.get_columns("financial_institutions")
+
+    assert [c for c in columns if c["name"] == "name"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_1"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_2"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_3"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_street_4"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "hq_address_city"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "parent_legal_name"][0]["type"].length is None
+    assert [c for c in columns if c["name"] == "top_holder_legal_name"][0]["type"].length is None
