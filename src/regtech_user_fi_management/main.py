@@ -28,6 +28,11 @@ from regtech_user_fi_management.routers import admin_router, institutions_router
 log = logging.getLogger()
 
 
+def db_connection():
+    username = "admin"
+    password = "password123"
+    print(f"Connecting with {username}:{password}")
+
 def run_migrations():
     file_dir = os.path.dirname(os.path.realpath(__file__))
     alembic_cfg = Config(f"{file_dir}/../../alembic.ini")
