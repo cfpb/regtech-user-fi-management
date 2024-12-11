@@ -42,7 +42,8 @@ class FinancialInstitutionDao(AuditMixin, Base):
     __mapper_args__ = {"version_id_col": version, "version_id_generator": False}
     lei: Mapped[str] = mapped_column(String(20), unique=True, index=True, primary_key=True)
     name: Mapped[str] = mapped_column(index=True)
-    is_active: Mapped[bool] = mapped_column(index=True)
+    lei_status_code: Mapped[str] = mapped_column(ForeignKey("lei_status.code"), nullable=False)
+    lei_status: Mapped["LeiStatusDao"] = relationship(lazy="selectin")
     domains: Mapped[List["FinancialInstitutionDomainDao"]] = relationship(
         "FinancialInstitutionDomainDao", back_populates="fi", lazy="selectin"
     )
@@ -53,11 +54,11 @@ class FinancialInstitutionDao(AuditMixin, Base):
     hmda_institution_type_id: Mapped[str] = mapped_column(ForeignKey("hmda_institution_type.id"), nullable=True)
     hmda_institution_type: Mapped["HMDAInstitutionTypeDao"] = relationship(lazy="selectin")
     sbl_institution_types: Mapped[List[SblTypeMappingDao]] = relationship(lazy="selectin", cascade="all, delete-orphan")
-    hq_address_street_1: Mapped[str]
+    hq_address_street_1: Mapped[str] = mapped_column()
     hq_address_street_2: Mapped[str] = mapped_column(nullable=True)
     hq_address_street_3: Mapped[str] = mapped_column(nullable=True)
     hq_address_street_4: Mapped[str] = mapped_column(nullable=True)
-    hq_address_city: Mapped[str]
+    hq_address_city: Mapped[str] = mapped_column()
     hq_address_state_code: Mapped[str] = mapped_column(ForeignKey("address_state.code"), nullable=True)
     hq_address_state: Mapped["AddressStateDao"] = relationship(lazy="selectin")
     hq_address_zip: Mapped[str] = mapped_column(String(5))
@@ -105,3 +106,10 @@ class AddressStateDao(AuditMixin, Base):
     __tablename__ = "address_state"
     code: Mapped[str] = mapped_column(String(2), index=True, primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(unique=True, nullable=False)
+
+
+class LeiStatusDao(AuditMixin, Base):
+    __tablename__ = "lei_status"
+    code: Mapped[str] = mapped_column(index=True, primary_key=True, unique=True)
+    name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    can_file: Mapped[bool] = mapped_column(index=True)

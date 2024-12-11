@@ -13,6 +13,7 @@ from regtech_user_fi_management.entities.models.dao import (
     HMDAInstitutionTypeDao,
     SBLInstitutionTypeDao,
     SblTypeMappingDao,
+    LeiStatusDao,
 )
 
 
@@ -62,7 +63,8 @@ def get_institutions_mock(mocker: MockerFixture, authed_user_mock: Mock) -> Mock
         FinancialInstitutionDao(
             name="Test Bank 123",
             lei="TESTBANK123000000000",
-            is_active=True,
+            lei_status_code="ISSUED",
+            lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
             domains=[FinancialInstitutionDomainDao(domain="test.bank", lei="TESTBANK123")],
             tax_id="12-3456789",
             rssd_id=1234,

@@ -30,7 +30,7 @@ class FinancialInsitutionDomainDto(FinancialInsitutionDomainBase):
 class FinancialInstitutionBase(BaseModel):
     lei: str
     name: str
-    is_active: bool
+    lei_status_code: str
 
 
 class SblTypeAssociationDto(BaseModel):
@@ -150,11 +150,21 @@ class AddressStateDto(AddressStateBase):
         from_attributes = True
 
 
+class LeiStatusDto(BaseModel):
+    code: str
+    name: str
+    can_file: bool
+
+    class Config:
+        from_attributes = True
+
+
 class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
     primary_federal_regulator: FederalRegulatorDto | None = None
     hmda_institution_type: InstitutionTypeDto | None = None
     sbl_institution_types: List[SblTypeAssociationDetailsDto] = []
-    hq_address_state: AddressStateDto
+    hq_address_state: AddressStateDto | None = None
+    lei_status: LeiStatusDto | None = None
     domains: List[FinancialInsitutionDomainDto] = []
 
 

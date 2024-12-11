@@ -86,3 +86,17 @@ def test_fi_history_table_columns_8106d83ff594(alembic_runner: MigrationContext,
     assert {column.get("name") for column in mapping_columns}.issubset(
         {column.get("name") for column in mapping_history_columns}
     )
+
+
+def test_migration_to_6613e1e2c133(alembic_runner: MigrationContext, alembic_engine: Engine):
+
+    alembic_runner.migrate_up_to("6613e1e2c133")
+
+    inspector = sqlalchemy.inspect(alembic_engine)
+
+    assert "lei_status_code" in [column.get("name") for column in inspector.get_columns("financial_institutions")]
+    assert "is_active" not in [column.get("name") for column in inspector.get_columns("financial_institutions")]
+
+    assert "lei_status_code" in [
+        column.get("name") for column in inspector.get_columns("financial_institutions_history")
+    ]

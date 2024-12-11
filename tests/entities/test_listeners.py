@@ -24,7 +24,7 @@ class TestListeners:
     target: FinancialInstitutionDao = FinancialInstitutionDao(
         name="Test Bank 123",
         lei="TESTBANK123000000000",
-        is_active=True,
+        lei_status_code="ISSUED",
         tax_id="12-3456789",
         rssd_id=1234,
         primary_federal_regulator_id="FRI1",
