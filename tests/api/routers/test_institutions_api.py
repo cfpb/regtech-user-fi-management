@@ -472,8 +472,8 @@ class TestInstitutionsApi:
             FinancialInstitutionDao(
                 name="Test Bank 234",
                 lei="TESTBANK234000000000",
-                lei_status_code="ISSUED",
-                lei_status=LeiStatusDao(code="ISSUED", name="Issued", can_file=True),
+                lei_status_code="LAPSED",
+                lei_status=LeiStatusDao(code="LAPSED", name="Lapsed", can_file=False),
                 domains=[FinancialInstitutionDomainDao(domain="test234.bank", lei="TESTBANK234000000000")],
                 tax_id="12-3456879",
                 rssd_id=6879,
@@ -517,7 +517,9 @@ class TestInstitutionsApi:
         inst1 = next(filter(lambda inst: inst["lei"] == "TESTBANK123000000000", data))
         inst2 = next(filter(lambda inst: inst["lei"] == "TESTBANK234000000000", data))
         assert inst1["approved"] is False
+        assert inst1["lei_status"]["can_file"] is True
         assert inst2["approved"] is True
+        assert inst2["lei_status"]["can_file"] is False
 
     def test_get_associated_institutions_with_no_institutions(
         self, app_fixture: FastAPI, auth_mock: Mock, get_institutions_mock: Mock

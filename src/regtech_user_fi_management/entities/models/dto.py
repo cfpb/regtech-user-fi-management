@@ -150,18 +150,6 @@ class AddressStateDto(AddressStateBase):
         from_attributes = True
 
 
-class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
-    primary_federal_regulator: FederalRegulatorDto | None = None
-    hmda_institution_type: InstitutionTypeDto | None = None
-    sbl_institution_types: List[SblTypeAssociationDetailsDto] = []
-    hq_address_state: AddressStateDto | None = None
-    domains: List[FinancialInsitutionDomainDto] = []
-
-
-class FinancialInstitutionAssociationDto(FinancialInstitutionWithRelationsDto):
-    approved: bool
-
-
 class LeiStatusDto(BaseModel):
     code: str
     name: str
@@ -169,3 +157,16 @@ class LeiStatusDto(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class FinancialInstitutionWithRelationsDto(FinancialInstitutionDto):
+    primary_federal_regulator: FederalRegulatorDto | None = None
+    hmda_institution_type: InstitutionTypeDto | None = None
+    sbl_institution_types: List[SblTypeAssociationDetailsDto] = []
+    hq_address_state: AddressStateDto | None = None
+    lei_status: LeiStatusDto | None = None
+    domains: List[FinancialInsitutionDomainDto] = []
+
+
+class FinancialInstitutionAssociationDto(FinancialInstitutionWithRelationsDto):
+    approved: bool
