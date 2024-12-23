@@ -1,8 +1,6 @@
 from typing import List, Sequence, Set
 
-from sqlalchemy import select, func
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from regtech_api_commons.models.auth import AuthenticatedUser
 
