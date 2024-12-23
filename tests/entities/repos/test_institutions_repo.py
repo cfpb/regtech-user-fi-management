@@ -343,6 +343,7 @@ class TestInstitutionsRepo:
         transaction_session.commit()
         assert repo.is_domain_allowed(transaction_session, "yahoo.com") is False
         assert repo.is_domain_allowed(transaction_session, "gmail.com") is True
+        assert repo.is_domain_allowed(transaction_session, "") is False
 
     def test_institution_mapped_to_state_valid(self, query_session: Session):
         res = repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
