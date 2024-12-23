@@ -12,9 +12,10 @@ from regtech_regex.regex_config import RegexConfigs
 
 JWT_OPTS_PREFIX = "jwt_opts_"
 
-env_files_to_load: list[Path | str] = [".env"]
+dir_path = os.path.dirname(os.path.realpath(__file__))
+env_files_to_load: list[Path | str] = [f"{dir_path}/.env"]
 if os.getenv("ENV", "LOCAL") == "LOCAL":
-    env_files_to_load.append(".env.local")
+    env_files_to_load.append(f"{dir_path}/.env.local")
 
 
 class Settings(BaseSettings):
@@ -24,6 +25,7 @@ class Settings(BaseSettings):
     inst_db_pwd: str
     inst_db_host: str
     inst_db_scheme: str = "postgresql+psycopg2"
+    # inst_db_scheme: str = "postgresql+asyncpg"
     inst_conn: str | None = None
     admin_scopes: Set[str] = set(["query-groups", "manage-users"])
     db_logging: bool = True

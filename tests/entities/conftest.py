@@ -1,61 +1,41 @@
-import asyncio
 import pytest
 
-from asyncio import current_task
-from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    AsyncEngine,
-    async_scoped_session,
-    async_sessionmaker,
-)
+from sqlalchemy import create_engine, Engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 from regtech_user_fi_management.entities.models.dao import Base
 
 
 @pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop()
-    try:
-        yield loop
-    finally:
-        loop.close()
-
-
-@pytest.fixture(scope="session")
 def engine():
-    return create_async_engine("sqlite+aiosqlite://")
+    return create_engine("sqlite://")
 
 
 @pytest.fixture(scope="function", autouse=True)
-async def setup_db(
+def setup_db(
     request: pytest.FixtureRequest,
-    engine: AsyncEngine,
-    event_loop: asyncio.AbstractEventLoop,
+    engine: Engine,
 ):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+
+    Base.metadata.create_all(bind=engine)
 
     def teardown():
-        async def td():
-            async with engine.begin() as conn:
-                await conn.run_sync(Base.metadata.drop_all)
-
-        event_loop.run_until_complete(td())
+        Base.metadata.drop_all(bind=engine)
 
     request.addfinalizer(teardown)
 
 
 @pytest.fixture(scope="function")
-async def transaction_session(session_generator: async_scoped_session):
-    async with session_generator() as session:
+def transaction_session(session_generator: scoped_session):
+    with session_generator() as session:
         yield session
 
 
 @pytest.fixture(scope="function")
-async def query_session(session_generator: async_scoped_session):
-    async with session_generator() as session:
+def query_session(session_generator: scoped_session):
+    with session_generator() as session:
         yield session
 
 
 @pytest.fixture(scope="function")
-def session_generator(engine: AsyncEngine):
-    return async_scoped_session(async_sessionmaker(engine, expire_on_commit=False), current_task)
+def session_generator(engine: Engine):
+    return scoped_session(sessionmaker(engine, expire_on_commit=False))

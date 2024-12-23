@@ -2,10 +2,9 @@ from datetime import datetime
 from typing import List
 from sqlalchemy import ForeignKey, func, String, inspect
 from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
-from sqlalchemy.ext.asyncio import AsyncAttrs
 
 
-class Base(AsyncAttrs, DeclarativeBase):
+class Base(DeclarativeBase):
     pass
 
 
