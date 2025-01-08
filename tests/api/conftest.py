@@ -19,8 +19,8 @@ from regtech_user_fi_management.entities.models.dao import (
 
 @pytest.fixture
 def app_fixture(mocker: MockerFixture) -> FastAPI:
-    mocked_engine = mocker.patch("sqlalchemy.ext.asyncio.create_async_engine")
-    MockedEngine = mocker.patch("sqlalchemy.ext.asyncio.AsyncEngine")
+    mocked_engine = mocker.patch("sqlalchemy.create_engine")
+    MockedEngine = mocker.patch("sqlalchemy.Engine")
     mocked_engine.return_value = MockedEngine.return_value
     mocker.patch("fastapi.security.OAuth2AuthorizationCodeBearer")
     domain_denied_mock = mocker.patch("regtech_user_fi_management.dependencies.email_domain_denied")

@@ -67,14 +67,9 @@ def _setup_fi_history(fi_history: Table, mapping_history: Table):
     return _insert_history
 
 
-async def setup_dao_listeners():
-    async with engine.begin() as connection:
-        fi_history, mapping_history = await connection.run_sync(
-            lambda conn: (
-                Table("financial_institutions_history", Base.metadata, autoload_with=conn),
-                Table("fi_to_type_mapping_history", Base.metadata, autoload_with=conn),
-            )
-        )
+def setup_dao_listeners():
+    fi_history = Table("financial_institutions_history", Base.metadata, autoload_with=engine)
+    mapping_history = Table("fi_to_type_mapping_history", Base.metadata, autoload_with=engine)
 
     insert_fi_history = _setup_fi_history(fi_history, mapping_history)
 

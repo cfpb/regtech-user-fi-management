@@ -1,6 +1,6 @@
 import pytest
 from pytest_mock import MockerFixture
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from regtech_user_fi_management.entities.models.dto import (
     FinancialInstitutionDto,
@@ -25,9 +25,9 @@ class TestInstitutionsRepo:
     auth_user: AuthenticatedUser = AuthenticatedUser.from_claim({"id": "test_user_id"})
 
     @pytest.fixture(scope="function", autouse=True)
-    async def setup(
+    def setup(
         self,
-        transaction_session: AsyncSession,
+        transaction_session: Session,
     ):
         state_ga, state_ca, state_fl = (
             AddressStateDao(code="GA", name="Georgia"),
@@ -148,65 +148,65 @@ class TestInstitutionsRepo:
         transaction_session.add(fi_dao_123)
         transaction_session.add(fi_dao_456)
         transaction_session.add(fi_dao_sub_456)
-        await transaction_session.commit()
+        transaction_session.commit()
 
-    async def test_get_sbl_types(self, query_session: AsyncSession):
+    def test_get_sbl_types(self, query_session: Session):
         expected_ids = {"1", "2", "13"}
-        res = await repo.get_sbl_types(query_session)
+        res = repo.get_sbl_types(query_session)
         assert len(res) == 3
         assert set([r.id for r in res]) == expected_ids
 
-    async def test_get_hmda_types(self, query_session: AsyncSession):
+    def test_get_hmda_types(self, query_session: Session):
         expected_ids = {"HIT1", "HIT2", "HIT3"}
-        res = await repo.get_hmda_types(query_session)
+        res = repo.get_hmda_types(query_session)
         assert len(res) == 3
         assert set([r.id for r in res]) == expected_ids
 
-    async def test_get_address_states(self, query_session: AsyncSession):
+    def test_get_address_states(self, query_session: Session):
         expected_codes = {"CA", "GA", "FL"}
-        res = await repo.get_address_states(query_session)
+        res = repo.get_address_states(query_session)
         assert len(res) == 3
         assert set([r.code for r in res]) == expected_codes
 
-    async def test_get_federal_regulators(self, query_session: AsyncSession):
+    def test_get_federal_regulators(self, query_session: Session):
         expected_ids = {"FRI1", "FRI2", "FRI3"}
-        res = await repo.get_federal_regulators(query_session)
+        res = repo.get_federal_regulators(query_session)
         assert len(res) == 3
         assert set([r.id for r in res]) == expected_ids
 
-    async def test_get_institutions(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session)
+    def test_get_institutions(self, query_session: Session):
+        res = repo.get_institutions(query_session)
         assert len(res) == 3
 
-    async def test_get_institutions_by_domain(self, query_session: AsyncSession):
+    def test_get_institutions_by_domain(self, query_session: Session):
         # verify 'generic' domain queries don't work
-        res = await repo.get_institutions(query_session, domain="bank")
+        res = repo.get_institutions(query_session, domain="bank")
         assert len(res) == 0
 
-        res = await repo.get_institutions(query_session, domain="test.bank.1")
+        res = repo.get_institutions(query_session, domain="test.bank.1")
         assert len(res) == 1
 
         # shouldn't find sub.test.bank.2
-        res = await repo.get_institutions(query_session, domain="test.bank.2")
+        res = repo.get_institutions(query_session, domain="test.bank.2")
         assert len(res) == 1
 
-        res = await repo.get_institutions(query_session, domain="sub.test.bank.2")
+        res = repo.get_institutions(query_session, domain="sub.test.bank.2")
         assert len(res) == 1
 
-    async def test_get_institutions_by_domain_not_existing(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, domain="testing.bank")
+    def test_get_institutions_by_domain_not_existing(self, query_session: Session):
+        res = repo.get_institutions(query_session, domain="testing.bank")
         assert len(res) == 0
 
-    async def test_get_institutions_by_lei_list(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK123000000000", "TESTBANK456000000000"])
+    def test_get_institutions_by_lei_list(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK123000000000", "TESTBANK456000000000"])
         assert len(res) == 2
 
-    async def test_get_institutions_by_lei_list_item_not_existing(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["0123NOTTESTBANK01234"])
+    def test_get_institutions_by_lei_list_item_not_existing(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["0123NOTTESTBANK01234"])
         assert len(res) == 0
 
-    async def test_empty_state(self, transaction_session: AsyncSession):
-        db_fi = await repo.upsert_institution(
+    def test_empty_state(self, transaction_session: Session):
+        db_fi = repo.upsert_institution(
             transaction_session,
             FinancialInstitutionDto(
                 name="New Bank 123",
@@ -235,14 +235,14 @@ class TestInstitutionsRepo:
             self.auth_user,
         )
         assert db_fi.domains == []
-        res = await repo.get_institutions(transaction_session)
+        res = repo.get_institutions(transaction_session)
         assert len(res) == 4
         new_sbl_types = next(iter([fi for fi in res if fi.lei == "NEWBANK1230000000000"])).sbl_institution_types
         assert len(new_sbl_types) == 1
         assert next(iter(new_sbl_types)).sbl_type.name == "Test SBL Instituion ID 1"
 
-    async def test_add_institution(self, transaction_session: AsyncSession):
-        db_fi = await repo.upsert_institution(
+    def test_add_institution(self, transaction_session: Session):
+        db_fi = repo.upsert_institution(
             transaction_session,
             FinancialInstitutionDto(
                 name="New Bank 123",
@@ -271,16 +271,14 @@ class TestInstitutionsRepo:
             self.auth_user,
         )
         assert db_fi.domains == []
-        res = await repo.get_institutions(transaction_session)
+        res = repo.get_institutions(transaction_session)
         assert len(res) == 4
         new_sbl_types = next(iter([fi for fi in res if fi.lei == "NEWBANK1230000000000"])).sbl_institution_types
         assert len(new_sbl_types) == 1
         assert next(iter(new_sbl_types)).sbl_type.name == "Test SBL Instituion ID 1"
 
-    async def test_add_institution_only_required_fields(
-        self, transaction_session: AsyncSession, query_session: AsyncSession
-    ):
-        await repo.upsert_institution(
+    def test_add_institution_only_required_fields(self, transaction_session: Session, query_session: Session):
+        repo.upsert_institution(
             transaction_session,
             FinancialInstitutionDto(
                 name="Minimal Bank 123",
@@ -293,15 +291,13 @@ class TestInstitutionsRepo:
             ),
             self.auth_user,
         )
-        res = await repo.get_institution(query_session, "MINBANK1230000000000")
+        res = repo.get_institution(query_session, "MINBANK1230000000000")
         assert res is not None
         assert res.tax_id is None
 
-    async def test_add_institution_missing_required_fields(
-        self, transaction_session: AsyncSession, query_session: AsyncSession
-    ):
+    def test_add_institution_missing_required_fields(self, transaction_session: Session, query_session: Session):
         with pytest.raises(Exception) as e:
-            await repo.upsert_institution(
+            repo.upsert_institution(
                 transaction_session,
                 FinancialInstitutionDto(
                     name="Minimal Bank 123",
@@ -310,11 +306,11 @@ class TestInstitutionsRepo:
                 self.auth_user,
             )
         assert "field required" in str(e.value).lower()
-        res = await repo.get_institution(query_session, "MINBANK1230000000000")
+        res = repo.get_institution(query_session, "MINBANK1230000000000")
         assert res is None
 
-    async def test_update_institution(self, transaction_session: AsyncSession):
-        await repo.upsert_institution(
+    def test_update_institution(self, transaction_session: Session):
+        repo.upsert_institution(
             transaction_session,
             FinancialInstitutionDto(
                 name="Test Bank 234",
@@ -327,79 +323,80 @@ class TestInstitutionsRepo:
             ),
             self.auth_user,
         )
-        res = await repo.get_institutions(transaction_session)
+        res = repo.get_institutions(transaction_session)
         assert len(res) == 3
         assert res[0].name == "Test Bank 234"
 
-    async def test_add_domains(self, transaction_session: AsyncSession, query_session: AsyncSession):
-        await repo.add_domains(
+    def test_add_domains(self, transaction_session: Session, query_session: Session):
+        repo.add_domains(
             transaction_session,
             "TESTBANK123000000000",
             [FinancialInsitutionDomainCreate(domain="bank.test")],
         )
-        fi = await repo.get_institution(query_session, "TESTBANK123000000000")
+        transaction_session.expunge_all()
+        fi = repo.get_institution(query_session, "TESTBANK123000000000")
         assert len(fi.domains) == 2
 
-    async def test_domain_allowed(self, transaction_session: AsyncSession):
+    def test_domain_allowed(self, transaction_session: Session):
         denied_domain = DeniedDomainDao(domain="yahoo.com")
         transaction_session.add(denied_domain)
-        await transaction_session.commit()
-        assert await repo.is_domain_allowed(transaction_session, "yahoo.com") is False
-        assert await repo.is_domain_allowed(transaction_session, "gmail.com") is True
+        transaction_session.commit()
+        assert repo.is_domain_allowed(transaction_session, "yahoo.com") is False
+        assert repo.is_domain_allowed(transaction_session, "gmail.com") is True
+        assert repo.is_domain_allowed(transaction_session, "") is False
 
-    async def test_institution_mapped_to_state_valid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
+    def test_institution_mapped_to_state_valid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
         assert res[0].hq_address_state.name == "Georgia"
 
-    async def test_institution_mapped_to_state_invalid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
+    def test_institution_mapped_to_state_invalid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
         assert res[0].hq_address_state.name != "Georgia"
 
-    async def test_institution_mapped_to_federal_regulator_valid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
+    def test_institution_mapped_to_federal_regulator_valid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
         assert res[0].primary_federal_regulator.name != "Test Federal Regulator ID 1"
 
-    async def test_institution_mapped_to_federal_regulator_invalid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
+    def test_institution_mapped_to_federal_regulator_invalid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
         assert res[0].primary_federal_regulator.name == "Test Federal Regulator ID 1"
 
-    async def test_institution_mapped_to_hmda_it_valid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
+    def test_institution_mapped_to_hmda_it_valid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
         assert res[0].hmda_institution_type.name == "Test HMDA Instituion ID 1"
 
-    async def test_institution_mapped_to_hmda_it_invalid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
+    def test_institution_mapped_to_hmda_it_invalid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
         assert res[0].hmda_institution_type.name != "Test HMDA Instituion ID 1"
 
-    async def test_institution_mapped_to_sbl_it_valid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
+    def test_institution_mapped_to_sbl_it_valid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK123000000000"])
         assert res[0].sbl_institution_types[0].sbl_type.name == "Test SBL Instituion ID 1"
 
-    async def test_institution_mapped_to_sbl_it_invalid(self, query_session: AsyncSession):
-        res = await repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
+    def test_institution_mapped_to_sbl_it_invalid(self, query_session: Session):
+        res = repo.get_institutions(query_session, leis=["TESTBANK456000000000"])
         assert res[0].sbl_institution_types[0].sbl_type.name != "Test SBL Instituion ID 1"
 
-    async def test_update_sbl_institution_types(
-        self, mocker: MockerFixture, query_session: AsyncSession, transaction_session: AsyncSession
+    def test_update_sbl_institution_types(
+        self, mocker: MockerFixture, query_session: Session, transaction_session: Session
     ):
         test_lei = "TESTBANK123000000000"
-        existing_inst = await repo.get_institution(query_session, test_lei)
+        existing_inst = repo.get_institution(query_session, test_lei)
+        query_session.expunge(existing_inst)
         sbl_types = [
             SblTypeAssociationDto(id="1"),
             SblTypeAssociationDto(id="2"),
             SblTypeAssociationDto(id="13", details="test"),
         ]
         commit_spy = mocker.patch.object(transaction_session, "commit", wraps=transaction_session.commit)
-        updated_inst = await repo.update_sbl_types(transaction_session, self.auth_user, test_lei, sbl_types)
+        updated_inst = repo.update_sbl_types(transaction_session, self.auth_user, test_lei, sbl_types)
         commit_spy.assert_called_once()
         assert len(existing_inst.sbl_institution_types) == 1
         assert len(updated_inst.sbl_institution_types) == 3
         diffs = set(updated_inst.sbl_institution_types).difference(set(existing_inst.sbl_institution_types))
         assert len(diffs) == 2
 
-    async def test_update_sbl_institution_types_inst_non_exist(
-        self, mocker: MockerFixture, transaction_session: AsyncSession
-    ):
+    def test_update_sbl_institution_types_inst_non_exist(self, mocker: MockerFixture, transaction_session: Session):
         test_lei = "NONEXISTINGBANK00000"
         sbl_types = [
             SblTypeAssociationDto(id="1"),
@@ -407,6 +404,6 @@ class TestInstitutionsRepo:
             SblTypeAssociationDto(id="13", details="test"),
         ]
         commit_spy = mocker.patch.object(transaction_session, "commit", wraps=transaction_session.commit)
-        res = await repo.update_sbl_types(transaction_session, self.auth_user, test_lei, sbl_types)
+        res = repo.update_sbl_types(transaction_session, self.auth_user, test_lei, sbl_types)
         commit_spy.assert_not_called()
         assert res is None

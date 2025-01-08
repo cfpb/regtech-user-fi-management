@@ -41,7 +41,7 @@ async def lifespan(app_: FastAPI):
     log.info("Starting up...")
     log.info("run alembic upgrade head...")
     run_migrations()
-    await setup_dao_listeners()
+    setup_dao_listeners()
     yield
     log.info("Shutting down...")
 

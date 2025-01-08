@@ -1,12 +1,10 @@
 from typing import List, Sequence, Set
 
-from sqlalchemy import select, func
-from sqlalchemy.orm import joinedload
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from regtech_api_commons.models.auth import AuthenticatedUser
 
-from .repo_utils import get_associated_sbl_types, query_type
+from .repo_utils import get_associated_sbl_types
 
 from regtech_user_fi_management.entities.models.dao import (
     FinancialInstitutionDao,
@@ -25,76 +23,61 @@ from regtech_user_fi_management.entities.models.dto import (
 )
 
 
-async def get_institutions(
-    session: AsyncSession,
+def get_institutions(
+    session: Session,
     leis: List[str] | None = None,
     domain: str = "",
     page: int = 0,
     count: int = 100,
 ) -> Sequence[FinancialInstitutionDao]:
-    async with session.begin():
-        stmt = (
-            select(FinancialInstitutionDao)
-            .options(joinedload(FinancialInstitutionDao.domains))
-            .limit(count)
-            .offset(page * count)
-        )
-        if leis is not None:
-            stmt = stmt.filter(FinancialInstitutionDao.lei.in_(leis))
-        elif d := domain.strip():
-            stmt = stmt.join(FinancialInstitutionDomainDao).filter(FinancialInstitutionDomainDao.domain == d)
-        res = await session.scalars(stmt)
-        return res.unique().all()
+    query = session.query(FinancialInstitutionDao)
+    if leis is not None:
+        query = query.filter(FinancialInstitutionDao.lei.in_(leis))
+    elif d := domain.strip():
+        query = query.join(FinancialInstitutionDomainDao).filter(FinancialInstitutionDomainDao.domain == d)
+    return query.limit(count).offset(page * count).all()
 
 
-async def get_institution(session: AsyncSession, lei: str) -> FinancialInstitutionDao | None:
-    async with session.begin():
-        stmt = (
-            select(FinancialInstitutionDao)
-            .options(joinedload(FinancialInstitutionDao.domains))
-            .filter(FinancialInstitutionDao.lei == lei)
-        )
-        return await session.scalar(stmt)
+def get_institution(session: Session, lei: str) -> FinancialInstitutionDao | None:
+    return session.get(FinancialInstitutionDao, lei)
 
 
-async def get_sbl_types(session: AsyncSession) -> Sequence[SBLInstitutionTypeDao]:
-    return await query_type(session, SBLInstitutionTypeDao)
+def get_sbl_types(session: Session) -> Sequence[SBLInstitutionTypeDao]:
+    return session.query(SBLInstitutionTypeDao).all()
 
 
-async def get_hmda_types(session: AsyncSession) -> Sequence[HMDAInstitutionTypeDao]:
-    return await query_type(session, HMDAInstitutionTypeDao)
+def get_hmda_types(session: Session) -> Sequence[HMDAInstitutionTypeDao]:
+    return session.query(HMDAInstitutionTypeDao).all()
 
 
-async def get_address_states(session: AsyncSession) -> Sequence[AddressStateDao]:
-    return await query_type(session, AddressStateDao)
+def get_address_states(session: Session) -> Sequence[AddressStateDao]:
+    return session.query(AddressStateDao).all()
 
 
-async def get_federal_regulators(session: AsyncSession) -> Sequence[FederalRegulatorDao]:
-    return await query_type(session, FederalRegulatorDao)
+def get_federal_regulators(session: Session) -> Sequence[FederalRegulatorDao]:
+    return session.query(FederalRegulatorDao).all()
 
 
-async def upsert_institution(
-    session: AsyncSession, fi: FinancialInstitutionDto, user: AuthenticatedUser
+def upsert_institution(
+    session: Session, fi: FinancialInstitutionDto, user: AuthenticatedUser
 ) -> FinancialInstitutionDao:
-    async with session.begin():
-        fi_data = fi.__dict__.copy()
-        fi_data.pop("_sa_instance_state", None)
-        fi_data.pop("version", None)
+    fi_data = fi.__dict__.copy()
+    fi_data.pop("_sa_instance_state", None)
+    fi_data.pop("version", None)
 
-        if "sbl_institution_types" in fi_data:
-            types_association = get_associated_sbl_types(fi.lei, user.id, fi.sbl_institution_types)
-            fi_data["sbl_institution_types"] = types_association
+    if "sbl_institution_types" in fi_data:
+        types_association = get_associated_sbl_types(fi.lei, user.id, fi.sbl_institution_types)
+        fi_data["sbl_institution_types"] = types_association
 
-        db_fi = await session.merge(FinancialInstitutionDao(**fi_data, modified_by=user.id))
-        await session.flush()
-        await session.refresh(db_fi)
-        return db_fi
+    db_fi = session.merge(FinancialInstitutionDao(**fi_data, modified_by=user.id))
+    session.commit()
+    return db_fi
 
 
-async def update_sbl_types(
-    session: AsyncSession, user: AuthenticatedUser, lei: str, sbl_types: Sequence[SblTypeAssociationDto | str]
+def update_sbl_types(
+    session: Session, user: AuthenticatedUser, lei: str, sbl_types: Sequence[SblTypeAssociationDto | str]
 ) -> FinancialInstitutionDao | None:
-    if fi := await get_institution(session, lei):
+    if fi := get_institution(session, lei):
         new_types = set(get_associated_sbl_types(lei, user.id, sbl_types))
         old_types = set(fi.sbl_institution_types)
         add_types = new_types.difference(old_types)
@@ -104,34 +87,25 @@ async def update_sbl_types(
         fi.sbl_institution_types.extend(add_types)
         for type in fi.sbl_institution_types:
             type.version = fi.version
-        await session.commit()
-        """
-        load the async relational attributes so dto can be properly serialized
-        """
-        for type in fi.sbl_institution_types:
-            await type.awaitable_attrs.sbl_type
+        session.commit()
         return fi
 
 
-async def add_domains(
-    session: AsyncSession, lei: str, domains: List[FinancialInsitutionDomainCreate]
+def add_domains(
+    session: Session, lei: str, domains: List[FinancialInsitutionDomainCreate]
 ) -> Set[FinancialInstitutionDomainDao]:
-    async with session.begin():
-        daos = set(
-            map(
-                lambda dto: FinancialInstitutionDomainDao(domain=dto.domain, lei=lei),
-                domains,
-            )
+    daos = set(
+        map(
+            lambda dto: FinancialInstitutionDomainDao(domain=dto.domain, lei=lei),
+            domains,
         )
-        session.add_all(daos)
-        await session.commit()
-        return daos
+    )
+    session.add_all(daos)
+    session.commit()
+    return daos
 
 
-async def is_domain_allowed(session: AsyncSession, domain: str) -> bool:
+def is_domain_allowed(session: Session, domain: str) -> bool:
     if domain:
-        async with session:
-            stmt = select(func.count()).filter(DeniedDomainDao.domain == domain)
-            res = await session.scalar(stmt)
-            return res == 0
+        return session.get(DeniedDomainDao, domain) is None
     return False

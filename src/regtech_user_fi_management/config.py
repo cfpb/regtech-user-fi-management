@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     inst_db_user: str
     inst_db_pwd: str
     inst_db_host: str
-    inst_db_scheme: str = "postgresql+asyncpg"
+    inst_db_scheme: str = "postgresql+psycopg2"
     inst_conn: str | None = None
     admin_scopes: Set[str] = set(["query-groups", "manage-users"])
     db_logging: bool = True

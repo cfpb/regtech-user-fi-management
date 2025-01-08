@@ -10,4 +10,4 @@ def test_postgres_dsn_building():
         "inst_db_scehma": "test",
     }
     settings = Settings(**mock_config)
-    assert str(settings.inst_conn) == "postgresql+asyncpg://user:%5Cz9-%2Ftgb76%23%40@test:5432/test"
+    assert str(settings.inst_conn) == "postgresql+psycopg2://user:%5Cz9-%2Ftgb76%23%40@test:5432/test"
