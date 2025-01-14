@@ -163,7 +163,9 @@ def update_types(
             )
 
 
-@router.post("/{lei}/domains/", response_model=List[FinancialInstitutionDomainDto], dependencies=[Depends(check_domain)])
+@router.post(
+    "/{lei}/domains/", response_model=List[FinancialInstitutionDomainDto], dependencies=[Depends(check_domain)]
+)
 @requires(["query-groups", "manage-users"])
 def add_domains(
     request: Request,
