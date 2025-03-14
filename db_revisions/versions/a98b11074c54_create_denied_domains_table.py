@@ -1,7 +1,7 @@
 """Create denied_domains table
 
 Revision ID: a98b11074c54
-Revises: 
+Revises:
 Create Date: 2023-11-02 11:31:54.882727
 
 """
