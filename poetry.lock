@@ -1220,19 +1220,19 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments
 
 [[package]]
 name = "pytest-alembic"
-version = "0.11.1"
+version = "0.12.1"
 description = "A pytest plugin for verifying alembic migrations."
 optional = false
-python-versions = "<4,>=3.6"
+python-versions = "<4,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "pytest_alembic-0.11.1-py3-none-any.whl", hash = "sha256:f83e8c1534d50ced053aa4b1dbf6e261f4674aa626cb852fc1dcb565049ae152"},
-    {file = "pytest_alembic-0.11.1.tar.gz", hash = "sha256:a920d8770b5be77326c5c1b2bd8d4d4a0dd8fc2c2d57abbcd1fec28a21131b85"},
+    {file = "pytest_alembic-0.12.1-py3-none-any.whl", hash = "sha256:d0d6be79f1c597278fbeda08c5558e7b8770af099521b0aa164e0df4aed945da"},
+    {file = "pytest_alembic-0.12.1.tar.gz", hash = "sha256:4e2b477d93464d0cfe80487fdf63922bfd22f29153ca980c1bccf1dbf833cf12"},
 ]
 
 [package.dependencies]
 alembic = "*"
-pytest = ">=6.0"
+pytest = ">=7.0"
 sqlalchemy = "*"
 
 [[package]]
@@ -1691,4 +1691,4 @@ standard = ["colorama (>=0.4) ; sys_platform == \"win32\"", "httptools (>=0.6.3)
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<4"
-content-hash = "8916660c47c890d887df28bc4eccdb2ff7342227ac41c40e0cd4634c8816c090"
+content-hash = "9c85830f5cb076b3fd0f1d89d7f9274efdbae8192c77cb7be56a1767e65a30ae"
