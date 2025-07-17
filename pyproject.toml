@@ -25,7 +25,7 @@ pytest-alembic = "^0.11.1"
 
 
 [tool.poetry.group.linters.dependencies]
-ruff = "0.11.7"
+ruff = "0.12.4"
 black = "25.1.0"
 
 [tool.pytest.ini_options]
