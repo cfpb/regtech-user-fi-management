@@ -26,7 +26,7 @@ pytest-alembic = "^0.12.1"
 
 [tool.poetry.group.linters.dependencies]
 ruff = "0.14.4"
-black = "25.1.0"
+black = "25.11.0"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
