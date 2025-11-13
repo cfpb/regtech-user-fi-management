@@ -17,7 +17,7 @@ regtech-api-commons = {git = "https://github.com/cfpb/regtech-api-commons.git"}
 regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.3"
+pytest = "^9.0.1"
 pytest-cov = "^6.1.1"
 pytest-mock = "^3.15.1"
 pytest-env = "^1.1.4"
