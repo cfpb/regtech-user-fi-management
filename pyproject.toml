@@ -18,7 +18,7 @@ regtech-regex = {git = "https://github.com/cfpb/regtech-regex.git"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.1"
-pytest-cov = "^6.1.1"
+pytest-cov = "^7.0.0"
 pytest-mock = "^3.15.1"
 pytest-env = "^1.2.0"
 pytest-alembic = "^0.12.1"
